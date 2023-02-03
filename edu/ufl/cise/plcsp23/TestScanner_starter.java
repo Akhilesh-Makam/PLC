@@ -1,4 +1,4 @@
-package edu.ufl.cise.plcsp23.src;/*Copyright 2023 by Beverly A Sanders
+package edu.ufl.cise.plcsp23.edu.ufl.cise.plcsp23;/*Copyright 2023 by Beverly A Sanders
  * 
  * This code is provided for solely for use of students in COP4020 Programming Language Concepts at the 
  * University of Florida during the spring semester 2023 as part of the course project.  
@@ -8,8 +8,8 @@ package edu.ufl.cise.plcsp23.src;/*Copyright 2023 by Beverly A Sanders
  * This code may not be posted on a public web site either during or after the course.  
  */
 
-import edu.ufl.cise.plcsp23.IToken.Kind;
-import edu.ufl.cise.plcsp23.IToken.SourceLocation;
+import edu.ufl.cise.plcsp23.edu.ufl.cise.plcsp23.IToken.Kind;
+import edu.ufl.cise.plcsp23.edu.ufl.cise.plcsp23.IToken.SourceLocation;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
