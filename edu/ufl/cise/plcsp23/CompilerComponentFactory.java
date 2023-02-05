@@ -10,8 +10,8 @@ package edu.ufl.cise.plcsp23.edu.ufl.cise.plcsp23;/*Copyright 2023 by Beverly A 
 
 public class CompilerComponentFactory {
 	public static IScanner makeScanner(String input) {
-		return null;
 		//Add statement to return an instance of your scanner
+		return new Scanner(input);
 	}
 
 }

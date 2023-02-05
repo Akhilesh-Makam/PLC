@@ -17,5 +17,4 @@ public interface IScanner {
 	 * @throws LexicalException
 	 */
 	IToken next() throws LexicalException;
-
 }
