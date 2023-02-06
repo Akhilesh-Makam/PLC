@@ -10,22 +10,23 @@ public class Scanner implements IScanner,IToken {
     private String input;
     //would use vector pair but its no longer supported
     Vector<String> found1; //the substring of each token
-    Vector<IToken> found2; //the token type, parallel
+    Vector<Kind> found2; //the token type, parallel
 
     private int currentIndex;
     private String now;
     private IToken type;
     private char current;
-    private int lineNumber;
-    private int columnNumber;
+    private int currentLine;
+    private int currentColumn;
 
 
     public Scanner(String input) {
+
+        now = "";
         this.input = input;
         currentIndex = 0;
-        lineNumber = 1;
-        columnNumber = 1;
-
+        currentLine = 1;
+        currentColumn = 0;
 
         HashMap <String, Kind> reservedWords = new HashMap<String, Kind>();
         reservedWords.put("image", Kind.RES_image);
@@ -55,10 +56,13 @@ public class Scanner implements IScanner,IToken {
         reservedWords.put("if", Kind.RES_if);
         reservedWords.put("while", Kind.RES_while);
     }
-
-    @Override
-    public IToken next() throws LexicalException {
-        return null; //not sure how to work this in yet
-
+    public IToken next() throws LexicalException {return null;}
+    public SourceLocation getSourceLocation(){
+        return null;
     }
+    public Kind getKind(){return null;}
+
+    public String getTokenString(){return "";}
+
+
 }
