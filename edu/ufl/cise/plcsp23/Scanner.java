@@ -1,20 +1,18 @@
 package edu.ufl.cise.plcsp23.edu.ufl.cise.plcsp23;
 
 import java.util.HashMap;
-import java.io.*;
 import java.util.*;
-import java.util.ArrayList;
 
 
 public class Scanner implements IScanner,IToken {
+
+    private SourceLocation sourceLocation;
+    private Kind kind;
+    private String tokenString;
     private String input;
-    //would use vector pair but its no longer supported
-    Vector<String> found1; //the substring of each token
-    Vector<Kind> found2; //the token type, parallel
 
     private int currentIndex;
     private String now;
-    private IToken type;
     private char current;
     private int currentLine;
     private int currentColumn;
@@ -66,36 +64,30 @@ public class Scanner implements IScanner,IToken {
         currentIndex = 0;
         currentLine = 1;
         currentColumn = 0;
-        char[] current = input.toCharArray();
-        int limit = current.length;
-
-        while(currentIndex < limit){
-            now = "";
-            char c = current[currentIndex];
-            if(c == 32 || c == 13 || c == 10 || c == 9 || c == 12){ //when whitespace
-                now += c;
-                currentIndex++;
-                c = current[currentIndex];
-                while (currentIndex < limit && isWhiteSpace(c)){
-                   now += c;
-                   currentIndex++;
-                   c = current[currentIndex];
-                }
-            }
+        
 
         }
+
+    public void found(SourceLocation sourceLocation, Kind kind, String tokenString){
+        this.sourceLocation = sourceLocation;
+        this.kind = kind;
+        this.tokenString = tokenString;
     }
 
     public boolean isWhiteSpace(char c){
         return (c == 32 || c == 13 || c == 10 || c == 9 || c == 12);
     }
     public IToken next() throws LexicalException {return null;}
-    public SourceLocation getSourceLocation(){
-        return null;
-    }
-    public Kind getKind(){return null;}
 
-    public String getTokenString(){return "";}
+
+    @Override
+    public SourceLocation getSourceLocation(){
+        return sourceLocation;
+    }
+    @Override
+    public Kind getKind(){return kind;}
+    @Override
+    public String getTokenString(){return tokenString;}
 
 
 }
