@@ -19,6 +19,15 @@ public class Scanner implements IScanner,IToken {
     private int currentLine;
     private int currentColumn;
     public static HashMap <String, Kind> reservedWords;
+    
+    
+    //defining states of DFA
+    private enum State{
+    	START, 
+    	HAVE_EQ, 
+    	IN_IDENT,
+    	IN_NUM_LIT
+    }
 
     static{
         reservedWords.put("image", Kind.RES_image);
