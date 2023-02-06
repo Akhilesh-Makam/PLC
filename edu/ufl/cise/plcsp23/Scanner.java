@@ -18,17 +18,9 @@ public class Scanner implements IScanner,IToken {
     private char current;
     private int currentLine;
     private int currentColumn;
+    public static HashMap <String, Kind> reservedWords;
 
-
-    public Scanner(String input) {
-
-        now = "";
-        this.input = input;
-        currentIndex = 0;
-        currentLine = 1;
-        currentColumn = 0;
-
-        HashMap <String, Kind> reservedWords = new HashMap<String, Kind>();
+    static{
         reservedWords.put("image", Kind.RES_image);
         reservedWords.put("pixel", Kind.RES_pixel);
         reservedWords.put("int", Kind.RES_int);
@@ -55,6 +47,38 @@ public class Scanner implements IScanner,IToken {
         reservedWords.put("atan", Kind.RES_atan);
         reservedWords.put("if", Kind.RES_if);
         reservedWords.put("while", Kind.RES_while);
+    }
+
+
+    public Scanner(String input) {
+
+        now = "";
+        this.input = input;
+        currentIndex = 0;
+        currentLine = 1;
+        currentColumn = 0;
+        char[] current = input.toCharArray();
+        int limit = current.length;
+
+        while(currentIndex < limit){
+            now = "";
+            char c = current[currentIndex];
+            if(c == 32 || c == 13 || c == 10 || c == 9 || c == 12){ //when whitespace
+                now += c;
+                currentIndex++;
+                c = current[currentIndex];
+                while (currentIndex < limit && isWhiteSpace(c)){
+                   now += c;
+                   currentIndex++;
+                   c = current[currentIndex];
+                }
+            }
+
+        }
+    }
+
+    public boolean isWhiteSpace(char c){
+        return (c == 32 || c == 13 || c == 10 || c == 9 || c == 12);
     }
     public IToken next() throws LexicalException {return null;}
     public SourceLocation getSourceLocation(){
