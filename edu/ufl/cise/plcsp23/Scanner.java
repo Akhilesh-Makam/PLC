@@ -19,7 +19,8 @@ public class Scanner implements IScanner,IToken {
         OP,
         IN_IDENT,
         IN_NUM_LIT,
-        IN_STRING_LIT
+        IN_STRING_LIT,
+        IN_COMMENT
     }
 
     static {
@@ -96,70 +97,93 @@ public class Scanner implements IScanner,IToken {
         tokenString = "";
         char c = input.charAt(currentIndex);
 
-        if (currentIndex < limit) {
-            boolean comment = false;
-            if (c == '~') {
-                comment = true;
-                while ((c != 'r' || c != 'n') && currentIndex < limit) {
-                    currentIndex++;
-                    c = input.charAt(currentIndex);
-                }
+        while(Character.isWhitespace(c) && currentIndex < limit){
+            if(c == ' '){
+                currentIndex++;
+                currentColumn++;
             }
-            if (comment) {
+            else if(c == '\n'){
                 currentLine++;
                 currentColumn = 0;
             }
-            if (!(currentIndex < limit)) {
-                kind = Kind.EOF;
-                sourceLocation = new SourceLocation(startLine, startColumn);
-                return this;
-            } else if (comment) {
-                startLine = currentLine;
-                startColumn = currentColumn;
+            else if(c == '\t'){
+                currentColumn += 4;
             }
+            c = input.charAt(currentIndex);
+        }
+        startLine = currentLine;
+        startColumn = currentColumn;
 
-            boolean white = false;
-            while(Character.isWhitespace(c) && currentIndex < limit){
-                white = true;
-                if(c == ' '){
-                    currentIndex++;
-                    currentColumn++;
-                }
-                else if(c == '\n'){
-                    currentLine++;
-                    currentColumn = 0;
-                }
-                else if(c == '\t'){
-                    currentColumn += 4;
-                }
-                c = input.charAt(currentIndex);
-            }
-            if (!(currentIndex < limit)) {
-                kind = Kind.EOF;
-                sourceLocation = new SourceLocation(startLine, startColumn);
-                return this;
-            } else if (white) {
-                startLine = currentLine;
-                startColumn = currentColumn;
-            }
+        if(currentIndex >= limit){
+            kind = Kind.EOF;
+            sourceLocation = new SourceLocation(startLine, startColumn);
+            return this;
+        }
 
+        if (Character.isDigit(c)) {
+            state = State.IN_NUM_LIT;
+        } else if (Character.isLetter(c) || c == '_') {
+            state = State.IN_IDENT;
+        } else if (operators.containsKey(c)) {
+            state = State.OP;
+            kind = operators.get(c);
+        } else if (c == '"'){
+            state = State.IN_STRING_LIT;
+        }
+        else if(c == '~'){
+            state = State.IN_COMMENT;
+        }
+        else {
+            kind = Kind.ERROR;
+            sourceLocation = new SourceLocation(startLine, startColumn);
+            currentColumn++;
+            currentIndex++;
+            return this;
+        }
 
-            if (Character.isDigit(c)) {
-                state = State.IN_NUM_LIT;
-            } else if (Character.isLetter(c) || c == '_') {
-                state = State.IN_IDENT;
-            } else if (operators.containsKey(c)) {
-                state = State.OP;
-                kind = operators.get(c);
-            } else if (c == '"'){
-                state = State.IN_STRING_LIT;
-            }
-            else {
-                kind = Kind.ERROR;
-                sourceLocation = new SourceLocation(startLine, startColumn);
-                currentColumn++;
+        while(state == State.IN_COMMENT){
+            if(state == State.IN_COMMENT){
                 currentIndex++;
-                return this;
+                boolean foundExit = false;
+                while(currentIndex < limit && !foundExit){
+                    c = input.charAt(currentIndex);
+                    if(c=='\n'){
+                        foundExit = true;
+                        currentLine++;
+                        currentColumn = 0;
+                    }
+                    currentIndex++;
+                }
+                if(foundExit){
+                    if(currentIndex < limit){
+                        c = input.charAt(currentIndex);
+                        if (Character.isDigit(c)) {
+                            state = State.IN_NUM_LIT;
+                        } else if (Character.isLetter(c) || c == '_') {
+                            state = State.IN_IDENT;
+                        } else if (operators.containsKey(c)) {
+                            state = State.OP;
+                            kind = operators.get(c);
+                        } else if (c == '"'){
+                            state = State.IN_STRING_LIT;
+                        }
+                        else if(c == '~'){
+                            state = State.IN_COMMENT;
+                        }
+                        else {
+                            kind = Kind.ERROR;
+                            sourceLocation = new SourceLocation(startLine, startColumn);
+                            currentColumn++;
+                            currentIndex++;
+                            return this;
+                        }
+                    }
+                }
+                else{
+                    kind = Kind.EOF;
+                    sourceLocation = new SourceLocation(startLine, startColumn);
+                    return this;
+                }
             }
         }
 
@@ -209,7 +233,6 @@ public class Scanner implements IScanner,IToken {
                     throw new LexicalException("Invalid character in NUM_LIT");
                 }
             }
-
         } else if (state == State.OP) {
             if (kind == Kind.ASSIGN) {
                 int x = currentIndex + 1;
@@ -239,9 +262,9 @@ public class Scanner implements IScanner,IToken {
                         currentIndex += 2;
                         currentColumn += 2;
                     } else {
-                        kind = Kind.ERROR;
                         currentIndex++;
                         currentColumn++;
+                        throw new LexicalException("Unexpected char in Operator");
                     }
                 }
             } else if (kind == Kind.GT) {
@@ -308,13 +331,17 @@ public class Scanner implements IScanner,IToken {
                 currentIndex++;
                 currentColumn++;
             }
-            kind = Kind.STRING_LIT;
-            sourceLocation = new SourceLocation(startLine, startColumn);
-            return this;
 
+            if(close){
+                kind = Kind.STRING_LIT;
+                sourceLocation = new SourceLocation(startLine, startColumn);
+                return this;
+            }
+            else{
+                throw new LexicalException("No closing \" found in String Lit");
+            }
         }
         throw new LexicalException("No token found");
-
     }
 
 
