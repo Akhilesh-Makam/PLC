@@ -11,5 +11,4 @@ package edu.ufl.cise.plcsp23.edu.ufl.cise.plcsp23;/*Copyright 2023 by Beverly A 
 public interface INumLitToken extends IToken {
 
 	int getValue();
-
 }
