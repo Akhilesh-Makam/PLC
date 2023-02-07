@@ -86,8 +86,6 @@ class TestScanner_starter {
 	void checkEOF(IToken t) {
 		checkToken(Kind.EOF, t);
 	}
-}
-
 
 	@Test
 	void emptyProg() throws LexicalException {
