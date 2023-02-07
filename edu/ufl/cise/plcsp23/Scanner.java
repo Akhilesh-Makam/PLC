@@ -342,7 +342,7 @@ public class Scanner implements IScanner,IToken {
                 sourceLocation = new SourceLocation(startLine, startColumn);
                 return this;
             }
-            else{
+            else if(currentIndex >= limit || !close){
                 throw new LexicalException("No closing \" found in String Lit");
             }
         }
