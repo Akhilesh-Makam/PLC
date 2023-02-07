@@ -154,6 +154,11 @@ public class Scanner implements IScanner,IToken {
                     }
                     currentIndex++;
                 }
+                if(currentIndex >= limit){
+                    kind = Kind.EOF;
+                    sourceLocation = new SourceLocation(startLine,startColumn);
+                    return this;
+                }
                 if(foundExit){
                     if(currentIndex < limit){
                         c = input.charAt(currentIndex);
