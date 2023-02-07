@@ -85,18 +85,8 @@ class TestScanner_starter {
 	// check that this token is the EOF token
 	void checkEOF(IToken t) {
 		checkToken(Kind.EOF, t);
-		tokenStart=pos;
-		switch(ch) {
-		case 0-> {
-			return new Token(EOF, tokenStart, 0, inputChars);
-		}
-		default->
-		{
-			throw new UnsupportedOperationException("not implemented yet");
-		}
-		}
-		
 	}
+}
 
 
 	@Test
