@@ -35,7 +35,7 @@ public class Scanner implements IScanner {
         this.input = input;
         currentIndex = 0;
         currentLine = 1;
-        currentColumn = 0;
+        currentColumn = 1;
         limit = input.length();
 
         reservedWords = new HashMap<String,Kind>();
@@ -100,10 +100,18 @@ public class Scanner implements IScanner {
     public IToken next() throws LexicalException {
         int startLine = currentLine;
         int startColumn = currentColumn;
+        tokenString = "";
+
+        if(input.isBlank()){
+            sourceLocation = new SourceLocation(startLine, startColumn);
+            kind = Kind.EOF;
+            return new Token(sourceLocation, kind, tokenString);
+        }
 
         State state = State.START;
         tokenString = "";
         char c = input.charAt(currentIndex);
+
 
         while(Character.isWhitespace(c) && currentIndex < limit){
             if(c == ' '){
@@ -356,29 +364,12 @@ public class Scanner implements IScanner {
         }
         throw new LexicalException("No token found");
     }
-
-    void checkString(String expectedChars, String expectedValue, SourceLocation expectedLocation, IToken t) {
-        assertTrue(t instanceof IStringLitToken);
-        assertEquals(expectedValue, ((IStringLitToken) t).getValue());
-        assertEquals(expectedChars, t.getTokenString());
-        assertEquals(expectedLocation, t.getSourceLocation());
-    }
-
-    @Test
-    void illegalLineTermInStringLiteral() throws LexicalException {
-        String input = """
-				"\\n"  ~ this one passes the escape sequence--it is OK
-				"\n"   ~ this on passes the LF, it is illegal.
-				""";
-        IScanner scanner = CompilerComponentFactory.makeScanner(input);
-        checkString("\"\\n\"","\n", new SourceLocation(1,1), scanner.next());
-        assertThrows(LexicalException.class, () -> {
-            scanner.next();
-        });
-    }
-
-
-
-
-
 }
+
+
+
+
+
+
+
+
