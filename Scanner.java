@@ -155,9 +155,9 @@ public class Scanner implements IScanner {
             state = State.IN_NUM_LIT;
         } else if (Character.isLetter(c) || c == '_') {
             state = State.IN_IDENT;
-        } else if (operators.containsKey(c)) {
+        } else if (operators.containsKey((Character.toString(c)))) {
             state = State.OP;
-            kind = operators.get(c);
+            kind = operators.get(Character.toString(c));
         } else if (c == '"') {
             state = State.IN_STRING_LIT;
         } else if (c == '~') {
