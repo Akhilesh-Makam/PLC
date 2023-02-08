@@ -1,3 +1,4 @@
+
 package edu.ufl.cise.plcsp23;
 
 public class StringLitToken implements IStringLitToken{
@@ -27,7 +28,22 @@ public class StringLitToken implements IStringLitToken{
 
     @Override
     public String getTokenString() {
-        return '"'+ tokenString + '"';
+        return tokenString;
     }
 
 }
+
+
+//commenting logic
+
+/*
+ * 
+ * //92 is backslash character in ascii
+ *switch case for input string 
+ *each case being b(backspace), t (for tab), n for lines, 92, and quotation marks
+ *adds to string input when done 
+
+ 
+ * return StringInput;
+ * }
+ */
