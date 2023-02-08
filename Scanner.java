@@ -120,7 +120,7 @@ public class Scanner implements IScanner {
 
 
         while (Character.isWhitespace(c) && currentIndex < limit) {
-            if (c == ' ') {
+            if (c == ' ') { //watch this
                 currentIndex++;
                 currentColumn++;
             } else if (c == '\n') {
@@ -147,6 +147,7 @@ public class Scanner implements IScanner {
             return new Token(sourceLocation, kind, tokenString);
         }
 
+
         if (Character.isDigit(c)) {
             if(c=='0'){
                 currentIndex++;
@@ -170,6 +171,46 @@ public class Scanner implements IScanner {
             throw new LexicalException("Unrecognized char entered in input");
         }
 
+        while(state == State.IN_COMMENT){
+            while (currentIndex < limit && c != '\n'){
+                currentIndex++;
+                currentColumn++;
+                c = input.charAt(currentIndex);
+            }
+            if(currentIndex >= limit){
+                kind = Kind.EOF;
+                sourceLocation = new SourceLocation(startLine, startColumn);
+                return new Token(sourceLocation, kind, tokenString);
+            }
+            currentColumn = 1;
+            currentLine++;
+            currentIndex++;
+            startLine = currentLine;
+            startColumn = currentColumn;
+            c = input.charAt(currentIndex);
+            if (Character.isDigit(c)) {
+                if(c=='0'){
+                    currentIndex++;
+                    return new NumLitToken("0", new SourceLocation(currentLine,currentColumn),kind.NUM_LIT);
+                }
+                state = State.IN_NUM_LIT;
+            } else if (Character.isLetter(c) || c == '_') {
+                state = State.IN_IDENT;
+            } else if (operators.containsKey((Character.toString(c)))) {
+                state = State.OP;
+                kind = operators.get(Character.toString(c));
+            } else if (c == '"') {
+                state = State.IN_STRING_LIT;
+            } else if (c == '~') {
+                state = State.IN_COMMENT;
+            } else {
+                kind = Kind.ERROR;
+                sourceLocation = new SourceLocation(startLine, startColumn);
+                currentColumn++;
+                currentIndex++;
+                throw new LexicalException("Unrecognized char entered in input");
+            }
+        }
 
         if (state == State.IN_IDENT) {
             tokenString += c;
@@ -183,8 +224,10 @@ public class Scanner implements IScanner {
                 } else if (Character.isWhitespace(c)) {
                     Kind k = reservedWords.get(tokenString);
                     if (k == null) {
+                        currentColumn++;
                         kind = Kind.IDENT;
                     } else {
+                        currentColumn++;
                         kind = k;
                     }
                     sourceLocation = new SourceLocation(startLine, startColumn);
