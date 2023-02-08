@@ -120,24 +120,52 @@ public class Scanner implements IScanner {
 
 
         while (Character.isWhitespace(c) && currentIndex < limit) {
-            if (c == ' ') { 
-                currentIndex++;
-                currentColumn++;
-            } else if (c == '\n') {
-                currentIndex++;
-                currentLine++;
-                currentColumn = 1;
-            } else if (c == '\t') {
-                currentIndex++;
-                currentColumn += 4;
-            }
+        	//potential logic used for later
+        	/*switch (input.charAt(currentIndex)) {
+            case 'n':
+              tokenString+'\n';
+              break;
+            case 't':
+              tokenString+('\t');
+              break;
+            case '\"':
+               tokenString+('\"');
+              break;
+            case '\\':
+              tokenString+('\\');
+              break;
+            default:
+              throw new LexicalException("Illegal escape sequence", int currentLine, int currentColumn);
+          }*/
+        	 if (c == ' ') { 
+                 currentIndex++;
+                 currentColumn++;
+             } else if (c == '\n') {
+                 currentIndex++;
+                 currentLine++;
+                 currentColumn = 1;
+             } else if (c == '\t') {
+                 currentIndex++;
+                 currentColumn += 4;
+             }
+             if (currentIndex >= limit) {
+                 kind = Kind.EOF;
+                 sourceLocation = new SourceLocation(startLine, startColumn);
+                 return new Token(sourceLocation, kind, tokenString);
+             }
+             c = input.charAt(currentIndex);
+         }
+         startLine = currentLine;
+         startColumn = currentColumn;
             if (currentIndex >= limit) {
                 kind = Kind.EOF;
                 sourceLocation = new SourceLocation(startLine, startColumn);
                 return new Token(sourceLocation, kind, tokenString);
             }
+            
             c = input.charAt(currentIndex);
-        }
+            
+        
         startLine = currentLine;
         startColumn = currentColumn;
 
