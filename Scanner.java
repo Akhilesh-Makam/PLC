@@ -38,7 +38,7 @@ public class Scanner implements IScanner {
         currentColumn = 1;
         limit = input.length();
 
-        reservedWords = new HashMap<String,Kind>();
+        reservedWords = new HashMap<String, Kind>();
         reservedWords.put("image", Kind.RES_image);
         reservedWords.put("pixel", Kind.RES_pixel);
         reservedWords.put("int", Kind.RES_int);
@@ -102,7 +102,13 @@ public class Scanner implements IScanner {
         int startColumn = currentColumn;
         tokenString = "";
 
-        if(input.isBlank()){
+        if (currentIndex >= limit) {
+            kind = Kind.EOF;
+            sourceLocation = new SourceLocation(startLine, startColumn);
+            return new Token(sourceLocation, kind, tokenString);
+        }
+
+        if (input.isBlank()) {
             sourceLocation = new SourceLocation(startLine, startColumn);
             kind = Kind.EOF;
             return new Token(sourceLocation, kind, tokenString);
@@ -113,100 +119,57 @@ public class Scanner implements IScanner {
         char c = input.charAt(currentIndex);
 
 
-        while(Character.isWhitespace(c) && currentIndex < limit){
-            if(c == ' '){
+        while (Character.isWhitespace(c) && currentIndex < limit) {
+            if (c == ' ') {
                 currentIndex++;
                 currentColumn++;
-            }
-            else if(c == '\n'){
+            } else if (c == '\n') {
+                currentIndex++;
                 currentLine++;
-                currentColumn = 0;
-            }
-            else if(c == '\t'){
+                currentColumn = 1;
+            } else if (c == '\t') {
+                currentIndex++;
                 currentColumn += 4;
+            }
+            if (currentIndex >= limit) {
+                kind = Kind.EOF;
+                sourceLocation = new SourceLocation(startLine, startColumn);
+                return new Token(sourceLocation, kind, tokenString);
             }
             c = input.charAt(currentIndex);
         }
         startLine = currentLine;
         startColumn = currentColumn;
 
-        if(currentIndex >= limit){
+        if (currentIndex >= limit) {
             kind = Kind.EOF;
             sourceLocation = new SourceLocation(startLine, startColumn);
             return new Token(sourceLocation, kind, tokenString);
         }
 
         if (Character.isDigit(c)) {
+            if(c=='0'){
+                currentIndex++;
+                return new NumLitToken("0", new SourceLocation(currentLine,currentColumn),kind.NUM_LIT);
+            }
             state = State.IN_NUM_LIT;
         } else if (Character.isLetter(c) || c == '_') {
             state = State.IN_IDENT;
         } else if (operators.containsKey(c)) {
             state = State.OP;
             kind = operators.get(c);
-        } else if (c == '"'){
+        } else if (c == '"') {
             state = State.IN_STRING_LIT;
-        }
-        else if(c == '~'){
+        } else if (c == '~') {
             state = State.IN_COMMENT;
-        }
-        else {
+        } else {
             kind = Kind.ERROR;
             sourceLocation = new SourceLocation(startLine, startColumn);
             currentColumn++;
             currentIndex++;
-            return new Token(sourceLocation, kind, tokenString);
+            throw new LexicalException("Unrecognized char entered in input");
         }
 
-        while(state == State.IN_COMMENT){
-            if(state == State.IN_COMMENT){
-                currentIndex++;
-                boolean foundExit = false;
-                while(currentIndex < limit && !foundExit){
-                    c = input.charAt(currentIndex);
-                    if(c=='\n'){
-                        foundExit = true;
-                        currentLine++;
-                        currentColumn = 0;
-                    }
-                    currentIndex++;
-                }
-                if(currentIndex >= limit){
-                    kind = Kind.EOF;
-                    sourceLocation = new SourceLocation(startLine,startColumn);
-                    return new Token(sourceLocation, kind, tokenString);
-                }
-                if(foundExit){
-                    if(currentIndex < limit){
-                        c = input.charAt(currentIndex);
-                        if (Character.isDigit(c)) {
-                            state = State.IN_NUM_LIT;
-                        } else if (Character.isLetter(c) || c == '_') {
-                            state = State.IN_IDENT;
-                        } else if (operators.containsKey(c)) {
-                            state = State.OP;
-                            kind = operators.get(c);
-                        } else if (c == '"'){
-                            state = State.IN_STRING_LIT;
-                        }
-                        else if(c == '~'){
-                            state = State.IN_COMMENT;
-                        }
-                        else {
-                            kind = Kind.ERROR;
-                            sourceLocation = new SourceLocation(startLine, startColumn);
-                            currentColumn++;
-                            currentIndex++;
-                            return new Token(sourceLocation, kind, tokenString);
-                        }
-                    }
-                }
-                else{
-                    kind = Kind.EOF;
-                    sourceLocation = new SourceLocation(startLine, startColumn);
-                    return new Token(sourceLocation, kind, tokenString);
-                }
-            }
-        }
 
         if (state == State.IN_IDENT) {
             tokenString += c;
@@ -227,30 +190,37 @@ public class Scanner implements IScanner {
                     sourceLocation = new SourceLocation(startLine, startColumn);
                     return new Token(sourceLocation, kind, tokenString);
                 } else {
+                    currentIndex++;
+                    currentColumn++;
                     throw new LexicalException("Invalid character/number in Identifier");
                 }
             }
-        } else if (state == State.IN_NUM_LIT) {
+            if (currentIndex >= limit) {
+                sourceLocation = new SourceLocation(startLine, startColumn);
+                kind = Kind.IDENT;
+                return new Token(sourceLocation, kind, tokenString);
+
+            }
+        }
+        else if (state == State.IN_NUM_LIT) {
             tokenString += c;
             currentIndex++;
-            while(currentIndex < limit){
+            while (currentIndex < limit) {
                 c = input.charAt(currentIndex);
-                if(Character.isDigit(c)){
+                if (Character.isDigit(c)) {
                     tokenString += c;
                     currentIndex++;
                     currentColumn++;
-                }
-                else if(Character.isWhitespace(c)){
+                } else if (Character.isWhitespace(c)) {
                     kind = Kind.NUM_LIT;
                     sourceLocation = new SourceLocation(startLine, startColumn);
                     long x = Integer.parseInt(tokenString);
-                    if(x > 2147483647 || x < -2147483648){
+                    if (x > 2147483647 || x < -2147483648) {
                         throw new LexicalException("Number out of range for NUM_LIT");
-                    }else{
+                    } else {
                         return new NumLitToken(tokenString, sourceLocation, kind);
                     }
-                }
-                else{
+                } else {
                     throw new LexicalException("Invalid character in NUM_LIT");
                 }
             }
@@ -338,33 +308,25 @@ public class Scanner implements IScanner {
             }
             sourceLocation = new SourceLocation(startLine, startColumn);
             return new Token(sourceLocation, kind, tokenString);
-        }else if(state == State.IN_STRING_LIT){
-            tokenString += c;
+        } else if (state == State.IN_STRING_LIT) {
             currentColumn++;
             currentIndex++;
-            boolean close = false;
-            while(currentIndex < limit || !close){
+            while (currentIndex < limit) {
                 c = input.charAt(currentIndex);
-                if (c=='\"'){
-                    close = true;
+                if (c == '"') {
+                    currentIndex++;
+                    return new StringLitToken(tokenString,new SourceLocation(startLine,startColumn),kind);
                 }
                 tokenString += c;
                 currentIndex++;
                 currentColumn++;
             }
-
-            if(close){
-                kind = Kind.STRING_LIT;
-                sourceLocation = new SourceLocation(startLine, startColumn);
-                return new StringLitToken(tokenString, sourceLocation, kind);
-            }
-            else if(currentIndex >= limit || !close){
-                throw new LexicalException("No closing \" found in String Lit");
-            }
+            throw new LexicalException("No closing \" found in String Lit");
         }
         throw new LexicalException("No token found");
     }
 }
+
 
 
 

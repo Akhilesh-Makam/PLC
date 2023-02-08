@@ -27,7 +27,7 @@ public class StringLitToken implements IStringLitToken{
 
     @Override
     public String getTokenString() {
-        return tokenString;
+        return '"'+ tokenString + '"';
     }
 
 }
