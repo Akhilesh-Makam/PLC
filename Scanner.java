@@ -226,6 +226,7 @@ public class Scanner implements IScanner {
             }
         } else if (state == State.OP) {
             if (kind == Kind.ASSIGN) {
+                tokenString += c;
                 int x = currentIndex + 1;
                 if (x < limit && input.charAt(x) == '=') {
                     tokenString += '=';
@@ -237,6 +238,7 @@ public class Scanner implements IScanner {
                     currentIndex++;
                 }
             } else if (kind == Kind.LT) {
+                tokenString += c;
                 int x = currentIndex + 1;
                 if (x < limit && input.charAt(x) == '=') {
                     tokenString += '=';
@@ -258,7 +260,12 @@ public class Scanner implements IScanner {
                         throw new LexicalException("Unexpected char in Operator");
                     }
                 }
+                else{
+                    currentIndex++;
+                    currentColumn++;
+                }
             } else if (kind == Kind.GT) {
+                tokenString += c;
                 int x = currentIndex + 1;
                 if (x < limit && input.charAt(x) == '=') {
                     tokenString += '=';
@@ -270,6 +277,7 @@ public class Scanner implements IScanner {
                     currentColumn++;
                 }
             } else if (kind == Kind.BITAND) {
+                tokenString += c;
                 int x = currentIndex + 1;
                 if (x < limit && input.charAt(x) == '&') {
                     tokenString += '&';
@@ -281,6 +289,7 @@ public class Scanner implements IScanner {
                     currentIndex++;
                 }
             } else if (kind == Kind.BITOR) {
+                tokenString += c;
                 int x = currentIndex + 1;
                 if (x < limit && input.charAt(x) == '|') {
                     tokenString += '|';
@@ -292,6 +301,7 @@ public class Scanner implements IScanner {
                     currentIndex++;
                 }
             } else if (kind == Kind.TIMES) {
+                tokenString += c;
                 int x = currentIndex + 1;
                 if (x < limit && input.charAt(x) == '*') {
                     tokenString += '*';
