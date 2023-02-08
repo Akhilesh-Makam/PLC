@@ -120,7 +120,7 @@ public class Scanner implements IScanner {
 
 
         while (Character.isWhitespace(c) && currentIndex < limit) {
-            if (c == ' ') { //watch this
+            if (c == ' ') { 
                 currentIndex++;
                 currentColumn++;
             } else if (c == '\n') {
@@ -379,12 +379,3 @@ public class Scanner implements IScanner {
         throw new LexicalException("No token found");
     }
 }
-
-
-
-
-
-
-
-
-
