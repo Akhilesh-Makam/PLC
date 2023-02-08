@@ -1,7 +1,7 @@
 
 package edu.ufl.cise.plcsp23;
 
-public class StringLitToken implements IStringLitToken{
+public class StringLitToken implements IStringLitToken{ //class created for STRINT_LIT Kind Token
     String tokenString;
     SourceLocation sourceLocation;
     Kind kind;

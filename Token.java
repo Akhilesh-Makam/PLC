@@ -2,7 +2,7 @@ package edu.ufl.cise.plcsp23;
 
 
 
-public class Token implements IToken {
+public class Token implements IToken { //base token class
     SourceLocation sourceLocation;
     Kind kind;
     String tokenString;

@@ -31,14 +31,14 @@ public class Scanner implements IScanner {
     }
 
 
-    public Scanner(String input) {
+    public Scanner(String input) { //create initial values of scanner class
         this.input = input;
         currentIndex = 0;
         currentLine = 1;
         currentColumn = 1;
         limit = input.length();
 
-        reservedWords = new HashMap<String, Kind>();
+        reservedWords = new HashMap<String, Kind>(); //contains all the reserved word kinds
         reservedWords.put("image", Kind.RES_image);
         reservedWords.put("pixel", Kind.RES_pixel);
         reservedWords.put("int", Kind.RES_int);
@@ -66,7 +66,7 @@ public class Scanner implements IScanner {
         reservedWords.put("if", Kind.RES_if);
         reservedWords.put("while", Kind.RES_while);
 
-        operators = new HashMap<String, Kind>();
+        operators = new HashMap<String, Kind>(); //contains all the operator kinds
         operators.put(".", Kind.DOT);
         operators.put(",", Kind.COMMA);
         operators.put("?", Kind.QUESTION);
@@ -102,13 +102,13 @@ public class Scanner implements IScanner {
         int startColumn = currentColumn;
         tokenString = "";
 
-        if (currentIndex >= limit) {
+        if (currentIndex >= limit) { //if end of string reached already
             kind = Kind.EOF;
             sourceLocation = new SourceLocation(startLine, startColumn);
             return new Token(sourceLocation, kind, tokenString);
         }
 
-        if (input.isBlank()) {
+        if (input.isBlank()) { //no input
             sourceLocation = new SourceLocation(startLine, startColumn);
             kind = Kind.EOF;
             return new Token(sourceLocation, kind, tokenString);
@@ -119,7 +119,7 @@ public class Scanner implements IScanner {
         char c = input.charAt(currentIndex);
 
 
-        while (Character.isWhitespace(c) && currentIndex < limit) {
+        while (Character.isWhitespace(c) && currentIndex < limit) { //remove all the whitespace until end or nearest char
         	//potential logic used for later
         	/*switch (input.charAt(currentIndex)) {
             case 'n':
@@ -137,18 +137,18 @@ public class Scanner implements IScanner {
             default:
               throw new LexicalException("Illegal escape sequence", int currentLine, int currentColumn);
           }*/
-        	 if (c == ' ') { 
+        	 if (c == ' ') { //when just a space
                  currentIndex++;
                  currentColumn++;
-             } else if (c == '\n') {
+             } else if (c == '\n') { //when newline
                  currentIndex++;
                  currentLine++;
                  currentColumn = 1;
-             } else if (c == '\t') {
+             } else if (c == '\t') { //when tab
                  currentIndex++;
                  currentColumn += 4;
              }
-             if (currentIndex >= limit) {
+             if (currentIndex >= limit) { //reached end of string input
                  kind = Kind.EOF;
                  sourceLocation = new SourceLocation(startLine, startColumn);
                  return new Token(sourceLocation, kind, tokenString);
@@ -157,7 +157,7 @@ public class Scanner implements IScanner {
          }
          startLine = currentLine;
          startColumn = currentColumn;
-            if (currentIndex >= limit) {
+            if (currentIndex >= limit) { //not sure about exact  logic of this here but it fixed a test case
                 kind = Kind.EOF;
                 sourceLocation = new SourceLocation(startLine, startColumn);
                 return new Token(sourceLocation, kind, tokenString);
@@ -166,7 +166,7 @@ public class Scanner implements IScanner {
             c = input.charAt(currentIndex);
             
         
-        startLine = currentLine;
+        startLine = currentLine; //update the startline and column after eliminating whitespaces
         startColumn = currentColumn;
 
         if (currentIndex >= limit) {
@@ -176,22 +176,22 @@ public class Scanner implements IScanner {
         }
 
 
-        if (Character.isDigit(c)) {
-            if(c=='0'){
+        if (Character.isDigit(c)) { //if the current character is 0-9
+            if(c=='0'){ //when specifically 0
                 currentIndex++;
                 return new NumLitToken("0", new SourceLocation(currentLine,currentColumn),kind.NUM_LIT);
             }
-            state = State.IN_NUM_LIT;
-        } else if (Character.isLetter(c) || c == '_') {
+            state = State.IN_NUM_LIT; //set state to in_num_lit for 1-9
+        } else if (Character.isLetter(c) || c == '_') { //encounter any letter or _
             state = State.IN_IDENT;
-        } else if (operators.containsKey((Character.toString(c)))) {
+        } else if (operators.containsKey((Character.toString(c)))) { //if c is an operator or part of one
             state = State.OP;
             kind = operators.get(Character.toString(c));
-        } else if (c == '"') {
+        } else if (c == '"') { //in case of string lit
             state = State.IN_STRING_LIT;
-        } else if (c == '~') {
+        } else if (c == '~') { //in case of comment
             state = State.IN_COMMENT;
-        } else {
+        } else { //invalid char
             kind = Kind.ERROR;
             sourceLocation = new SourceLocation(startLine, startColumn);
             currentColumn++;
@@ -199,7 +199,7 @@ public class Scanner implements IScanner {
             throw new LexicalException("Unrecognized char entered in input");
         }
 
-        while(state == State.IN_COMMENT){
+        while(state == State.IN_COMMENT){ //remove all comment chars until newline or reached end
             while (currentIndex < limit && c != '\n'){
                 currentIndex++;
                 currentColumn++;
@@ -216,7 +216,7 @@ public class Scanner implements IScanner {
             startLine = currentLine;
             startColumn = currentColumn;
             c = input.charAt(currentIndex);
-            if (Character.isDigit(c)) {
+            if (Character.isDigit(c)) { //if still chars after comment end, set to state based on type
                 if(c=='0'){
                     currentIndex++;
                     return new NumLitToken("0", new SourceLocation(currentLine,currentColumn),kind.NUM_LIT);
@@ -229,7 +229,7 @@ public class Scanner implements IScanner {
                 kind = operators.get(Character.toString(c));
             } else if (c == '"') {
                 state = State.IN_STRING_LIT;
-            } else if (c == '~') {
+            } else if (c == '~') { //if multiple comments
                 state = State.IN_COMMENT;
             } else {
                 kind = Kind.ERROR;
@@ -243,13 +243,13 @@ public class Scanner implements IScanner {
         if (state == State.IN_IDENT) {
             tokenString += c;
             currentIndex++;
-            while (currentIndex < limit) {
+            while (currentIndex < limit) { //get indentifier name while within limit
                 c = input.charAt(currentIndex);
-                if (Character.isLetterOrDigit(c) || c == '_') {
+                if (Character.isLetterOrDigit(c) || c == '_') { //get whole identifier name
                     tokenString += c;
                     currentIndex++;
                     currentColumn++;
-                } else if (Character.isWhitespace(c)) {
+                } else if (Character.isWhitespace(c)) { //once reached whitespace, check if its a reserved word if not return it as IDENT
                     Kind k = reservedWords.get(tokenString);
                     if (k == null) {
                         currentColumn++;
@@ -260,13 +260,13 @@ public class Scanner implements IScanner {
                     }
                     sourceLocation = new SourceLocation(startLine, startColumn);
                     return new Token(sourceLocation, kind, tokenString);
-                } else {
+                } else { //if it contains an invalid character
                     currentIndex++;
                     currentColumn++;
                     throw new LexicalException("Invalid character/number in Identifier");
                 }
             }
-            if (currentIndex >= limit) {
+            if (currentIndex >= limit) { //if identifier reached end of input
                 sourceLocation = new SourceLocation(startLine, startColumn);
                 kind = Kind.IDENT;
                 return new Token(sourceLocation, kind, tokenString);
@@ -274,29 +274,29 @@ public class Scanner implements IScanner {
             }
         }
         else if (state == State.IN_NUM_LIT) {
-            tokenString += c;
+            tokenString += c; //add current number to string and update the index
             currentIndex++;
             while (currentIndex < limit) {
                 c = input.charAt(currentIndex);
-                if (Character.isDigit(c)) {
+                if (Character.isDigit(c)) { //add all the digits in the number
                     tokenString += c;
                     currentIndex++;
                     currentColumn++;
-                } else if (Character.isWhitespace(c)) {
+                } else if (Character.isWhitespace(c)) { //check for whitespace
                     kind = Kind.NUM_LIT;
                     sourceLocation = new SourceLocation(startLine, startColumn);
                     long x = Integer.parseInt(tokenString);
-                    if (x > 2147483647 || x < -2147483648) {
+                    if (x > 2147483647 || x < -2147483648) { //throws exception if larger than the range for an int
                         throw new LexicalException("Number out of range for NUM_LIT");
                     } else {
                         return new NumLitToken(tokenString, sourceLocation, kind);
                     }
-                } else {
+                } else { //invalid char in number
                     throw new LexicalException("Invalid character in NUM_LIT");
                 }
             }
         } else if (state == State.OP) {
-            if (kind == Kind.ASSIGN) {
+            if (kind == Kind.ASSIGN) { //checks if token is Assign or EQ
                 tokenString += c;
                 int x = currentIndex + 1;
                 if (x < limit && input.charAt(x) == '=') {
@@ -308,7 +308,7 @@ public class Scanner implements IScanner {
                     currentColumn++;
                     currentIndex++;
                 }
-            } else if (kind == Kind.LT) {
+            } else if (kind == Kind.LT) { //check for LT, LE, and EXCHANGE
                 tokenString += c;
                 int x = currentIndex + 1;
                 if (x < limit && input.charAt(x) == '=') {
@@ -325,7 +325,7 @@ public class Scanner implements IScanner {
                         kind = Kind.EXCHANGE;
                         currentIndex += 2;
                         currentColumn += 2;
-                    } else {
+                    } else { //invalid char
                         currentIndex++;
                         currentColumn++;
                         throw new LexicalException("Unexpected char in Operator");
@@ -335,7 +335,7 @@ public class Scanner implements IScanner {
                     currentIndex++;
                     currentColumn++;
                 }
-            } else if (kind == Kind.GT) {
+            } else if (kind == Kind.GT) { //check for GT an GE
                 tokenString += c;
                 int x = currentIndex + 1;
                 if (x < limit && input.charAt(x) == '=') {
@@ -347,7 +347,7 @@ public class Scanner implements IScanner {
                     currentIndex++;
                     currentColumn++;
                 }
-            } else if (kind == Kind.BITAND) {
+            } else if (kind == Kind.BITAND) { //check for BITAND and AND
                 tokenString += c;
                 int x = currentIndex + 1;
                 if (x < limit && input.charAt(x) == '&') {
@@ -359,7 +359,7 @@ public class Scanner implements IScanner {
                     currentColumn++;
                     currentIndex++;
                 }
-            } else if (kind == Kind.BITOR) {
+            } else if (kind == Kind.BITOR) { //check for BITOR and OR
                 tokenString += c;
                 int x = currentIndex + 1;
                 if (x < limit && input.charAt(x) == '|') {
@@ -371,7 +371,7 @@ public class Scanner implements IScanner {
                     currentColumn++;
                     currentIndex++;
                 }
-            } else if (kind == Kind.TIMES) {
+            } else if (kind == Kind.TIMES) { //Times or EXP
                 tokenString += c;
                 int x = currentIndex + 1;
                 if (x < limit && input.charAt(x) == '*') {
@@ -389,7 +389,7 @@ public class Scanner implements IScanner {
             }
             sourceLocation = new SourceLocation(startLine, startColumn);
             return new Token(sourceLocation, kind, tokenString);
-        } else if (state == State.IN_STRING_LIT) {
+        } else if (state == State.IN_STRING_LIT) { //gets the whole string until closing " or throws exception if not found
             currentColumn++;
             currentIndex++;
             while (currentIndex < limit) {
@@ -404,6 +404,6 @@ public class Scanner implements IScanner {
             }
             throw new LexicalException("No closing \" found in String Lit");
         }
-        throw new LexicalException("No token found");
+        throw new LexicalException("No token found"); //return statement if somehow a token slips by
     }
 }

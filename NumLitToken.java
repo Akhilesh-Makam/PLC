@@ -1,6 +1,6 @@
 package edu.ufl.cise.plcsp23;
 
-public class NumLitToken implements INumLitToken{
+public class NumLitToken implements INumLitToken{ //when kind is Num_lit
     int value;
     String tokenString;
     SourceLocation sourceLocation;
