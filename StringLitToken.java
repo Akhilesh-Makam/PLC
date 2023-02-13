@@ -1,7 +1,6 @@
-
 package edu.ufl.cise.plcsp23;
 
-public class StringLitToken implements IStringLitToken{ //class created for STRINT_LIT Kind Token
+public class StringLitToken implements IStringLitToken{
     String tokenString;
     SourceLocation sourceLocation;
     Kind kind;
@@ -13,6 +12,33 @@ public class StringLitToken implements IStringLitToken{ //class created for STRI
     }
 
     public String getValue(){
+        for (int i = 0; i < tokenString.length(); i++) {
+            char c = tokenString.charAt(i);
+            if (c == '\\') {
+                i++;
+                c = tokenString.charAt(i);
+                switch (c) {
+                    case 'n':
+                        tokenString.concat("\n");
+                        break;
+                    case 't':
+                        tokenString.concat("\t");
+                        break;
+                    case '"':
+                        tokenString.concat("\"");
+                        break;
+                    case '\\':
+                        tokenString.concat("\\");
+                        break;
+                    default:
+                        // Handling invalid escape sequence
+                        tokenString.concat("\\").concat(String.valueOf(c));
+                        break;
+                }
+            } else {
+                tokenString.substring(c);
+            }
+        }
         return tokenString;
     }
 
@@ -33,17 +59,3 @@ public class StringLitToken implements IStringLitToken{ //class created for STRI
 
 }
 
-
-//commenting logic
-
-/*
- * 
- * //92 is backslash character in ascii
- *switch case for input string 
- *each case being b(backspace), t (for tab), n for lines, 92, and quotation marks
- *adds to string input when done 
-
- 
- * return StringInput;
- * }
- */
