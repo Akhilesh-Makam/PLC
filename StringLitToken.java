@@ -19,24 +19,24 @@ public class StringLitToken implements IStringLitToken{
                 c = tokenString.charAt(i);
                 switch (c) {
                     case 'n':
-                        tokenString.concat("\n");
+                        tokenString = tokenString.concat("\n");
                         break;
                     case 't':
-                        tokenString.concat("\t");
+                        tokenString = tokenString.concat("\t");
                         break;
                     case '"':
-                        tokenString.concat("\"");
+                        tokenString = tokenString.concat("\"");
                         break;
                     case '\\':
-                        tokenString.concat("\\");
+                        tokenString = tokenString.concat("\\");
                         break;
                     default:
                         // Handling invalid escape sequence
-                        tokenString.concat("\\").concat(String.valueOf(c));
+                        tokenString = tokenString.concat("\\").concat(String.valueOf(c));
                         break;
                 }
             } else {
-                tokenString.substring(c);
+                tokenString = tokenString.substring(i, i+1);
             }
         }
         return tokenString;
