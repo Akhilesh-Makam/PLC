@@ -13,38 +13,38 @@ public class StringLitToken implements IStringLitToken {
 
     }
 
-    public String getValue(){
+    public String getValue() {
+        String result = ""; //string for processed characters
 
-        for (int i = 0; i < tokenString.length()-1; i++) {
+        for (int i = 0; i < tokenString.length(); i++) {
             char c = tokenString.charAt(i);
             if (c == '\\') {
                 i++;
                 c = tokenString.charAt(i);
                 switch (c) {
                     case 'n':
-                        tokenString = tokenString.concat("\n");
+                        result += "\n";
                         break;
                     case 't':
-                        tokenString = tokenString.concat("\t");
+                        result += "\t";
                         break;
-                    case '\"':
-                        tokenString = tokenString.concat("\"");
+                    case '"':
+                        result += "\"";
                         break;
                     case '\\':
-                        tokenString = tokenString.concat("\\");
+                        result += "\\";
                         break;
                     default:
                         // Handling invalid escape sequence
-                        tokenString = tokenString.concat("\\").concat(String.valueOf(c));
+                        result += "\\" + c;
                         break;
                 }
             } else {
-                tokenString = tokenString.substring(i, i+1);
+                result += c;
             }
         }
-        return tokenString;
+        return result;
     }
-
     @Override
     public SourceLocation getSourceLocation() {
         return sourceLocation;
