@@ -1,6 +1,8 @@
 package edu.ufl.cise.plcsp23;
 
-public class StringLitToken implements IStringLitToken{
+import edu.ufl.cise.plcsp23.IStringLitToken;
+
+public class StringLitToken implements IStringLitToken {
     String tokenString;
     SourceLocation sourceLocation;
     Kind kind;
@@ -12,7 +14,8 @@ public class StringLitToken implements IStringLitToken{
     }
 
     public String getValue(){
-        for (int i = 0; i < tokenString.length(); i++) {
+
+        for (int i = 0; i < tokenString.length()-1; i++) {
             char c = tokenString.charAt(i);
             if (c == '\\') {
                 i++;
@@ -24,7 +27,7 @@ public class StringLitToken implements IStringLitToken{
                     case 't':
                         tokenString = tokenString.concat("\t");
                         break;
-                    case '"':
+                    case '\"':
                         tokenString = tokenString.concat("\"");
                         break;
                     case '\\':
