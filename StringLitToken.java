@@ -15,16 +15,8 @@ public class StringLitToken implements IStringLitToken {
 
     public String getValue() {
         String result = ""; //string for processed characters
-
-        if(tokenString == "\\"){
-            return "\"";
-        }
-
-        for (int i = 0; i < tokenString.length(); i++) {
-            char c = tokenString.charAt(i);
-            if (c == '\\') {
-                i++;
-                c = tokenString.charAt(i);
+        if (tokenString.length() == 1) {
+            char c = tokenString.charAt(0);
                 switch (c) {
                     case 'n':
                         result += "\n";
@@ -43,12 +35,43 @@ public class StringLitToken implements IStringLitToken {
                         result += "\\" + c;
                         break;
                 }
-            } else {
-                result += c;
+             }
+        else {
+            if (tokenString == "\\") {
+                return "\"";
+            }
+
+            for (int i = 0; i < tokenString.length(); i++) {
+                char c = tokenString.charAt(i);
+                if (c == '\\') {
+                    i++;
+                    c = tokenString.charAt(i);
+                    switch (c) {
+                        case 'n':
+                            result += "\n";
+                            break;
+                        case 't':
+                            result += "\t";
+                            break;
+                        case '"':
+                            result += "\"";
+                            break;
+                        case '\\':
+                            result += "\\";
+                            break;
+                        default:
+                            // Handling invalid escape sequence
+                            result += "\\" + c;
+                            break;
+                    }
+                } else {
+                    result += c;
+                }
             }
         }
         return result;
     }
+
     @Override
     public SourceLocation getSourceLocation() {
         return sourceLocation;
