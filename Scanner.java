@@ -398,8 +398,8 @@ public class Scanner implements IScanner {
                     currentIndex++;
                     return new StringLitToken(tokenString,new SourceLocation(startLine,startColumn),Kind.STRING_LIT);
                 }
-                if (c=='\n'){
-                    throw new LexicalException("No newline char allowed");
+                if (c=='\n'|| c == '\b' || c == '\t' || c == '\r'){
+                    throw new LexicalException("No newline char allowed in string literal");
                 }
                 tokenString += c;
                 currentIndex++;
