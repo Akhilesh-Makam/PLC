@@ -16,6 +16,10 @@ public class StringLitToken implements IStringLitToken {
     public String getValue() {
         String result = ""; //string for processed characters
 
+        if(tokenString == "\\"){
+            return "\"";
+        }
+
         for (int i = 0; i < tokenString.length(); i++) {
             char c = tokenString.charAt(i);
             if (c == '\\') {

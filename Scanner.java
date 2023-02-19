@@ -396,7 +396,10 @@ public class Scanner implements IScanner {
                 c = input.charAt(currentIndex);
                 if (c == '"') {
                     currentIndex++;
-                    return new StringLitToken(tokenString,new SourceLocation(startLine,startColumn),kind);
+                    return new StringLitToken(tokenString,new SourceLocation(startLine,startColumn),Kind.STRING_LIT);
+                }
+                if (c=='\n'){
+                    throw new LexicalException("No newline char allowed");
                 }
                 tokenString += c;
                 currentIndex++;
