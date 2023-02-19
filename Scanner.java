@@ -392,14 +392,26 @@ public class Scanner implements IScanner {
         } else if (state == State.IN_STRING_LIT) { //gets the whole string until closing " or throws exception if not found
             currentColumn++;
             currentIndex++;
+            boolean newline = false;
             while (currentIndex < limit) {
                 c = input.charAt(currentIndex);
                 if (c == '"') {
                     currentIndex++;
                     return new StringLitToken(tokenString,new SourceLocation(startLine,startColumn),Kind.STRING_LIT);
                 }
+                if(newline ==true){
+                    if(c=='n'|| c == 'b' || c == 't' || c == 'r'){
+                        newline = false;
+                    }
+                    else{
+                        throw new LexicalException("No newline char following slash");
+                    }
+                }
                 if (c=='\n'|| c == '\b' || c == '\t' || c == '\r'){
                     throw new LexicalException("No newline char allowed in string literal");
+                }
+                if(c == '\\'){
+                    newline = true;
                 }
                 tokenString += c;
                 currentIndex++;
