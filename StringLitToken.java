@@ -17,50 +17,52 @@ public class StringLitToken implements IStringLitToken {
         String result = ""; //string for processed characters
         if (tokenString.length() == 1) {
             char c = tokenString.charAt(0);
-            switch (c) {
-                case 'n':
-                    result += "\n";
-                    break;
-                case 't':
-                    result += "\t";
-                    break;
-                case '"':
-                    result += "\"";
-                    break;
-                case '\\':
-                    result += "\\";
-                    break;
-                default:
-                    // Handling invalid escape sequence
-                    result += "\\" + c;
-                    break;
-            }
-        } else {
-            if (tokenString.equals("\\\\")) {
-                return "\\";
+                switch (c) {
+                    case 'n':
+                        result += "\n";
+                        break;
+                    case 't':
+                        result += "\t";
+                        break;
+                    case '"':
+                        result += "\"";
+                        break;
+                    case '\\':
+                        result += "\\";
+                        break;
+                    default:
+                        // Handling invalid escape sequence
+                        result += "\\" + c;
+                        break;
+                }
+             }
+        else {
+            if (tokenString == "\\") {
+                return "\"";
             }
 
             for (int i = 0; i < tokenString.length(); i++) {
                 char c = tokenString.charAt(i);
                 if (c == '\\') {
-                    if (i + 1 < tokenString.length()) {
-                        char next = tokenString.charAt(i+1);
-                        if (next == 'n') {
+                    i++;
+                    c = tokenString.charAt(i);
+                    switch (c) {
+                        case 'n':
                             result += "\n";
-                        } else if (next == 't') {
+                            break;
+                        case 't':
                             result += "\t";
-                        } else if (next == '"') {
+                            break;
+                        case '"':
                             result += "\"";
-                        } else if (next == '\\') {
+                            break;
+                        case '\\':
                             result += "\\";
-                        } else {
+                            break;
+                        default:
                             // Handling invalid escape sequence
-                            result += "\\" + next;
-                        }
-                        i++;
-                    } else {
-                        // Handling backslash at end of string literal
-                        result += "\\";
+                            result += "\\" + c;
+                            break;
                     }
                 } else {
                     result += c;
@@ -69,6 +71,7 @@ public class StringLitToken implements IStringLitToken {
         }
         return result;
     }
+
     @Override
     public SourceLocation getSourceLocation() {
         return sourceLocation;
