@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+
 class TestScanner_starter {
 
 	// makes it easy to turn output on and off (and less typing than
@@ -241,5 +242,7 @@ class TestScanner_starter {
             IToken t = scanner.next();
 		});
 	}
+
+
 
 }
