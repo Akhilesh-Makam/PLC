@@ -119,44 +119,35 @@ public class Scanner implements IScanner {
         char c = input.charAt(currentIndex);
 
 
-        while (Character.isWhitespace(c) && currentIndex < limit) { //remove all the whitespace until end or nearest char
-        	//potential logic used for later
-        	/*switch (input.charAt(currentIndex)) {
-            case 'n':
-              tokenString+'\n';
-              break;
-            case 't':
-              tokenString+('\t');
-              break;
-            case '\"':
-               tokenString+('\"');
-              break;
-            case '\\':
-              tokenString+('\\');
-              break;
-            default:
-              throw new LexicalException("Illegal escape sequence", int currentLine, int currentColumn);
-          }*/
-        	 if (c == ' ') { //when just a space
-                 currentIndex++;
-                 currentColumn++;
-             } else if (c == '\n') { //when newline
-                 currentIndex++;
-                 currentLine++;
-                 currentColumn = 1;
-             } else if (c == '\t') { //when tab
-                 currentIndex++;
-                 currentColumn += 4;
-             }
-             if (currentIndex >= limit) { //reached end of string input
-                 kind = Kind.EOF;
-                 sourceLocation = new SourceLocation(startLine, startColumn);
-                 return new Token(sourceLocation, kind, tokenString);
-             }
-             c = input.charAt(currentIndex);
-         }
-         startLine = currentLine;
-         startColumn = currentColumn;
+        while (Character.isWhitespace(c) && currentIndex < limit) {
+            // remove all the whitespace until end or nearest char
+            if (c == ' ') { // when just a space
+                currentIndex++;
+                currentColumn++;
+            } else if (c == '\n') { // when newline
+                currentIndex++;
+                currentLine++;
+                currentColumn = 1;
+            } else if (c == '\t') { // when tab
+                currentIndex++;
+                currentColumn += 4;
+            }
+
+            if (currentIndex >= limit) { // reached end of string input
+                break;
+            }
+
+            c = input.charAt(currentIndex);
+        }
+
+        if (currentIndex >= limit) { // reached end of string input
+            kind = Kind.EOF;
+            sourceLocation = new SourceLocation(startLine, startColumn);
+            return new Token(sourceLocation, kind, tokenString);
+        }
+
+        // startLine = currentLine;
+         //startColumn = currentColumn;
             if (currentIndex >= limit) { //not sure about exact  logic of this here but it fixed a test case
                 kind = Kind.EOF;
                 sourceLocation = new SourceLocation(startLine, startColumn);
@@ -389,7 +380,7 @@ public class Scanner implements IScanner {
             }
             sourceLocation = new SourceLocation(startLine, startColumn);
             return new Token(sourceLocation, kind, tokenString);
-        } else if (state == State.IN_STRING_LIT) { //gets the whole string until closing " or throws exception if not found
+        } else if (state == State.IN_STRING_LIT) {
             currentColumn++;
             currentIndex++;
             boolean newline = false;
@@ -399,26 +390,30 @@ public class Scanner implements IScanner {
                     currentIndex++;
                     return new StringLitToken(tokenString,new SourceLocation(startLine,startColumn),Kind.STRING_LIT);
                 }
-                if(newline ==true){
-                    if(c=='n'|| c == 'b' || c == 't' || c == 'r'){
+                if (newline) {
+                    if (c == 'n' || c == 'b' || c == 't' || c == 'r') {
                         newline = false;
+                    } else {
+                        throw new LexicalException("No valid escape character following backslash");
                     }
-                    else{
-                        throw new LexicalException("No newline char following slash");
+                } else {
+                    if (c == '\\') {
+                        newline = true;
                     }
+                   else if ( c == '\n' || c == '\r' || c == '\t' ) {
+                        throw new LexicalException("No escape character allowed in string literal");
+                    }
+                        tokenString += c;
+                        currentIndex++;
+                        currentColumn++;
+
                 }
-                if (c=='\n'|| c == '\b' || c == '\t' || c == '\r'){
-                    throw new LexicalException("No newline char allowed in string literal");
-                }
-                if(c == '\\'){
-                    newline = true;
-                }
-                tokenString += c;
-                currentIndex++;
-                currentColumn++;
+
             }
             throw new LexicalException("No closing \" found in String Lit");
+        } else {
+            throw new LexicalException("No token found");//return statement if somehow a token slips by
         }
-        throw new LexicalException("No token found"); //return statement if somehow a token slips by
+        throw new LexicalException("No token found");
     }
 }
