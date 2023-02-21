@@ -276,13 +276,14 @@ public class Scanner implements IScanner {
         else if (state == State.IN_NUM_LIT) {
             tokenString += c; //add current number to string and update the index
             currentIndex++;
+            kind = Kind.NUM_LIT;
             while (currentIndex < limit) {
                 c = input.charAt(currentIndex);
                 if (Character.isDigit(c)) { //add all the digits in the number
                     tokenString += c;
                     currentIndex++;
                     currentColumn++;
-                } else if (Character.isWhitespace(c)) { //check for whitespace
+                } else { //check for whitespace
                     kind = Kind.NUM_LIT;
                     sourceLocation = new SourceLocation(startLine, startColumn);
                     long x = Integer.parseInt(tokenString);
@@ -291,10 +292,9 @@ public class Scanner implements IScanner {
                     } else {
                         return new NumLitToken(tokenString, sourceLocation, kind);
                     }
-                } else { //invalid char in number
-                    throw new LexicalException("Invalid character in NUM_LIT");
                 }
             }
+            return new NumLitToken(tokenString, sourceLocation, kind);
         } else if (state == State.OP) {
             if (kind == Kind.ASSIGN) { //checks if token is Assign or EQ
                 tokenString += c;
