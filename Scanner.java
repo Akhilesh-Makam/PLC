@@ -249,21 +249,15 @@ public class Scanner implements IScanner {
                     tokenString += c;
                     currentIndex++;
                     currentColumn++;
-                } else if (Character.isWhitespace(c)) { //once reached whitespace, check if its a reserved word if not return it as IDENT
+                } else { //once reached whitespace, check if its a reserved word if not return it as IDENT
                     Kind k = reservedWords.get(tokenString);
                     if (k == null) {
-                        currentColumn++;
                         kind = Kind.IDENT;
                     } else {
-                        currentColumn++;
                         kind = k;
                     }
                     sourceLocation = new SourceLocation(startLine, startColumn);
                     return new Token(sourceLocation, kind, tokenString);
-                } else { //if it contains an invalid character
-                    currentIndex++;
-                    currentColumn++;
-                    throw new LexicalException("Invalid character/number in Identifier");
                 }
             }
             if (currentIndex >= limit) { //if identifier reached end of input
