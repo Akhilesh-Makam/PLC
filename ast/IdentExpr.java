@@ -30,6 +30,7 @@ public class IdentExpr extends Expr {
 
 	@Override
 	public String toString() {
+
 		return "IdentExpr [firstToken=" + firstToken + "]";
 	}
 	
