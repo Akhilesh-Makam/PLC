@@ -8,15 +8,9 @@ import edu.ufl.cise.plcsp23.Token;
 import edu.ufl.cise.plcsp23.IToken.Kind;
 import edu.ufl.cise.plcsp23.PLCException;
 import edu.ufl.cise.plcsp23.Scanner;
-import edu.ufl.cise.plcsp23.ast.AST;
-import edu.ufl.cise.plcsp23.ast.BinaryExpr;
-import edu.ufl.cise.plcsp23.ast.ConditionalExpr;
-import edu.ufl.cise.plcsp23.ast.IdentExpr;
-import edu.ufl.cise.plcsp23.ast.NumLitExpr;
-import edu.ufl.cise.plcsp23.ast.RandomExpr;
-import edu.ufl.cise.plcsp23.ast.StringLitExpr;
-import edu.ufl.cise.plcsp23.ast.UnaryExpr;
-import edu.ufl.cise.plcsp23.ast.ZExpr;
+import edu.ufl.cise.plcsp23.ast.*;
+
+import static edu.ufl.cise.plcsp23.IToken.Kind.OR;
 
 public class Parser implements IParser {
     private Scanner scanner;
@@ -39,4 +33,40 @@ public class Parser implements IParser {
         }
         return null;
     }
+
+
+
+    //match function used to see if kind of token matches the expected kind
+    private void match(IToken.Kind expectedKind) throws PLCException {
+        IToken current = scanner.next();
+        if (current.getKind() == expectedKind) {
+            scanner.next();
+        } else {
+            throw new PLCException("Syntax error: expected " + expectedKind + ", found " + current.getKind());
+        }
+    }
+    //used from textbook chapter 6
+    private Token peek() {
+
+        return tokens.get(current);
+    }
+    public AST expr() throws PLCException {
+        AST ast = null;
+        switch (scanner.peek().getKind()) {
+            case OR:
+                ast = expr();
+                break;
+            default:
+                notifyAll();
+                break;
+        }
+        return ast;
+    }
+
+//implementation used from the slides
+void factor(){
+
+}
+
+
 }
