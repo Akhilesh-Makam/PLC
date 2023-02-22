@@ -262,7 +262,12 @@ public class Scanner implements IScanner {
             }
             if (currentIndex >= limit) { //if identifier reached end of input
                 sourceLocation = new SourceLocation(startLine, startColumn);
-                kind = Kind.IDENT;
+                Kind k = reservedWords.get(tokenString);
+                if (k == null) {
+                    kind = Kind.IDENT;
+                } else {
+                    kind = k;
+                }
                 return new Token(sourceLocation, kind, tokenString);
 
             }

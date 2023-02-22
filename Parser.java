@@ -1,6 +1,7 @@
 package edu.ufl.cise.plcsp23;
 
 import java.io.Reader;
+import java.util.Set;
 import java.util.Stack;
 import java.util.Vector;
 
@@ -42,6 +43,10 @@ public class Parser implements IParser {
             tokens.add(current);
         }
 
+        for(int i = 0; i < tokens.size();i++){
+            System.out.println(tokens.get(i).getKind() + " " + tokens.get(i).getTokenString());
+        }
+
         boolean check = legal(tokens);
         if(!check){
             throw new SyntaxException("Invalid sequence of tokens");
@@ -49,45 +54,109 @@ public class Parser implements IParser {
         return null;
     }
 
-    private boolean legal(Vector<IToken> tokens){
-        Stack<IToken> paren = new Stack<>();
-        boolean opOrParen = true;
-        for(int i = 0; i < tokens.size();i++){
-            Kind kind = tokens.get(i).getKind();
-            if(kind == Kind.LPAREN){
-                if(!opOrParen){
+    private boolean legal(Vector<IToken> tokens) {
+        Stack<String> stack = new Stack<>();
+        System.out.println(stack.empty());
+        for (int i = 0; i < tokens.size(); i++) {
+            IToken token = tokens.get(i);
+            switch (token.getKind()) {
+                case RES_if:
+                    stack.push("ConditionalExpr");
+                    break;
+                case QUESTION:
+                    if (stack.empty() || !stack.peek().equals("Expr")) {
+                        return false;
+                    }
+                    stack.pop();
+                    stack.push("ConditionalExpr");
+                    break;
+                case COLON:
+                    if (stack.empty() || !stack.peek().equals("ConditionalExpr")) {
+                        return false;
+                    }
+                    stack.pop();
+                    if (stack.empty() || !stack.peek().equals("Expr")) {
+                        return false;
+                    }
+                    stack.pop();
+                    if (stack.empty() || !stack.peek().equals("ConditionalExpr")) {
+                        return false;
+                    }
+                    stack.pop();
+                    stack.push("Expr");
+                    break;
+                case OR:
+                case AND:
+                case BITOR:
+                case BITAND:
+                case LT:
+                case GT:
+                case EQ:
+                case LE:
+                case GE:
+                    if (stack.empty() || !stack.peek().equals("BinaryExpr")) {
+                        return false;
+                    }
+                    stack.pop();
+                    if (!stack.empty() && (stack.peek().equals("BinaryExpr") || stack.peek().equals("UnaryExpr"))) {
+                        stack.pop();
+                    }
+                    stack.push("BinaryExpr");
+                    break;
+                case PLUS:
+                case MINUS:
+                    if (i == 0 || tokens.get(i - 1).getKind() == Kind.LPAREN) {
+                        stack.push("UnaryExpr");
+                    } else if (stack.empty() || !stack.peek().equals("BinaryExpr")) {
+                        return false;
+                    } else {
+                        stack.pop();
+                        if (!stack.empty() && (stack.peek().equals("BinaryExpr") || stack.peek().equals("UnaryExpr"))) {
+                            stack.pop();
+                        }
+                        stack.push("BinaryExpr");
+                    }
+                    break;
+                case TIMES:
+                case DIV:
+                case MOD:
+                    if (stack.empty() || !stack.peek().equals("UnaryExpr")) {
+                        return false;
+                    }
+                    stack.pop();
+                    stack.push("UnaryExpr");
+                    break;
+                case BANG:
+                case RES_sin:
+                case RES_cos:
+                case RES_atan:
+                    stack.push("UnaryExpr");
+                    break;
+                case IDENT:
+                case NUM_LIT:
+                case STRING_LIT:
+                    break;
+                case LPAREN:
+                    stack.push("LPAREN");
+                    break;
+                case RPAREN:
+                    if (stack.empty() || !stack.peek().equals("Expr")|| !stack.peek().equals("LPAREN")) {
+                        return false;
+                    }
+                    stack.pop();
+                    stack.pop();
+                    stack.push("PrimaryExpr");
+                    break;
+                case RES_Z:
+                case RES_rand:
+                case EOF:
+                    break;
+                default:
                     return false;
-                }
-                paren.push(tokens.get(i));
-                opOrParen = true;
-            }
-            else if(kind == Kind.RPAREN){
-                if(paren.empty() || paren.peek().getKind() != Kind.LPAREN){
-                    return false;
-                }
-                paren.pop();
-                opOrParen = false;
-            }
-            else if(kind == Kind.OR ||kind == Kind.BITOR ||kind == Kind.AND ||kind == Kind.BITAND ||kind == Kind.LT ||
-                    kind == Kind.GT || kind == Kind.EQ ||kind == Kind.LE ||kind == Kind.GE ||kind == Kind.EXP ||
-                    kind == Kind.PLUS || kind == Kind.MINUS ||kind == Kind.TIMES ||kind == Kind.DIV ||
-                    kind == Kind.MOD){
-                if(opOrParen){
-                    return false;
-                }
-                opOrParen = true;
-            }
-            else if(kind == Kind.IDENT||kind == Kind.NUM_LIT ||kind == Kind.STRING_LIT
-                    || kind == Kind.RES_Z || kind == Kind.RES_rand){
-                if(!opOrParen){
-                    return false;
-                }
-                opOrParen = false;
-            }
-            else{
-                return false;
             }
         }
-        return paren.empty() && !opOrParen;
+        return stack.empty();
     }
+
+
 }
