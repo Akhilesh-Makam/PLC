@@ -22,20 +22,13 @@ public class Parser implements IParser {
     IToken t;//holds current token
     private Scanner scanner;
     private String input;
-    private Vector <IToken> tokens;
-    Expr conditionalExpr;
-    Expr leftSide;
-    Expr rightSide;
-    IToken nextToken;
-    IToken firstToken;
-    int position=0;
-IToken current;
+    private Vector<IToken> tokens;
 
     //have to make Parser class and ASTVisitor Class
     public Parser(String input, Scanner scanner) {
         this.scanner = scanner;
         this.input = input;
-        this.currentIndex=0;
+        this.currentIndex = 0;
     }
 
     @Override
@@ -51,6 +44,10 @@ IToken current;
             tokens.add(current);
         }
 
+        for(int i = 0; i < tokens.size();i++){
+            System.out.println(tokens.get(i).getKind());
+        }
+
         boolean check = legal(tokens);
         if (!check) {
             throw new SyntaxException("Invalid sequence of tokens");
@@ -60,7 +57,6 @@ IToken current;
 
     private boolean legal(Vector<IToken> tokens) {
         Stack<String> stack = new Stack<>();
-        System.out.println(stack.empty());
         for (int i = 0; i < tokens.size(); i++) {
             IToken token = tokens.get(i);
             switch (token.getKind()) {
@@ -74,239 +70,322 @@ IToken current;
                     stack.pop();
                     stack.push("ConditionalExpr");
                     break;
-                case COLON:
-                    if (stack.empty() || !stack.peek().equals("ConditionalExpr")) {
-                        return false;
-                    }
-                    stack.pop();
-                    if (stack.empty() || !stack.peek().equals("Expr")) {
-                        return false;
-                    }
-                    stack.pop();
-                    if (stack.empty() || !stack.peek().equals("ConditionalExpr")) {
-                        return false;
-                    }
-                    stack.pop();
-                    stack.push("Expr");
-                    break;
                 case OR:
-                case AND:
                 case BITOR:
+                    if (stack.empty() || !stack.peek().equals("AndExpr") ||!stack.peek().equals("CompareExpr") || !stack.peek().equals("PowerExpr")
+                            || !stack.peek().equals("AdditiveExpr")|| !stack.peek().equals("MultiExpr")
+                            || !stack.peek().equals("UnaryExpr")|| !stack.peek().equals("PrimaryExpr")) {
+                        return false;
+                    }
+                    stack.push("OrSign");
+                    break;
                 case BITAND:
+                case AND:
+                    if (stack.empty() || !stack.peek().equals("CompareExpr") || !stack.peek().equals("PowerExpr")
+                            || !stack.peek().equals("AdditiveExpr")|| !stack.peek().equals("MultiExpr")
+                            || !stack.peek().equals("UnaryExpr")|| !stack.peek().equals("PrimaryExpr")) {
+                        return false;
+                    }
+                    stack.push("AndSign");
+                    break;
                 case LT:
                 case GT:
                 case EQ:
                 case LE:
                 case GE:
-                    if (stack.empty() || !stack.peek().equals("BinaryExpr")) {
+                    if (stack.isEmpty() || stack.peek().equals("UnarySign") || stack.peek().equals("MultiSign") ||
+                            stack.peek().equals("PowerSign") || stack.peek().equals("CompareSign")||stack.peek().equals("AndSign")||
+                            stack.peek().equals("OrSign")) {
                         return false;
                     }
-                    stack.pop();
-                    if (!stack.empty() && (stack.peek().equals("BinaryExpr") || stack.peek().equals("UnaryExpr"))) {
-                        stack.pop();
-                    }
-                    stack.push("BinaryExpr");
+                    stack.push("CompareSign");
                     break;
                 case PLUS:
-                case MINUS:
-                    if (i == 0 || tokens.get(i - 1).getKind() == Kind.LPAREN) {
-                        stack.push("UnaryExpr");
-                    } else if (stack.empty() || !stack.peek().equals("BinaryExpr")) {
+                    if(stack.isEmpty() || stack.peek().equals("UnarySign") || stack.peek().equals("MultiSign") ||
+                    stack.peek().equals("PowerSign") || stack.peek().equals("CompareSign")||stack.peek().equals("AndSign")||
+                            stack.peek().equals("OrSign") || stack.peek().equals("AdditiveSign")){
                         return false;
-                    } else {
-                        stack.pop();
-                        if (!stack.empty() && (stack.peek().equals("BinaryExpr") || stack.peek().equals("UnaryExpr"))) {
-                            stack.pop();
-                        }
-                        stack.push("BinaryExpr");
+                    }
+                    else{
+                        stack.push("AdditiveSign");
                     }
                     break;
+                case MINUS:
+                    if(!stack.empty() && (stack.peek().equals("MultiExpr") || stack.peek().equals("UnaryExpr") || stack.peek().equals("PrimaryExpr"))){
+                        stack.push("AdditiveSign");
+                    }
+                    else{
+                        stack.push("UnarySign");
+                    }
+                    break;
+                case EXP:
+                    if(stack.empty() || !stack.peek().equals("AdditiveExpr") || !stack.peek().equals("MultiExpr")
+                            || !stack.peek().equals("UnaryExpr")|| !stack.peek().equals("PrimaryExpr")){
+                        return false;
+                    }
+                    else{
+                        stack.push("PowerSign");
+                    }
                 case TIMES:
                 case DIV:
                 case MOD:
-                    if (stack.empty() || !stack.peek().equals("UnaryExpr")) {
+                    if (stack.isEmpty() || stack.peek().equals("UnarySign") || stack.peek().equals("MultiSign") ||
+                            stack.peek().equals("PowerSign") || stack.peek().equals("CompareSign")||stack.peek().equals("AndSign")||
+                            stack.peek().equals("OrSign")) {
                         return false;
                     }
                     stack.pop();
-                    stack.push("UnaryExpr");
+                    stack.push("MultiSign");
                     break;
                 case BANG:
                 case RES_sin:
                 case RES_cos:
                 case RES_atan:
-                    stack.push("UnaryExpr");
+                    stack.push("UnarySign");
                     break;
                 case IDENT:
                 case NUM_LIT:
                 case STRING_LIT:
+                case RES_Z:
+                case RES_rand:
+                    if(stack.isEmpty()){
+                        stack.push("PrimaryExpr");
+                    }
+                    else if(stack.peek().equals("UnarySign")){
+                        stack.pop();
+                        stack.push("UnaryExpr");
+                    }
+                    else if(stack.peek().equals("MultiSign")){
+                        stack.pop();
+                        stack.push("MultiExpr");
+                    }
+                    else if(stack.peek().equals("AdditiveSign")){
+                        stack.pop();
+                        stack.push("AdditiveExpr");
+                    }
+                    else if(stack.peek().equals("PowerSign")){
+                        stack.pop();
+                        stack.push("PowerExpr");
+                    }
+                    else if(stack.peek().equals("CompareSign")){
+                        stack.pop();
+                        stack.push("CompareExpr");
+                    }
+                    else if(stack.peek().equals("AndSign")){
+                        stack.pop();
+                        stack.push("AndExpr");
+                    }
+                    else if(stack.peek().equals("OrSign")){
+                        stack.pop();
+                        stack.push("OrExpr");
+                    }
+                    else{
+                        stack.push("PrimaryExpr");
+                    }
                     break;
                 case LPAREN:
                     stack.push("LPAREN");
                     break;
                 case RPAREN:
-                    if (stack.empty() || !stack.peek().equals("Expr")|| !stack.peek().equals("LPAREN")) {
+                    if (stack.empty()) {
                         return false;
                     }
-                    stack.pop();
-                    stack.pop();
-                    stack.push("PrimaryExpr");
+                    while(!stack.isEmpty() && !stack.peek().equals("LPAREN")){
+                        stack.pop();
+                    }
+                    if(stack.isEmpty()){
+                        return false;
+                    }
+                    else{
+                        stack.push("PrimaryExpr");
+                    }
                     break;
-                case RES_Z:
-                case RES_rand:
                 case EOF:
                     break;
                 default:
                     return false;
             }
         }
-        return stack.empty();
+        return true;
     }
+}
 
 
-    public Expr expr() throws PLCException{
-
+    /*public Expr expr() throws PLCException {
+        //IToken firstToken;
+       // firstToken = tokens.get(currentIndex);
         Kind kind = firstToken.getKind();
 
         if (kind == RES_if) {
-          leftSide=conditionalExpr();
+           left=condition
         } else {
-            leftSide = orExpr();
-
+            Expr left = orExpr();
+            Object currentIndex = null;
+            if ((tokens.size() > currentIndex) && (tokens.get((Integer) currentIndex).getKind() == QUESTION)) {
+                return ConditionalExpr(left);
+            } else {
+                return left;
+            }
         }
-        return leftSide;
     }
 
-    private Expr conditionalExpr() throws PLCException {
+    private ConditionalExpr ConditionalExpr(Expr left) throws LexicalException, SyntaxException {
         match(Kind.RES_if);  // match the "if" keyword
         Expr condition = expr();  // parse the condition expression
         match(Kind.QUESTION);  // match the first question mark
         Expr trueExpr = expr();  // parse the true expression
         match(Kind.COLON);  // match the colon
         Expr falseExpr = expr();  // parse the false expression
-
-        return conditionalExpr;
+        return new ConditionalExpr(left.getFirstToken(), condition, trueExpr, falseExpr);
     }
 
-    private Expr orExpr() throws PLCException {
-        Kind kind = firstToken.getKind();
-        leftSide = andExpr(); // Parse the left operand.
-        while (kind==Kind.BITOR ||kind== Kind.OR) {
-            consume();
-            rightSide = andExpr(); // Parse the right operand.
-            return leftSide;
-        }
-        return leftSide;
-    }
-    private Expr andExpr() throws PLCException {
-        Kind kind = firstToken.getKind();
-        while  (kind == Kind.BITAND || kind == Kind.AND) {
-            {
-                consume();
-                 rightSide = comparisonExpr();
-
+    private Expr orExpr() throws LexicalException, SyntaxException {
+        Expr left = andExpr(); // Parse the left operand.
+        while (true) {
+            if (isKind(BITOR) || isKind(OR)) {
+                IToken opToken = consume(); // Consume the OR operator token.
+                Expr right = andExpr(); // Parse the right operand.
+                left = new BinaryExpr(IToken.Kind, Expr left, Kind op, Expr right); // Create the OR binary expression.
+            } else {
+                break; // No more OR operators, so return the current expression.
             }
         }
-        return leftSide;
+        return left;
     }
 
-    private boolean match(Kind kind) { //need to fix
+    private Expr andExpr() throws SyntaxException, LexicalException {
+        Expr left = comparisonExpr();
+        while (true) {
+            Kind kind = t.kind;
+            if (kind == BITAND || kind == AND) {
+                consume();
+                ComparisonExpr right = comparisonExpr();
+                left = new BinaryExpr(left, kind, right);
+            } else {
+                break;
+            }
+        }
+        return left;
+    }
+
+    private boolean match(IToken.Kind kind) {
         return current.getKind() == kind;
     }
 
     //consume function gets next token
     private IToken consume() throws SyntaxException, LexicalException {
         IToken token = scanner.next();
-        if (!match(token.getKind())) {
-            throw new SyntaxException("Expected " + token.getKind() );
+        if (token.getKind() != expectedKind) {
+            throw new SyntaxException("Expected " + expectedKind + ", but found " + token.getKind(), token.getPosition());
         }
         return token;
     }
 
     //used textbook chapter 6
-    private Expr comparisonExpr() throws PLCException {
-        // Expr expr =term();
-
-         Kind kind = firstToken.getKind();
-        leftSide = powerExpr();
+    private Expr comparisonExpr() throws SyntaxException, LexicalException {
+        Expr expr =term();
+        IToken firstToken=t;
+        Expr left=null;
+        Expr right=null;
+        left=additiveExpr();
         while (true) {
-            switch (firstToken.getKind()) {
+            switch (operators) {
                 case LT:
                 case GT:
                 case EQ:
                 case LE:
                 case GE:
-                    consume();
-                    rightSide= powerExpr();
+                Token op = consume();
+                Expr right = powerExpr();
+                   left = new BinaryExpr(left, op, right);
                     break;
                 default:
-                    return leftSide;
+                    return expr;
             }
-            return leftSide;
         }
 
-
+    }
+    //used from parsing 4 slides
+    public Expr term(){
+      Expr expr= factor();
+        while (isKind(TIMES, DIV)){ //can also be match but idk
+         Kind op;
+            consume();
+           expr= new BinaryExpr(expr, op, right);
+        }
+        return expr;
     }
 
-
-
-    private Expr powerExpr() throws PLCException {
-       Kind kind=firstToken.getKind();
-        leftSide=additiveExpr();
-        while (kind == IToken.Kind.EXP) {
+    private Expr powerExpr() throws SyntaxException, LexicalException {
+        Expr left = additiveExpr();
+        while (t.kind == Kind.EXP) {
             consume();
 
-            rightSide=multiplicativeExpr();
+            left = new BinaryExpr(firstToken, left, op, right);
         }
-        return leftSide;
+        return left;
     }
-    private Expr additiveExpr() throws PLCException {
+    private Expr additiveExpr() throws SyntaxException, LexicalException {
         Expr left = multiplicativeExpr();
-        Kind kind=firstToken.getKind();
-        while (kind == kind.MINUS || kind==kind.PLUS){
-            consume(); // consume the operator
-            rightSide = multiplicativeExpr();
+        while (true) {
+            if (t.getKind() == MINUS || t.getKind() == PLUS) {
+
+                IToken op = t;
+                consume(); // consume the operator
+                Expr right = multiplicativeExpr();
+
+                left = new BinaryExpr(t, left, op.getKind(), right);
+            } else {
+                break;
+            }
 
         }
-        return leftSide;
+        return left;
     }
-    private Expr multiplicativeExpr() throws PLCException {
-     Kind kind=firstToken.getKind();
-        while(kind==kind.TIMES||kind==IToken.Kind.DIV|| kind==IToken.Kind.MOD) {
 
+   private Expr multiplicativeExpr() throws SyntaxException, LexicalException {
+        Expr left = new UnaryExpr();
+        Kind op;
+        while (isKind(TIMES, DIV, MOD)) {
+            IToken op = t;
             consume();
-             rightSide = unaryExpr();
-
+            Expr right = unaryExpr();
+            left = new BinaryExpr(op, left, right);
         }
-        return leftSide;
+        return left;
     }
 
-    private Expr unaryExpr() throws PLCException {
-        Kind kind = firstToken.getKind();
+    private Expr unaryExpr() throws SyntaxException, LexicalException {
+        Token firstToken = (Token) t;
         Expr e;
         Kind op;
- IToken t=firstToken;
-        switch (kind) {
-                case BANG:
-                case MINUS:
-                case RES_sin:
-                case RES_cos:
-                case RES_atan:
+        switch (((Token) t).kind) {
+            case BANG:
                 op = ((Token) t).kind;
                 consume();
                 e = new UnaryExpr(firstToken, op, unaryExpr());
                 break;
-                default:
-                e = primaryExpr();
+            case MINUS:
+                op = ((Token) t).kind;
+                consume();
+                e = new UnaryExpr(firstToken, op, unaryExpr());
+                break;
+            case Kind.RES_sin:
+            case Kind.RES_cos:
+            case Kind.RES_atan:
+                op = ((Token) t).kind;
+                consume();
+                e = new UnaryExpr(firstToken, op, unaryExpr());
+                break;
+            default:
+                e = PrimaryExpr();
                 break;
         }
-       return e;
+        return e;
     }
-//help using textbook
-   Expr primaryExpr() throws PLCException{
 
-
-        Kind kind = firstToken.getKind();
-        IToken currentToken;
+     Expr primaryExpr() throws PLCException{
+        Kind kind = t.kind();
         switch (kind) {
             case STRING_LIT:
                 StringLitExpr stringLitExpr = new StringLitExpr(t);
@@ -334,11 +413,25 @@ IToken current;
                 consume();
                 return randExpr;
             default:
-                throw new SyntaxException( "Unexpected token");
+                throw new SyntaxException(t, "Unexpected token");
         }
     }
 
+    public void factor () throws LexicalException, SyntaxException {
+        if (isKind(NUM_LIT)) {
+            consume();
+        }
+        else if(isKind(LPAREN)){
+            consume();
+            expr();
+            match(RPAREN);
+        }
+        else{
+            error();
 
+        }
+        return;
+    }
 
 
     //used from Parsing 4 slides
@@ -347,10 +440,10 @@ IToken current;
         return t.getKind() == kind;
     }
     protected boolean isKind(Kind... kinds) {
-        for (Kind k : kinds) {
+        for (IToken.Kind k : kinds) {
             if (k == t.getKind())
                 return true;
         }
         return false;
-    }
-}
+   */
+
