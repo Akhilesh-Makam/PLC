@@ -18,6 +18,7 @@ import edu.ufl.cise.plcsp23.ast.ZExpr;
 import static edu.ufl.cise.plcsp23.IToken.Kind.*;
 
 public class Parser implements IParser {
+    private final int currentIndex;
     IToken t;//holds current token
     private Scanner scanner;
     private String input;
@@ -27,6 +28,7 @@ private Vector <IToken> tokens;
     public Parser(String input, Scanner scanner) {
         this.scanner = scanner;
         this.input = input;
+        this.currentIndex=0;
     }
 
     @Override
@@ -159,12 +161,12 @@ private Vector <IToken> tokens;
         firstToken = tokens.get(currentIndex);
         Kind kind = firstToken.getKind();
 
-        if (kind == Kind.RES_if) {
-            return ConditionalExpr(left);
+        if (kind == RES_if) {
+            return ConditionalExpr();
         } else {
             Expr left = orExpr();
-            Object currentIndex;
-            if (tokens.size() > currentIndex && tokens.get(currentIndex).getKind() == Kind.QUESTION) {
+            Object currentIndex = null;
+            if (tokens.size() > currentIndex && tokens.get((Integer) currentIndex).getKind() == QUESTION) {
                 return ConditionalExpr(left);
             } else {
                 return left;
@@ -177,9 +179,9 @@ private Vector <IToken> tokens;
         Expr condition = expr();  // parse the condition expression
         match(Kind.QUESTION);  // match the first question mark
         Expr trueExpr = expr();  // parse the true expression
-        match(Kind.QUESTION);  // match the second question mark
+        match(Kind.COLON);  // match the colon
         Expr falseExpr = expr();  // parse the false expression
-        return new ConditionalExpr(firstToken,guard, trueCase, );
+        return new ConditionalExpr(left.getFirstToken(), condition, trueExpr, falseExpr);
     }
 
     private Expr orExpr() throws LexicalException, SyntaxException {
@@ -232,15 +234,15 @@ private Vector <IToken> tokens;
         Expr right=null;
         left=additiveExpr();
         while (true) {
-            switch () {
+            switch (operators) {
                 case LT:
                 case GT:
                 case EQ:
                 case LE:
                 case GE:
-                    Token op = consume();
-                    Expr right = powerExpr();
-                    left = new BinaryExpr(left, op, right);
+                Token op = consume();
+                Expr right = powerExpr();
+                   left = new BinaryExpr(left, op, right);
                     break;
                 default:
                     return expr;
@@ -252,7 +254,7 @@ private Vector <IToken> tokens;
     public Expr term(){
       Expr expr= factor();
         while (isKind(TIMES, DIV)){ //can also be match but idk
-     //       Kind op;
+         Kind op;
             consume();
            expr= new BinaryExpr(expr, op, right);
         }
@@ -271,19 +273,22 @@ private Vector <IToken> tokens;
     private Expr additiveExpr() throws SyntaxException, LexicalException {
         Expr left = multiplicativeExpr();
         while (true) {
-            if ((Kind.MINUS) || (Kind.PLUS)) {
-                Token op = t;
+            if (t.getKind() == MINUS || t.getKind() == PLUS) {
+
+                IToken op = t;
                 consume(); // consume the operator
                 Expr right = multiplicativeExpr();
-                left = new BinaryExpr(left, op, right);
+
+                left = new BinaryExpr(t, left, op.getKind(), right);
             } else {
                 break;
             }
+
         }
         return left;
     }
 
-    private Expr multiplicativeExpr() throws SyntaxException, LexicalException {
+   private Expr multiplicativeExpr() throws SyntaxException, LexicalException {
         Expr left = new UnaryExpr();
         Kind op;
         while (isKind(TIMES, DIV, MOD)) {
