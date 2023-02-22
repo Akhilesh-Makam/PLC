@@ -56,12 +56,15 @@ public class Parser implements IParser {
     }
 
     private boolean legal(Vector<IToken> tokens) { //did not understand the CONSUME stuff so just did switch statements
+        int ifCount = 0;
+        int questionCount = 0;
         Stack<String> stack = new Stack<>();
         for (int i = 0; i < tokens.size(); i++) {
             IToken token = tokens.get(i);
             switch (token.getKind()) {
                 case RES_if:
                     stack.push("ConditionalExpr");
+                    ifCount++;
                     break;
                 case QUESTION:
                     if (stack.isEmpty() || stack.peek().equals("UnarySign") || stack.peek().equals("MultiSign") ||
@@ -69,6 +72,7 @@ public class Parser implements IParser {
                             stack.peek().equals("OrSign")) {
                         return false;
                     }
+                    questionCount++;
                     stack.pop();
                     stack.push("ConditionalExpr");
                     break;
@@ -197,18 +201,23 @@ public class Parser implements IParser {
                     while(!stack.isEmpty() && !stack.peek().equals("LPAREN")){
                         stack.pop();
                     }
-                    if(stack.isEmpty()){
-                        return false;
-                    }
-                    else{
-                        stack.push("PrimaryExpr");
-                    }
+                    stack.pop();
+                    stack.push("PrimaryExpr");
                     break;
                 case EOF:
                     break;
                 default:
                     return false;
             }
+        }
+        while(!stack.empty()){
+            if(stack.peek() == "LPAREN"){
+                return false;
+            }
+            stack.pop();
+        }
+        if(ifCount * 2 != questionCount){
+            return false;
         }
         return true;
     }
