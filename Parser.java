@@ -18,8 +18,7 @@ import edu.ufl.cise.plcsp23.ast.ZExpr;
 import static edu.ufl.cise.plcsp23.IToken.Kind.*;
 
 public class Parser implements IParser {
-    private final int currentIndex;
-    IToken t;//holds current token
+
     private Scanner scanner;
     private String input;
     private Vector<IToken> tokens;
@@ -28,7 +27,6 @@ public class Parser implements IParser {
     public Parser(String input, Scanner scanner) {
         this.scanner = scanner;
         this.input = input;
-        this.currentIndex = 0;
     }
 
     @Override
@@ -49,13 +47,15 @@ public class Parser implements IParser {
         }
 
         boolean check = legal(tokens);
-        if (!check) {
+        if (!check) { //function checks for valid concrete syntax
             throw new SyntaxException("Invalid sequence of tokens");
         }
+
+
         return null;
     }
 
-    private boolean legal(Vector<IToken> tokens) {
+    private boolean legal(Vector<IToken> tokens) { //did not understand the CONSUME stuff so just did switch statements
         Stack<String> stack = new Stack<>();
         for (int i = 0; i < tokens.size(); i++) {
             IToken token = tokens.get(i);
@@ -74,18 +74,18 @@ public class Parser implements IParser {
                     break;
                 case OR:
                 case BITOR:
-                    if (stack.empty() || !stack.peek().equals("AndExpr") ||!stack.peek().equals("CompareExpr") || !stack.peek().equals("PowerExpr")
-                            || !stack.peek().equals("AdditiveExpr")|| !stack.peek().equals("MultiExpr")
-                            || !stack.peek().equals("UnaryExpr")|| !stack.peek().equals("PrimaryExpr")) {
+                    if (stack.isEmpty() || stack.peek().equals("UnarySign") || stack.peek().equals("MultiSign") ||
+                            stack.peek().equals("PowerSign") || stack.peek().equals("CompareSign")||stack.peek().equals("AndSign")||
+                            stack.peek().equals("OrSign")) {
                         return false;
                     }
                     stack.push("OrSign");
                     break;
                 case BITAND:
                 case AND:
-                    if (stack.empty() || !stack.peek().equals("CompareExpr") || !stack.peek().equals("PowerExpr")
-                            || !stack.peek().equals("AdditiveExpr")|| !stack.peek().equals("MultiExpr")
-                            || !stack.peek().equals("UnaryExpr")|| !stack.peek().equals("PrimaryExpr")) {
+                    if (stack.isEmpty() || stack.peek().equals("UnarySign") || stack.peek().equals("MultiSign") ||
+                            stack.peek().equals("PowerSign") || stack.peek().equals("CompareSign")||stack.peek().equals("AndSign")||
+                            stack.peek().equals("OrSign")) {
                         return false;
                     }
                     stack.push("AndSign");
@@ -121,13 +121,15 @@ public class Parser implements IParser {
                     }
                     break;
                 case EXP:
-                    if(stack.empty() || !stack.peek().equals("AdditiveExpr") || !stack.peek().equals("MultiExpr")
-                            || !stack.peek().equals("UnaryExpr")|| !stack.peek().equals("PrimaryExpr")){
+                    if(stack.isEmpty() || stack.peek().equals("UnarySign") || stack.peek().equals("MultiSign") ||
+                            stack.peek().equals("PowerSign") || stack.peek().equals("CompareSign")||stack.peek().equals("AndSign")||
+                            stack.peek().equals("OrSign") || stack.peek().equals("AdditiveSign")){
                         return false;
                     }
                     else{
                         stack.push("PowerSign");
                     }
+                    break;
                 case TIMES:
                 case DIV:
                 case MOD:
