@@ -51,7 +51,7 @@ public class Parser implements IParser {
             throw new SyntaxException("Invalid sequence of tokens");
         }
 
-
+        //unable to get the AST generation working
         return null;
     }
 
@@ -221,9 +221,7 @@ public class Parser implements IParser {
         }
         return true;
     }
-}
-
-
+//unable to get AST generation working
     /*public Expr expr() throws PLCException {
         //IToken firstToken;
        // firstToken = tokens.get(currentIndex);
@@ -458,5 +456,7 @@ public class Parser implements IParser {
                 return true;
         }
         return false;
+    }
    */
+}
 
