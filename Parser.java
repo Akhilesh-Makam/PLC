@@ -26,6 +26,7 @@ public class Parser implements IParser {
     Expr conditionalExpr;
     Expr leftSide;
     Expr rightSide;
+    IToken nextToken;
     IToken firstToken;
     int position=0;
 IToken current;
@@ -186,7 +187,7 @@ IToken current;
         return conditionalExpr;
     }
 
-    private Expr orExpr() throws LexicalException, SyntaxException {
+    private Expr orExpr() throws PLCException {
         Kind kind = firstToken.getKind();
         leftSide = andExpr(); // Parse the left operand.
         while (kind==Kind.BITOR ||kind== Kind.OR) {
@@ -196,7 +197,7 @@ IToken current;
         }
         return leftSide;
     }
-    private Expr andExpr() throws SyntaxException, LexicalException {
+    private Expr andExpr() throws PLCException {
         Kind kind = firstToken.getKind();
         while  (kind == Kind.BITAND || kind == Kind.AND) {
             {
@@ -215,36 +216,36 @@ IToken current;
     //consume function gets next token
     private IToken consume() throws SyntaxException, LexicalException {
         IToken token = scanner.next();
-        if (token.getKind() != expected) {
+        if (token.getKind() expected) {
 
         }
         return token;
     }
 
     //used textbook chapter 6
-    private Expr comparisonExpr() throws SyntaxException, LexicalException {
+    private Expr comparisonExpr() throws PLCException {
         // Expr expr =term();
 
-
-        leftSide=additiveExpr();
-        //while (true) {
+         Kind kind = firstToken.getKind();
+        leftSide = powerExpr();
+        while (true) {
             switch (firstToken.getKind()) {
                 case LT:
                 case GT:
                 case EQ:
                 case LE:
                 case GE:
-                    Token op = consume();
-                    Expr right = powerExpr();
-                    left = new BinaryExpr(left, op, right);
+                    consume();
+                    rightSide= powerExpr();
                     break;
                 default:
-                    return expr;
+                    return leftSide;
             }
+            return leftSide;
         }
 
-    }
 
+    }
 
 
 
@@ -268,7 +269,7 @@ IToken current;
         }
         return leftSide;
     }
-    private Expr multiplicativeExpr() throws SyntaxException, LexicalException {
+    private Expr multiplicativeExpr() throws PLCException {
      Kind kind=firstToken.getKind();
         while(kind==kind.TIMES||kind==IToken.Kind.DIV|| kind==IToken.Kind.MOD) {
 
@@ -279,37 +280,33 @@ IToken current;
         return leftSide;
     }
 
-    private Expr unaryExpr() throws SyntaxException, LexicalException {
-        Token firstToken = (Token) t;
+    private Expr unaryExpr() throws PLCException {
+        Kind kind = firstToken.getKind();
         Expr e;
         Kind op;
-        switch (((Token) t).kind) {
-            case BANG:
+ IToken t=firstToken;
+        switch (kind) {
+                case BANG:
+                case MINUS:
+                case RES_sin:
+                case RES_cos:
+                case RES_atan:
                 op = ((Token) t).kind;
                 consume();
                 e = new UnaryExpr(firstToken, op, unaryExpr());
                 break;
-            case MINUS:
-                op = ((Token) t).kind;
-                consume();
-                e = new UnaryExpr(firstToken, op, unaryExpr());
-                break;
-            case RES_sin:
-            case RES_cos:
-            case RES_atan:
-                op = ((Token) t).kind;
-                consume();
-                e = new UnaryExpr(firstToken, op, unaryExpr());
-                break;
-            default:
+                default:
                 e = primaryExpr();
                 break;
         }
        return e;
     }
-
+//help using textbook
    Expr primaryExpr() throws PLCException{
+
+
         Kind kind = firstToken.getKind();
+        IToken currentToken;
         switch (kind) {
             case STRING_LIT:
                 StringLitExpr stringLitExpr = new StringLitExpr(t);
@@ -337,7 +334,7 @@ IToken current;
                 consume();
                 return randExpr;
             default:
-                throw new SyntaxException(t, "Unexpected token");
+                throw new SyntaxException( "Unexpected token");
         }
     }
 
