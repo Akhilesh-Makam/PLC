@@ -209,15 +209,15 @@ IToken current;
         return leftSide;
     }
 
-    private boolean match(Kind kind) {
+    private boolean match(Kind kind) { //need to fix
         return current.getKind() == kind;
     }
 
     //consume function gets next token
     private IToken consume() throws SyntaxException, LexicalException {
         IToken token = scanner.next();
-        if (token.getKind() expected) {
-
+        if (!match(token.getKind())) {
+            throw new SyntaxException("Expected " + token.getKind() );
         }
         return token;
     }
