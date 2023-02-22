@@ -22,7 +22,13 @@ public class Parser implements IParser {
     IToken t;//holds current token
     private Scanner scanner;
     private String input;
-private Vector <IToken> tokens;
+    private Vector <IToken> tokens;
+    Expr conditionalExpr;
+    Expr leftSide;
+    Expr rightSide;
+    IToken firstToken;
+    int position=0;
+IToken current;
 
     //have to make Parser class and ASTVisitor Class
     public Parser(String input, Scanner scanner) {
@@ -156,93 +162,81 @@ private Vector <IToken> tokens;
     }
 
 
-    /*public Expr expr() throws PLCException {
-        //IToken firstToken;
-       // firstToken = tokens.get(currentIndex);
+    public Expr expr() throws PLCException{
+
         Kind kind = firstToken.getKind();
 
         if (kind == RES_if) {
-           left=condition
+          leftSide=conditionalExpr();
         } else {
-            Expr left = orExpr();
-            Object currentIndex = null;
-            if ((tokens.size() > currentIndex) && (tokens.get((Integer) currentIndex).getKind() == QUESTION)) {
-                return ConditionalExpr(left);
-            } else {
-                return left;
-            }
+            leftSide = orExpr();
+
         }
+        return leftSide;
     }
 
-    private ConditionalExpr ConditionalExpr(Expr left) throws LexicalException, SyntaxException {
+    private Expr conditionalExpr() throws PLCException {
         match(Kind.RES_if);  // match the "if" keyword
         Expr condition = expr();  // parse the condition expression
         match(Kind.QUESTION);  // match the first question mark
         Expr trueExpr = expr();  // parse the true expression
         match(Kind.COLON);  // match the colon
         Expr falseExpr = expr();  // parse the false expression
-        return new ConditionalExpr(left.getFirstToken(), condition, trueExpr, falseExpr);
+
+        return conditionalExpr;
     }
 
     private Expr orExpr() throws LexicalException, SyntaxException {
-        Expr left = andExpr(); // Parse the left operand.
-        while (true) {
-            if (isKind(BITOR) || isKind(OR)) {
-                IToken opToken = consume(); // Consume the OR operator token.
-                Expr right = andExpr(); // Parse the right operand.
-                left = new BinaryExpr(IToken.Kind, Expr left, Kind op, Expr right); // Create the OR binary expression.
-            } else {
-                break; // No more OR operators, so return the current expression.
-            }
+        Kind kind = firstToken.getKind();
+        leftSide = andExpr(); // Parse the left operand.
+        while (kind==Kind.BITOR ||kind== Kind.OR) {
+            consume();
+            rightSide = andExpr(); // Parse the right operand.
+            return leftSide;
         }
-        return left;
+        return leftSide;
     }
-
     private Expr andExpr() throws SyntaxException, LexicalException {
-        Expr left = comparisonExpr();
-        while (true) {
-            Kind kind = t.kind;
-            if (kind == BITAND || kind == AND) {
+        Kind kind = firstToken.getKind();
+        while  (kind == Kind.BITAND || kind == Kind.AND) {
+            {
                 consume();
-                ComparisonExpr right = comparisonExpr();
-                left = new BinaryExpr(left, kind, right);
-            } else {
-                break;
+                 rightSide = comparisonExpr();
+
             }
         }
-        return left;
+        return leftSide;
     }
 
-    private boolean match(IToken.Kind kind) {
+    private boolean match(Kind kind) {
         return current.getKind() == kind;
     }
 
     //consume function gets next token
     private IToken consume() throws SyntaxException, LexicalException {
         IToken token = scanner.next();
-        if (token.getKind() != expectedKind) {
-            throw new SyntaxException("Expected " + expectedKind + ", but found " + token.getKind(), token.getPosition());
+        if (token.getKind() != expected) {
+
         }
         return token;
     }
 
     //used textbook chapter 6
     private Expr comparisonExpr() throws SyntaxException, LexicalException {
-        Expr expr =term();
-        IToken firstToken=t;
-        Expr left=null;
-        Expr right=null;
-        left=additiveExpr();
-        while (true) {
-            switch (operators) {
+        // Expr expr =term();
+
+
+        leftSide=additiveExpr();
+        //while (true) {
+            switch (firstToken.getKind()) {
                 case LT:
                 case GT:
                 case EQ:
                 case LE:
                 case GE:
-                Token op = consume();
-                Expr right = powerExpr();
-                   left = new BinaryExpr(left, op, right);
+                    Token op = consume();
+                    Expr right = powerExpr();
+                    left = new BinaryExpr(left, op, right);
                     break;
                 default:
                     return expr;
@@ -250,54 +244,39 @@ private Vector <IToken> tokens;
         }
 
     }
-    //used from parsing 4 slides
-    public Expr term(){
-      Expr expr= factor();
-        while (isKind(TIMES, DIV)){ //can also be match but idk
-         Kind op;
-            consume();
-           expr= new BinaryExpr(expr, op, right);
-        }
-        return expr;
-    }
 
-    private Expr powerExpr() throws SyntaxException, LexicalException {
-        Expr left = additiveExpr();
-        while (t.kind == Kind.EXP) {
+
+
+
+    private Expr powerExpr() throws PLCException {
+       Kind kind=firstToken.getKind();
+        leftSide=additiveExpr();
+        while (kind == IToken.Kind.EXP) {
             consume();
 
-            left = new BinaryExpr(firstToken, left, op, right);
+            rightSide=multiplicativeExpr();
         }
-        return left;
+        return leftSide;
     }
-    private Expr additiveExpr() throws SyntaxException, LexicalException {
+    private Expr additiveExpr() throws PLCException {
         Expr left = multiplicativeExpr();
-        while (true) {
-            if (t.getKind() == MINUS || t.getKind() == PLUS) {
-
-                IToken op = t;
-                consume(); // consume the operator
-                Expr right = multiplicativeExpr();
-
-                left = new BinaryExpr(t, left, op.getKind(), right);
-            } else {
-                break;
-            }
+        Kind kind=firstToken.getKind();
+        while (kind == kind.MINUS || kind==kind.PLUS){
+            consume(); // consume the operator
+            rightSide = multiplicativeExpr();
 
         }
-        return left;
+        return leftSide;
     }
+    private Expr multiplicativeExpr() throws SyntaxException, LexicalException {
+     Kind kind=firstToken.getKind();
+        while(kind==kind.TIMES||kind==IToken.Kind.DIV|| kind==IToken.Kind.MOD) {
 
-   private Expr multiplicativeExpr() throws SyntaxException, LexicalException {
-        Expr left = new UnaryExpr();
-        Kind op;
-        while (isKind(TIMES, DIV, MOD)) {
-            IToken op = t;
             consume();
-            Expr right = unaryExpr();
-            left = new BinaryExpr(op, left, right);
+             rightSide = unaryExpr();
+
         }
-        return left;
+        return leftSide;
     }
 
     private Expr unaryExpr() throws SyntaxException, LexicalException {
@@ -315,22 +294,22 @@ private Vector <IToken> tokens;
                 consume();
                 e = new UnaryExpr(firstToken, op, unaryExpr());
                 break;
-            case Kind.RES_sin:
-            case Kind.RES_cos:
-            case Kind.RES_atan:
+            case RES_sin:
+            case RES_cos:
+            case RES_atan:
                 op = ((Token) t).kind;
                 consume();
                 e = new UnaryExpr(firstToken, op, unaryExpr());
                 break;
             default:
-                e = PrimaryExpr();
+                e = primaryExpr();
                 break;
         }
-        return e;
+       return e;
     }
 
-     Expr primaryExpr() throws PLCException{
-        Kind kind = t.kind();
+   Expr primaryExpr() throws PLCException{
+        Kind kind = firstToken.getKind();
         switch (kind) {
             case STRING_LIT:
                 StringLitExpr stringLitExpr = new StringLitExpr(t);
@@ -362,21 +341,7 @@ private Vector <IToken> tokens;
         }
     }
 
-    public void factor () throws LexicalException, SyntaxException {
-        if (isKind(NUM_LIT)) {
-            consume();
-        }
-        else if(isKind(LPAREN)){
-            consume();
-            expr();
-            match(RPAREN);
-        }
-        else{
-            error();
 
-        }
-        return;
-    }
 
 
     //used from Parsing 4 slides
@@ -385,10 +350,10 @@ private Vector <IToken> tokens;
         return t.getKind() == kind;
     }
     protected boolean isKind(Kind... kinds) {
-        for (IToken.Kind k : kinds) {
+        for (Kind k : kinds) {
             if (k == t.getKind())
                 return true;
         }
         return false;
-   */ }
-
+    }
+}
