@@ -22,13 +22,13 @@ public class Parser implements IParser {
     IToken t;//holds current token
     private Scanner scanner;
     private String input;
-private Vector <IToken> tokens;
+    private Vector<IToken> tokens;
 
     //have to make Parser class and ASTVisitor Class
     public Parser(String input, Scanner scanner) {
         this.scanner = scanner;
         this.input = input;
-        this.currentIndex=0;
+        this.currentIndex = 0;
     }
 
     @Override
@@ -44,6 +44,10 @@ private Vector <IToken> tokens;
             tokens.add(current);
         }
 
+        for(int i = 0; i < tokens.size();i++){
+            System.out.println(tokens.get(i).getKind());
+        }
+
         boolean check = legal(tokens);
         if (!check) {
             throw new SyntaxException("Invalid sequence of tokens");
@@ -53,7 +57,6 @@ private Vector <IToken> tokens;
 
     private boolean legal(Vector<IToken> tokens) {
         Stack<String> stack = new Stack<>();
-        System.out.println(stack.empty());
         for (int i = 0; i < tokens.size(); i++) {
             IToken token = tokens.get(i);
             switch (token.getKind()) {
@@ -67,93 +70,145 @@ private Vector <IToken> tokens;
                     stack.pop();
                     stack.push("ConditionalExpr");
                     break;
-                case COLON:
-                    if (stack.empty() || !stack.peek().equals("ConditionalExpr")) {
-                        return false;
-                    }
-                    stack.pop();
-                    if (stack.empty() || !stack.peek().equals("Expr")) {
-                        return false;
-                    }
-                    stack.pop();
-                    if (stack.empty() || !stack.peek().equals("ConditionalExpr")) {
-                        return false;
-                    }
-                    stack.pop();
-                    stack.push("Expr");
-                    break;
                 case OR:
-                case AND:
                 case BITOR:
+                    if (stack.empty() || !stack.peek().equals("AndExpr") ||!stack.peek().equals("CompareExpr") || !stack.peek().equals("PowerExpr")
+                            || !stack.peek().equals("AdditiveExpr")|| !stack.peek().equals("MultiExpr")
+                            || !stack.peek().equals("UnaryExpr")|| !stack.peek().equals("PrimaryExpr")) {
+                        return false;
+                    }
+                    stack.push("OrSign");
+                    break;
                 case BITAND:
+                case AND:
+                    if (stack.empty() || !stack.peek().equals("CompareExpr") || !stack.peek().equals("PowerExpr")
+                            || !stack.peek().equals("AdditiveExpr")|| !stack.peek().equals("MultiExpr")
+                            || !stack.peek().equals("UnaryExpr")|| !stack.peek().equals("PrimaryExpr")) {
+                        return false;
+                    }
+                    stack.push("AndSign");
+                    break;
                 case LT:
                 case GT:
                 case EQ:
                 case LE:
                 case GE:
-                    if (stack.empty() || !stack.peek().equals("BinaryExpr")) {
+                    if (stack.isEmpty() || stack.peek().equals("UnarySign") || stack.peek().equals("MultiSign") ||
+                            stack.peek().equals("PowerSign") || stack.peek().equals("CompareSign")||stack.peek().equals("AndSign")||
+                            stack.peek().equals("OrSign")) {
                         return false;
                     }
-                    stack.pop();
-                    if (!stack.empty() && (stack.peek().equals("BinaryExpr") || stack.peek().equals("UnaryExpr"))) {
-                        stack.pop();
-                    }
-                    stack.push("BinaryExpr");
+                    stack.push("CompareSign");
                     break;
                 case PLUS:
-                case MINUS:
-                    if (i == 0 || tokens.get(i - 1).getKind() == Kind.LPAREN) {
-                        stack.push("UnaryExpr");
-                    } else if (stack.empty() || !stack.peek().equals("BinaryExpr")) {
+                    if(stack.isEmpty() || stack.peek().equals("UnarySign") || stack.peek().equals("MultiSign") ||
+                    stack.peek().equals("PowerSign") || stack.peek().equals("CompareSign")||stack.peek().equals("AndSign")||
+                            stack.peek().equals("OrSign") || stack.peek().equals("AdditiveSign")){
                         return false;
-                    } else {
-                        stack.pop();
-                        if (!stack.empty() && (stack.peek().equals("BinaryExpr") || stack.peek().equals("UnaryExpr"))) {
-                            stack.pop();
-                        }
-                        stack.push("BinaryExpr");
+                    }
+                    else{
+                        stack.push("AdditiveSign");
                     }
                     break;
+                case MINUS:
+                    if(!stack.empty() && (stack.peek().equals("MultiExpr") || stack.peek().equals("UnaryExpr") || stack.peek().equals("PrimaryExpr"))){
+                        stack.push("AdditiveSign");
+                    }
+                    else{
+                        stack.push("UnarySign");
+                    }
+                    break;
+                case EXP:
+                    if(stack.empty() || !stack.peek().equals("AdditiveExpr") || !stack.peek().equals("MultiExpr")
+                            || !stack.peek().equals("UnaryExpr")|| !stack.peek().equals("PrimaryExpr")){
+                        return false;
+                    }
+                    else{
+                        stack.push("PowerSign");
+                    }
                 case TIMES:
                 case DIV:
                 case MOD:
-                    if (stack.empty() || !stack.peek().equals("UnaryExpr")) {
+                    if (stack.isEmpty() || stack.peek().equals("UnarySign") || stack.peek().equals("MultiSign") ||
+                            stack.peek().equals("PowerSign") || stack.peek().equals("CompareSign")||stack.peek().equals("AndSign")||
+                            stack.peek().equals("OrSign")) {
                         return false;
                     }
                     stack.pop();
-                    stack.push("UnaryExpr");
+                    stack.push("MultiSign");
                     break;
                 case BANG:
                 case RES_sin:
                 case RES_cos:
                 case RES_atan:
-                    stack.push("UnaryExpr");
+                    stack.push("UnarySign");
                     break;
                 case IDENT:
                 case NUM_LIT:
                 case STRING_LIT:
+                case RES_Z:
+                case RES_rand:
+                    if(stack.isEmpty()){
+                        stack.push("PrimaryExpr");
+                    }
+                    else if(stack.peek().equals("UnarySign")){
+                        stack.pop();
+                        stack.push("UnaryExpr");
+                    }
+                    else if(stack.peek().equals("MultiSign")){
+                        stack.pop();
+                        stack.push("MultiExpr");
+                    }
+                    else if(stack.peek().equals("AdditiveSign")){
+                        stack.pop();
+                        stack.push("AdditiveExpr");
+                    }
+                    else if(stack.peek().equals("PowerSign")){
+                        stack.pop();
+                        stack.push("PowerExpr");
+                    }
+                    else if(stack.peek().equals("CompareSign")){
+                        stack.pop();
+                        stack.push("CompareExpr");
+                    }
+                    else if(stack.peek().equals("AndSign")){
+                        stack.pop();
+                        stack.push("AndExpr");
+                    }
+                    else if(stack.peek().equals("OrSign")){
+                        stack.pop();
+                        stack.push("OrExpr");
+                    }
+                    else{
+                        stack.push("PrimaryExpr");
+                    }
                     break;
                 case LPAREN:
                     stack.push("LPAREN");
                     break;
                 case RPAREN:
-                    if (stack.empty() || !stack.peek().equals("Expr")|| !stack.peek().equals("LPAREN")) {
+                    if (stack.empty()) {
                         return false;
                     }
-                    stack.pop();
-                    stack.pop();
-                    stack.push("PrimaryExpr");
+                    while(!stack.isEmpty() && !stack.peek().equals("LPAREN")){
+                        stack.pop();
+                    }
+                    if(stack.isEmpty()){
+                        return false;
+                    }
+                    else{
+                        stack.push("PrimaryExpr");
+                    }
                     break;
-                case RES_Z:
-                case RES_rand:
                 case EOF:
                     break;
                 default:
                     return false;
             }
         }
-        return stack.empty();
+        return true;
     }
+}
 
 
     /*public Expr expr() throws PLCException {
@@ -390,5 +445,5 @@ private Vector <IToken> tokens;
                 return true;
         }
         return false;
-   */ }
+   */
 
