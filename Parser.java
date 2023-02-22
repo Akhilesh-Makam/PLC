@@ -64,7 +64,9 @@ public class Parser implements IParser {
                     stack.push("ConditionalExpr");
                     break;
                 case QUESTION:
-                    if (stack.empty() || !stack.peek().equals("Expr")) {
+                    if (stack.isEmpty() || stack.peek().equals("UnarySign") || stack.peek().equals("MultiSign") ||
+                            stack.peek().equals("PowerSign") || stack.peek().equals("CompareSign")||stack.peek().equals("AndSign")||
+                            stack.peek().equals("OrSign")) {
                         return false;
                     }
                     stack.pop();
