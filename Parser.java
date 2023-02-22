@@ -156,17 +156,17 @@ private Vector <IToken> tokens;
     }
 
 
-    public Expr expr() throws LexicalException, SyntaxException {
-        IToken firstToken;
-        firstToken = tokens.get(currentIndex);
+    /*public Expr expr() throws PLCException {
+        //IToken firstToken;
+       // firstToken = tokens.get(currentIndex);
         Kind kind = firstToken.getKind();
 
         if (kind == RES_if) {
-            return ConditionalExpr();
+           left=condition
         } else {
             Expr left = orExpr();
             Object currentIndex = null;
-            if (tokens.size() > currentIndex && tokens.get((Integer) currentIndex).getKind() == QUESTION) {
+            if ((tokens.size() > currentIndex) && (tokens.get((Integer) currentIndex).getKind() == QUESTION)) {
                 return ConditionalExpr(left);
             } else {
                 return left;
@@ -199,10 +199,10 @@ private Vector <IToken> tokens;
     }
 
     private Expr andExpr() throws SyntaxException, LexicalException {
-        Expr left = andExpr();
+        Expr left = comparisonExpr();
         while (true) {
             Kind kind = t.kind;
-            if (kind == Kind.BITAND || kind == Kind.AND) {
+            if (kind == BITAND || kind == AND) {
                 consume();
                 ComparisonExpr right = comparisonExpr();
                 left = new BinaryExpr(left, kind, right);
@@ -390,5 +390,5 @@ private Vector <IToken> tokens;
                 return true;
         }
         return false;
-    }
-}
+   */ }
+
