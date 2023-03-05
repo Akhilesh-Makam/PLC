@@ -1,91 +1,86 @@
 package edu.ufl.cise.plcsp23;
 
-import edu.ufl.cise.plcsp23.IStringLitToken;
+public class StringLitToken extends Token implements IStringLitToken{
 
-public class StringLitToken implements IStringLitToken {
-    String tokenString;
-    SourceLocation sourceLocation;
-    Kind kind;
-    public StringLitToken(String tokenString, SourceLocation sourceLocation, Kind kind){
-        this.tokenString = tokenString;
-        this.sourceLocation = sourceLocation;
-        this.kind = kind;
+    /**
+     * Constructor initializes final fields
+     *
+     * @param kind
+     * @param pos
+     * @param length
+     * @param source
+     */
 
+    String value = "";
+
+    public StringLitToken(Kind kind, int pos, int length, char[] source) throws LexicalException {
+        super(kind, pos, length, source);
+
+        try {
+            value = getValue();
+        }
+        catch (Exception e) {
+            throw new LexicalException("Invalid escape sequence.");
+        }
     }
 
+    @Override
     public String getValue() {
-        String result = ""; //string for processed characters
-        if (tokenString.length() == 1) {
-            char c = tokenString.charAt(0);
-                switch (c) {
-                    case 'n':
-                        result += "\n";
-                        break;
-                    case 't':
-                        result += "\t";
-                        break;
-                    case '"':
-                        result += "\"";
-                        break;
-                    case '\\':
-                        result += "\\";
-                        break;
-                    default:
-                        // Handling invalid escape sequence
-                        result += "\\" + c;
-                        break;
-                }
-             }
-        else {
-            if (tokenString == "\\") {
-                return "\"";
-            }
+        String tempString = getTokenString();
+        //This has surrounding quotes, so get rid of those
+        String noQuotes = tempString.substring(1, length-1);
 
-            for (int i = 0; i < tokenString.length(); i++) {
-                char c = tokenString.charAt(i);
-                if (c == '\\') {
-                    i++;
-                    c = tokenString.charAt(i);
-                    switch (c) {
-                        case 'n':
-                            result += "\n";
-                            break;
-                        case 't':
-                            result += "\t";
-                            break;
-                        case '"':
-                            result += "\"";
-                            break;
-                        case '\\':
-                            result += "\\";
-                            break;
-                        default:
-                            // Handling invalid escape sequence
-                            result += "\\" + c;
-                            break;
-                    }
-                } else {
-                    result += c;
+        String toReturn = "";
+        for (int i = 0; i < noQuotes.length(); i++) {
+            if (noQuotes.charAt(i) == '\b') {
+                toReturn += '\b';
+            }
+            else if (noQuotes.charAt(i) == '\t') {
+                toReturn += '\t';
+            }
+            else if (noQuotes.charAt(i) == '\n') {
+                //force an exception using out of bounds
+                i = noQuotes.length();
+                noQuotes.charAt(i);
+            }
+            else if (noQuotes.charAt(i) == '\r') {
+                //force an exception using out of bounds
+                i = noQuotes.length();
+                noQuotes.charAt(i);
+            }
+            else if (noQuotes.charAt(i) == '\"') {
+                toReturn += '\"';
+            }
+            else if (noQuotes.charAt(i) == '\\') {
+                i++;
+                if (noQuotes.charAt(i) == 'b') {
+                    toReturn += '\b';
                 }
+                else if (noQuotes.charAt(i) == 't') {
+                    toReturn += '\t';
+                }
+                else if (noQuotes.charAt(i) == 'n') {
+                    toReturn += '\n';
+                }
+                else if (noQuotes.charAt(i) == 'r') {
+                    toReturn += '\r';
+                }
+                else if (noQuotes.charAt(i) == '"') {
+                    toReturn += '\"';
+                }
+                else if (noQuotes.charAt(i) == '\\') {
+                    toReturn += '\\';
+                }
+                else {
+                    //force an exception using out of bounds
+                    i = noQuotes.length();
+                    noQuotes.charAt(i);
+                }
+            }
+            else {
+                toReturn += noQuotes.charAt(i);
             }
         }
-        return result;
+        return toReturn;
     }
-
-    @Override
-    public SourceLocation getSourceLocation() {
-        return sourceLocation;
-    }
-
-    @Override
-    public Kind getKind() {
-        return kind;
-    }
-
-    @Override
-    public String getTokenString() {
-        return '"'+tokenString+'"';
-    }
-
 }
-
