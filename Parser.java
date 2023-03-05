@@ -20,6 +20,7 @@ import static edu.ufl.cise.plcsp23.IToken.Kind.*;
 public class Parser implements IParser {
 
     private Scanner scanner;
+    private AST first;
     private String input;
     private Vector<IToken> tokens;
 
@@ -53,170 +54,46 @@ public class Parser implements IParser {
 //            throw new SyntaxException("Invalid sequence of tokens");
 //        }
 
+
         int ifCount = 0;
         int questionCount = 0;
-        Stack<String> stack = new Stack<>();
+        Stack<AST> stack = new Stack<>();
         for (int i = 0; i < tokens.size(); i++) {
             IToken token = tokens.get(i);
             switch (token.getKind()) {
-                case RES_if:
-                    stack.push("ConditionalExpr");
-                    ifCount++;
+                case IDENT:
+                    stack.push(new IdentExpr(token));
                     break;
-                case QUESTION:
-                    if (stack.isEmpty() || stack.peek().equals("UnarySign") || stack.peek().equals("MultiSign") ||
-                            stack.peek().equals("PowerSign") || stack.peek().equals("CompareSign")||stack.peek().equals("AndSign")||
-                            stack.peek().equals("OrSign")) {
-                        throw new SyntaxException("Invalid sequence of tokens");
-                    }
-                    questionCount++;
-                    stack.pop();
-                    stack.push("ConditionalExpr");
+                case NUM_LIT:
+                    stack.push(new NumLitExpr(token));
                     break;
-                case OR:
-                case BITOR:
-                    if (stack.isEmpty() || stack.peek().equals("UnarySign") || stack.peek().equals("MultiSign") ||
-                            stack.peek().equals("PowerSign") || stack.peek().equals("CompareSign")||stack.peek().equals("AndSign")||
-                            stack.peek().equals("OrSign")) {
-                        throw new SyntaxException("Invalid sequence of tokens");
-                    }
-                    stack.push("OrSign");
+                case RES_rand:
+                    stack.push(new RandomExpr(token));
                     break;
-                case BITAND:
-                case AND:
-                    if (stack.isEmpty() || stack.peek().equals("UnarySign") || stack.peek().equals("MultiSign") ||
-                            stack.peek().equals("PowerSign") || stack.peek().equals("CompareSign")||stack.peek().equals("AndSign")||
-                            stack.peek().equals("OrSign")) {
-                        throw new SyntaxException("Invalid sequence of tokens");
-                    }
-                    stack.push("AndSign");
+                case STRING_LIT:
+                    stack.push(new StringLitExpr(token));
                     break;
-                case LT:
-                case GT:
-                case EQ:
-                case LE:
-                case GE:
-                    if (stack.isEmpty() || stack.peek().equals("UnarySign") || stack.peek().equals("MultiSign") ||
-                            stack.peek().equals("PowerSign") || stack.peek().equals("CompareSign")||stack.peek().equals("AndSign")||
-                            stack.peek().equals("OrSign")) {
-                        throw new SyntaxException("Invalid sequence of tokens");
-                    }
-                    stack.push("CompareSign");
-                    break;
-                case PLUS:
-                    if(stack.isEmpty() || stack.peek().equals("UnarySign") || stack.peek().equals("MultiSign") ||
-                            stack.peek().equals("PowerSign") || stack.peek().equals("CompareSign")||stack.peek().equals("AndSign")||
-                            stack.peek().equals("OrSign") || stack.peek().equals("AdditiveSign")){
-                        throw new SyntaxException("Invalid sequence of tokens");
-                    }
-                    else{
-                        stack.push("AdditiveSign");
-                    }
-                    break;
-                case MINUS:
-                    if(!stack.empty() && (stack.peek().equals("MultiExpr") || stack.peek().equals("UnaryExpr") || stack.peek().equals("PrimaryExpr"))){
-                        stack.push("AdditiveSign");
-                    }
-                    else{
-                        stack.push("UnarySign");
-                    }
-                    break;
-                case EXP:
-                    if(stack.isEmpty() || stack.peek().equals("UnarySign") || stack.peek().equals("MultiSign") ||
-                            stack.peek().equals("PowerSign") || stack.peek().equals("CompareSign")||stack.peek().equals("AndSign")||
-                            stack.peek().equals("OrSign") || stack.peek().equals("AdditiveSign")){
-                        throw new SyntaxException("Invalid sequence of tokens");
-                    }
-                    else{
-                        stack.push("PowerSign");
-                    }
-                    break;
-                case TIMES:
-                case DIV:
-                case MOD:
-                    if (stack.isEmpty() || stack.peek().equals("UnarySign") || stack.peek().equals("MultiSign") ||
-                            stack.peek().equals("PowerSign") || stack.peek().equals("CompareSign")||stack.peek().equals("AndSign")||
-                            stack.peek().equals("OrSign")) {
-                        throw new SyntaxException("Invalid sequence of tokens");
-                    }
-                    stack.pop();
-                    stack.push("MultiSign");
-                    break;
+                case RES_Z:
+                    stack.push(new ZExpr(token));
                 case BANG:
                 case RES_sin:
                 case RES_cos:
                 case RES_atan:
-                    stack.push("UnarySign");
-                    break;
-                case IDENT:
-                case NUM_LIT:
-                case STRING_LIT:
-                case RES_Z:
-                case RES_rand:
-                    if(stack.isEmpty()){
-                        stack.push("PrimaryExpr");
-                    }
-                    else if(stack.peek().equals("UnarySign")){
-                        stack.pop();
-                        stack.push("UnaryExpr");
-                    }
-                    else if(stack.peek().equals("MultiSign")){
-                        stack.pop();
-                        stack.push("MultiExpr");
-                    }
-                    else if(stack.peek().equals("AdditiveSign")){
-                        stack.pop();
-                        stack.push("AdditiveExpr");
-                    }
-                    else if(stack.peek().equals("PowerSign")){
-                        stack.pop();
-                        stack.push("PowerExpr");
-                    }
-                    else if(stack.peek().equals("CompareSign")){
-                        stack.pop();
-                        stack.push("CompareExpr");
-                    }
-                    else if(stack.peek().equals("AndSign")){
-                        stack.pop();
-                        stack.push("AndExpr");
-                    }
-                    else if(stack.peek().equals("OrSign")){
-                        stack.pop();
-                        stack.push("OrExpr");
-                    }
-                    else{
-                        stack.push("PrimaryExpr");
-                    }
-                    break;
-                case LPAREN:
-                    stack.push("LPAREN");
-                    break;
-                case RPAREN:
-                    if (stack.empty()) {
-                        throw new SyntaxException("Invalid sequence of tokens");
-                    }
-                    while(!stack.isEmpty() && !stack.peek().equals("LPAREN")){
-                        stack.pop();
-                    }
-                    stack.pop();
-                    stack.push("PrimaryExpr");
-                    break;
+                    //unary stuff goes here, haven't added minus since it can be in additive
                 case EOF:
-                    break;
+                    continue;
                 default:
                     throw new SyntaxException("Invalid sequence of tokens");
             }
         }
-        while(!stack.empty()){
-            if(stack.peek() == "LPAREN"){
-                throw new SyntaxException("Invalid sequence of tokens");
-            }
+
+
+        while(stack.size() != 1){
             stack.pop();
         }
-        if(ifCount * 2 != questionCount){
-            throw new SyntaxException("Invalid sequence of tokens");
-        }
-        return null;
+
+        first = stack.peek();
+        return first;
 
 
 
