@@ -1,30 +1,34 @@
 package edu.ufl.cise.plcsp23;
 
-public class NumLitToken extends Token implements INumLitToken {
-
-    /**
-     * Constructor initializes final fields
-     *
-     * @param kind
-     * @param pos
-     * @param length
-     * @param source
-     */
+public class NumLitToken implements INumLitToken{ //when kind is Num_lit
     int value;
+    String tokenString;
+    SourceLocation sourceLocation;
+    Kind kind;
+    public NumLitToken(String tokenString, SourceLocation sourceLocation, Kind kind){
+        this.tokenString = tokenString;
+        value = Integer.parseInt(tokenString);
+        this.sourceLocation = sourceLocation;
+        this.kind = kind;
 
-    public NumLitToken(Kind kind, int pos, int length, char[] source) throws LexicalException {
-        super(kind, pos, length, source);
+    }
 
-        try {
-            value = getValue();
-        }
-        catch (NumberFormatException e) {
-            throw new LexicalException("NumLit too large.");
-        }
+    public int getValue(){
+        return value;
     }
 
     @Override
-    public int getValue() {
-        return Integer.parseInt(getTokenString());
+    public SourceLocation getSourceLocation() {
+        return sourceLocation;
+    }
+
+    @Override
+    public Kind getKind() {
+        return kind;
+    }
+
+    @Override
+    public String getTokenString() {
+        return tokenString;
     }
 }
