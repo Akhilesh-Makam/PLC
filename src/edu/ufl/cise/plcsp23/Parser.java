@@ -187,19 +187,22 @@ public class Parser implements IParser {
         IToken tmp = tokens.get(current);
 
         PixelSelector p = null;
+        ColorChannel c = null;
+
         if (match(LSQUARE)) {
-            while(current < tokens.size()){
-                if(!match(RPAREN)){
+            while(current < tokens.size()) {
+                if (!match(RSQUARE)) {
                     p = pixelSelector();
                 }
             }
         }
 
-        ColorChannel c = null;
+
         if (match(COLON)) {
-            c = new ColorChannel(previous().getKind());
+            c = ColorChannel.getColor(tokens.get(current));
         }
-        return first;
+
+        return new UnaryExprPostfix(tmp, first, p, c);
     }
 
     private Expr primaryExpr() throws PLCException {

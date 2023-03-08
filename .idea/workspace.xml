@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4630c38b-fa48-42d1-a6b3-fd84fdeca931" name="Changes" comment="code prepped for assignment 3 work, pushing and starting now">
+    <list default="true" id="4630c38b-fa48-42d1-a6b3-fd84fdeca931" name="Changes" comment="pushing tony Work in progress assignment 3 pasrt 2">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/edu/ufl/cise/plcsp23/Parser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/edu/ufl/cise/plcsp23/Parser.java" afterDir="false" />
     </list>
@@ -79,7 +79,7 @@
       <workItem from="1678041776714" duration="20000" />
       <workItem from="1678041843215" duration="904000" />
       <workItem from="1678128351955" duration="1194000" />
-      <workItem from="1678215334684" duration="13448000" />
+      <workItem from="1678215334684" duration="16283000" />
     </task>
     <task id="LOCAL-00001" summary="adding tony's Scanner">
       <created>1678042343150</created>
@@ -95,7 +95,21 @@
       <option name="project" value="LOCAL" />
       <updated>1678256680405</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="pushing tony Work in progress assignment 3">
+      <created>1678283329639</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1678283329639</updated>
+    </task>
+    <task id="LOCAL-00004" summary="pushing tony Work in progress assignment 3 pasrt 2">
+      <created>1678284343277</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1678284343277</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -127,6 +141,8 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="adding tony's Scanner" />
     <MESSAGE value="code prepped for assignment 3 work, pushing and starting now" />
-    <option name="LAST_COMMIT_MESSAGE" value="code prepped for assignment 3 work, pushing and starting now" />
+    <MESSAGE value="pushing tony Work in progress assignment 3" />
+    <MESSAGE value="pushing tony Work in progress assignment 3 pasrt 2" />
+    <option name="LAST_COMMIT_MESSAGE" value="pushing tony Work in progress assignment 3 pasrt 2" />
   </component>
 </project>
