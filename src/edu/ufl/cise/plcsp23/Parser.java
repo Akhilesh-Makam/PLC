@@ -101,6 +101,19 @@ public class Parser implements IParser {
         return new Program(tmp, type, ident, paramList, block);
     }
 
+    private Block block() throws PLCException {
+        IToken tmp = tokens.get(current);
+
+        List<Declaration> decList = null;
+        List<Statement> statementList = null;
+        while(!match(RCURLY)) {
+            decList = decList();
+            statementList = statementList();
+        }
+
+        return new Block(tmp, decList, statementList);
+    }
+
     private Expr expr() throws PLCException{
         if (match(RES_if)){
             return conditionalExpr();
