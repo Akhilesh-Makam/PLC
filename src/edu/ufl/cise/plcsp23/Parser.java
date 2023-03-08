@@ -44,13 +44,6 @@ public class Parser implements IParser {
             System.out.println(tokens.get(i).getKind());
         }
 
-//        boolean check = legal(tokens);
-//        if (!check) { //function checks for valid concrete syntax
-//            throw new SyntaxException("Invalid sequence of tokens");
-//        }
-
-        //unable to get the AST generation working
-
         return program();
     }
 
@@ -86,6 +79,28 @@ public class Parser implements IParser {
     }
 
     //------------------------------------------LEFT HAND PRODUCTION METHODS-----------------------------------------------
+    private Program program() throws PLCException {
+        IToken tmp = tokens.get(current);
+
+        Type type = Type.getType(tokens.get(current));
+
+        Ident ident = null;
+        expect(IDENT);
+        ident = new Ident(previous());
+
+        List<NameDef> paramList = null;
+        expect(LPAREN);
+        while(!match(RPAREN)) {
+            paramList = paramList();
+        }
+
+        Block block = null;
+        expect(LCURLY);
+        block = block();
+
+        return new Program(tmp, type, ident, paramList, block);
+    }
+
     private Expr expr() throws PLCException{
         if (match(RES_if)){
             return conditionalExpr();
@@ -190,11 +205,7 @@ public class Parser implements IParser {
         ColorChannel c = null;
 
         if (match(LSQUARE)) {
-            while(current < tokens.size()) {
-                if (!match(RSQUARE)) {
-                    p = pixelSelector();
-                }
-            }
+            p = pixelSelector();
         }
 
 
@@ -246,8 +257,13 @@ public class Parser implements IParser {
     }
 
     private PixelSelector pixelSelector() throws PLCException {
-        if(match(LSQUARE)){
+        IToken tmp = tokens.get(current);
 
-        }
+        Expr x = expr();
+        expect(COMMA);
+        Expr y = expr();
+        expect(RSQUARE);
+
+        return new PixelSelector(tmp, x, y);
     }
 }
