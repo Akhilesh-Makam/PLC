@@ -16,4 +16,15 @@ public class CompilerComponentFactory {
 		return new Scanner(input);
 	}
 
+	public static IParser makeAssignment2Parser(String input) {
+		//Add statement to return an instance of your scanner and parser
+		IScanner scanner = new Scanner(input);
+		return new Parser(scanner);
+	}
+
+	public static IParser makeParser(String input) {
+		//Add statement to return an instance of your scanner and parser
+		IScanner scanner = new Scanner(input);
+		return new Parser(scanner);
+	}
 }

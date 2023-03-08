@@ -4,89 +4,29 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4630c38b-fa48-42d1-a6b3-fd84fdeca931" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/artifacts/Assignment2_Test.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/junit_jupiter.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/uiDesigner.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.project" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assignment2Test_starter.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/CompilerComponentFactory.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/INumLitToken.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/IParser.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/IScanner.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/IStringLitToken.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/IToken.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/LexicalException.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/NumLitToken.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/PLC.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/PLCException.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Parser.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Scanner.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/StringLitToken.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/SyntaxException.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/TestScanner_starter.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Token.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ast/AST.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ast/ASTVisitor.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ast/BinaryExpr.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ast/ConditionalExpr.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ast/Expr.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ast/IdentExpr.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ast/NumLitExpr.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ast/RandomExpr.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ast/StringLitExpr.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ast/UnaryExpr.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ast/ZExpr.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/edu/ufl/cise/plcsp23/HW1_provided.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/PLC/edu/ufl/cise/plcsp23/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/PLC/edu/ufl/cise/plcsp23/.idea/misc.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/PLC/edu/ufl/cise/plcsp23/.idea/modules.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/PLC/edu/ufl/cise/plcsp23/.idea/uiDesigner.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/PLC/edu/ufl/cise/plcsp23/.idea/vcs.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/PLC/edu/ufl/cise/plcsp23/.project" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/PLC/edu/ufl/cise/plcsp23/Assignment2Test_starter.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/PLC/edu/ufl/cise/plcsp23/CompilerComponentFactory.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/PLC/edu/ufl/cise/plcsp23/INumLitToken.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/PLC/edu/ufl/cise/plcsp23/IParser.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/PLC/edu/ufl/cise/plcsp23/IScanner.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/PLC/edu/ufl/cise/plcsp23/IStringLitToken.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/PLC/edu/ufl/cise/plcsp23/IToken$Kind.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/PLC/edu/ufl/cise/plcsp23/IToken$SourceLocation.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/PLC/edu/ufl/cise/plcsp23/IToken.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/PLC/edu/ufl/cise/plcsp23/LexicalException.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/PLC/edu/ufl/cise/plcsp23/NumLitToken.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/PLC/edu/ufl/cise/plcsp23/PLC.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/PLC/edu/ufl/cise/plcsp23/PLCException.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/PLC/edu/ufl/cise/plcsp23/Parser$1.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/PLC/edu/ufl/cise/plcsp23/Parser.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/PLC/edu/ufl/cise/plcsp23/Scanner$State.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/PLC/edu/ufl/cise/plcsp23/Scanner.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/PLC/edu/ufl/cise/plcsp23/StringLitToken.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/PLC/edu/ufl/cise/plcsp23/SyntaxException.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/PLC/edu/ufl/cise/plcsp23/TestScanner_starter.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/PLC/edu/ufl/cise/plcsp23/Token.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/PLC/edu/ufl/cise/plcsp23/ast/AST.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/PLC/edu/ufl/cise/plcsp23/ast/ASTVisitor.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/PLC/edu/ufl/cise/plcsp23/ast/BinaryExpr.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/PLC/edu/ufl/cise/plcsp23/ast/ConditionalExpr.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/PLC/edu/ufl/cise/plcsp23/ast/Expr.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/PLC/edu/ufl/cise/plcsp23/ast/IdentExpr.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/PLC/edu/ufl/cise/plcsp23/ast/NumLitExpr.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/PLC/edu/ufl/cise/plcsp23/ast/RandomExpr.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/PLC/edu/ufl/cise/plcsp23/ast/StringLitExpr.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/PLC/edu/ufl/cise/plcsp23/ast/UnaryExpr.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/PLC/edu/ufl/cise/plcsp23/ast/ZExpr.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/PLC/edu/ufl/cise/plcsp23/edu/ufl/cise/plcsp23/HW1_provided.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/PLC2/HW1_provided.jar" beforeDir="false" />
+    <list default="true" id="4630c38b-fa48-42d1-a6b3-fd84fdeca931" name="Changes" comment="adding tony's Scanner">
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/hamcrest_2_2.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/edu/ufl/cise/plcsp23/Parser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PLC.iml" beforeDir="false" afterPath="$PROJECT_DIR$/PLC.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/edu/ufl/cise/plcsp23/CompilerComponentFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/edu/ufl/cise/plcsp23/CompilerComponentFactory.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/edu/ufl/cise/plcsp23/IToken.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/edu/ufl/cise/plcsp23/IToken.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/edu/ufl/cise/plcsp23/Scanner.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/edu/ufl/cise/plcsp23/Scanner.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/edu/ufl/cise/plcsp23/ast/ASTVisitor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/edu/ufl/cise/plcsp23/ast/ASTVisitor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/edu/ufl/cise/plcsp23/ast/Expr.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/edu/ufl/cise/plcsp23/ast/Expr.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/edu/ufl/cise/plcsp23/ast/RandomExpr.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/edu/ufl/cise/plcsp23/ast/RandomExpr.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -104,28 +44,36 @@
       </UrlAndAccount>
     </option>
   </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
   <component name="ProjectId" id="2Mbecks7MAbLf7iavVQHFb1EfyJ" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;jdk.selected.JAVA_MODULE&quot;: &quot;19&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/Users/tony/IdeaProjects/PLC&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Downloaded.Files.Path.Enabled": "false",
+    "Repository.Attach.Annotations": "false",
+    "Repository.Attach.JavaDocs": "false",
+    "Repository.Attach.Sources": "false",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "jdk.selected.JAVA_MODULE": "19",
+    "last_opened_file_path": "/Users/tony/IdeaProjects/PLC",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "project.structure.last.edited": "Libraries",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.2",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -137,8 +85,18 @@
       <workItem from="1678040791292" duration="712000" />
       <workItem from="1678041519512" duration="242000" />
       <workItem from="1678041776714" duration="20000" />
-      <workItem from="1678041843215" duration="282000" />
+      <workItem from="1678041843215" duration="904000" />
+      <workItem from="1678128351955" duration="1194000" />
+      <workItem from="1678215334684" duration="8871000" />
     </task>
+    <task id="LOCAL-00001" summary="adding tony's Scanner">
+      <created>1678042343150</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1678042343150</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -166,5 +124,9 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="adding tony's Scanner" />
+    <option name="LAST_COMMIT_MESSAGE" value="adding tony's Scanner" />
   </component>
 </project>

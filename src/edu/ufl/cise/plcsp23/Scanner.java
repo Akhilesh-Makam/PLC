@@ -78,6 +78,9 @@ public class Scanner implements IScanner {
         reservedWords.put("atan", IToken.Kind.RES_atan);
         reservedWords.put("if", IToken.Kind.RES_if);
         reservedWords.put("while", IToken.Kind.RES_while);
+        reservedWords.put("red", IToken.Kind.RES_red);
+        reservedWords.put("grn", IToken.Kind.RES_grn);
+        reservedWords.put("blu", IToken.Kind.RES_blu);
     }
 
     private boolean isDigit(int ch) {
@@ -328,10 +331,10 @@ public class Scanner implements IScanner {
                     if (ch == '*') {
                         state = State.START;
                         nextChar();
-                        return new Token(IToken.Kind.TIMES, tokenStart, 2, inputChars);
+                        return new Token(IToken.Kind.EXP, tokenStart, 2, inputChars);
                     }
                     else {
-                        return new Token(IToken.Kind.EXP, tokenStart, 1, inputChars);
+                        return new Token(IToken.Kind.TIMES, tokenStart, 1, inputChars);
                     }
                 }
                 default -> {
