@@ -51,7 +51,7 @@ public class Parser implements IParser {
 
         //unable to get the AST generation working
 
-        return expr();
+        return program();
     }
 
     private boolean match(Kind...expected){
@@ -85,7 +85,7 @@ public class Parser implements IParser {
         current++;
     }
 
-    //------------------------------------------TOKEN METHODS-----------------------------------------------
+    //------------------------------------------LEFT HAND PRODUCTION METHODS-----------------------------------------------
     private Expr expr() throws PLCException{
         if (match(RES_if)){
             return conditionalExpr();
@@ -178,8 +178,30 @@ public class Parser implements IParser {
             Expr expr = unaryExpr();
             return new UnaryExpr(tmp, op, expr);
         }
-        return primaryExpr();
+        return unaryExprPostfix();
     }
+
+    private Expr unaryExprPostfix() throws PLCException {   //PrimaryExpr (PixelSelector | ε ) (ChannelSelector | ε )
+        Expr first = primaryExpr();
+
+        IToken tmp = tokens.get(current);
+
+        PixelSelector p = null;
+        if (match(LSQUARE)) {
+            while(current < tokens.size()){
+                if(!match(RPAREN)){
+                    p = pixelSelector();
+                }
+            }
+        }
+
+        ColorChannel c = null;
+        if (match(COLON)) {
+            c = new ColorChannel(previous().getKind());
+        }
+        return first;
+    }
+
     private Expr primaryExpr() throws PLCException {
         if (match(STRING_LIT)) {
             return new StringLitExpr(previous());
@@ -208,6 +230,21 @@ public class Parser implements IParser {
         else if(match(RES_rand)){
             return new RandomExpr(previous());
         }
+        else if(match(RES_x)){
+            return new RandomExpr(previous());
+        }else if(match(RES_y)){
+            return new RandomExpr(previous());
+        }else if(match(RES_a)){
+            return new RandomExpr(previous());
+        }else if(match(RES_r)){
+            return new RandomExpr(previous());
+        }
         throw new SyntaxException("Token not yet implemented or DNE");
+    }
+
+    private PixelSelector pixelSelector() throws PLCException {
+        if(match(LSQUARE)){
+
+        }
     }
 }
