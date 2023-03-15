@@ -1,5 +1,6 @@
 package edu.ufl.cise.plcsp23;
 
+import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,6 +10,9 @@ import edu.ufl.cise.plcsp23.ast.*;
 import edu.ufl.cise.plcsp23.ast.AST;
 import edu.ufl.cise.plcsp23.ast.BinaryExpr;
 import edu.ufl.cise.plcsp23.ast.ConditionalExpr;
+
+import javax.naming.Name;
+import javax.swing.plaf.nimbus.State;
 
 import static edu.ufl.cise.plcsp23.IToken.Kind.*;
 
@@ -114,6 +118,75 @@ public class Parser implements IParser {
         return new Block(tmp, decList, statementList);
     }
 
+    private List<Declaration> decList() throws PLCException {
+        List<Declaration> toReturn = null;
+
+        while(check(RES_image) || check(RES_pixel) || check(RES_int) || check(RES_string) || check(RES_void)) {
+            toReturn.add(declaration());
+            match(DOT);
+        }
+
+        return toReturn;
+    }
+
+    private List<Statement> statementList() throws PLCException {
+        List<Statement> toReturn = null;
+
+        while(check(IDENT) || check(RES_write) || check(RES_while)) {
+            toReturn.add(statement());
+            match(DOT);
+        }
+
+        return toReturn;
+    }
+
+    private List<NameDef> paramList() throws PLCException {
+        List<NameDef> toReturn = null;
+        if(check(RES_image) || check(RES_pixel) || check(RES_int) || check(RES_string) || check(RES_void)) {
+            toReturn.add(nameDef());
+            while(match(COMMA)){
+                toReturn.add(nameDef());
+            }
+        }
+        return toReturn;
+    }
+
+    private NameDef nameDef() throws PLCException {
+        IToken tmp = tokens.get(current);
+
+        Type type = Type.getType(tokens.get(current));
+
+        Dimension dimension = null;
+        if(check(LSQUARE)) {
+            dimension = dimension();
+        }
+
+        expect(IDENT);
+        Ident ident = new Ident(previous());
+
+        return new NameDef(tmp, type, dimension, ident);
+    }
+
+    private Declaration declaration() throws PLCException {
+        IToken tmp = tokens.get(current);
+
+        NameDef nameDef = null;
+        if(check(RES_image) || check(RES_pixel) || check(RES_int) || check(RES_string) || check(RES_void)) {
+            nameDef = nameDef();
+        }
+        else {
+            throw new SyntaxException("Expected NameDef");
+        }
+
+        Expr initializer = null;
+        if(check(ASSIGN)){
+            expect(ASSIGN);
+            initializer = expr();
+        }
+
+        return new Declaration(tmp, nameDef, initializer);
+    }
+
     private Expr expr() throws PLCException{
         if (match(RES_if)){
             return conditionalExpr();
@@ -210,9 +283,9 @@ public class Parser implements IParser {
     }
 
     private Expr unaryExprPostfix() throws PLCException {   //PrimaryExpr (PixelSelector | ε ) (ChannelSelector | ε )
-        Expr first = primaryExpr();
-
         IToken tmp = tokens.get(current);
+
+        Expr first = primaryExpr();
 
         PixelSelector p = null;
         ColorChannel c = null;
@@ -232,11 +305,14 @@ public class Parser implements IParser {
     private Expr primaryExpr() throws PLCException {
         if (match(STRING_LIT)) {
             return new StringLitExpr(previous());
-        } else if (match(NUM_LIT)) {
+        }
+        else if (match(NUM_LIT)) {
             return new NumLitExpr(previous());
-        } else if (match(IDENT)) {
+        }
+        else if (match(IDENT)) {
             return new IdentExpr(previous());
-        } else if (match(LPAREN)) {
+        }
+        else if (match(LPAREN)) {
             Expr f = expr();
             while(current < tokens.size()){
                 if(!match(RPAREN)){
@@ -258,13 +334,24 @@ public class Parser implements IParser {
             return new RandomExpr(previous());
         }
         else if(match(RES_x)){
-            return new RandomExpr(previous());
-        }else if(match(RES_y)){
-            return new RandomExpr(previous());
-        }else if(match(RES_a)){
-            return new RandomExpr(previous());
-        }else if(match(RES_r)){
-            return new RandomExpr(previous());
+            return new PredeclaredVarExpr(previous());
+        }
+        else if(match(RES_y)){
+            return new PredeclaredVarExpr(previous());
+        }
+        else if(match(RES_a)){
+            return new PredeclaredVarExpr(previous());
+        }
+        else if(match(RES_r)){
+            return new PredeclaredVarExpr(previous());
+        }
+        else if(match(LSQUARE)){
+            ExpandedPixelExpr expandedPixel = expandedPixelExpr();
+            return expandedPixel;
+        }
+        else if(check(RES_x_cart) || check(RES_y_cart) || check(RES_a_polar) || check(RES_r_polar)){
+            PixelFuncExpr pixelFunc = pixelFuncExpr();
+            return pixelFunc;
         }
         throw new SyntaxException("Token not yet implemented or DNE");
     }
@@ -278,5 +365,91 @@ public class Parser implements IParser {
         expect(RSQUARE);
 
         return new PixelSelector(tmp, x, y);
+    }
+
+    private ExpandedPixelExpr expandedPixelExpr() throws PLCException {
+        IToken tmp = tokens.get(current);
+
+        Expr r = expr();
+        expect(COMMA);
+        Expr g = expr();
+        expect(COMMA);
+        Expr b = expr();
+        expect(RSQUARE);
+
+        return new ExpandedPixelExpr(tmp, r, g, b);
+    }
+
+    private PixelFuncExpr pixelFuncExpr() throws PLCException {
+        IToken tmp = tokens.get(current);
+
+        Kind function = null;
+        if(check(RES_x_cart) || check(RES_y_cart) || check(RES_a_polar) || check(RES_r_polar)){
+            function = tokens.get(current).getKind();
+        }
+        else {
+            throw new SyntaxException("Expected x_cart, y_cart, a_polar, or r_polar");
+        }
+
+        expect(LSQUARE);
+        PixelSelector selector = pixelSelector();
+
+        return new PixelFuncExpr(tmp, function, selector);
+    }
+
+    private Dimension dimension() throws PLCException {
+        IToken tmp = tokens.get(current);
+        expect(LSQUARE);
+        Expr width = expr();
+        expect(COMMA);
+        Expr height = expr();
+        expect(RSQUARE);
+
+        return new Dimension(tmp, width, height);
+    }
+
+    private LValue lValue() throws PLCException {
+        IToken tmp = tokens.get(current);
+
+        Ident ident = null;
+        expect(IDENT);
+        ident = new Ident(previous());
+
+        PixelSelector p = null;
+        ColorChannel c = null;
+
+        if (match(LSQUARE)) {
+            p = pixelSelector();
+        }
+
+
+        if (match(COLON)) {
+            c = ColorChannel.getColor(tokens.get(current));
+        }
+
+        return new LValue(tmp, ident, p, c);
+    }
+
+    private Statement statement() throws PLCException {
+        IToken tmp = tokens.get(current);
+
+        if(check(IDENT)) {
+            LValue lValue = lValue();
+            expect(ASSIGN);
+            Expr expr = expr();
+            return new AssignmentStatement(tmp, lValue, expr);
+        }
+        else if(match(RES_write)){
+            Expr expr = expr();
+            return new WriteStatement(tmp, expr);
+        }
+        else if(match(RES_while)){
+            Expr expr = expr();
+            Block block = block();
+            return new WhileStatement(tmp, expr, block);
+        }
+        else {
+            throw new SyntaxException("expected IDENT(LValue), write, or while");
+        }
     }
 }
