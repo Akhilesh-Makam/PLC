@@ -4,8 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4630c38b-fa48-42d1-a6b3-fd84fdeca931" name="Changes" comment="pushing tony assignment 3 block() in Parser but decList and statementList dont work">
+    <list default="true" id="4630c38b-fa48-42d1-a6b3-fd84fdeca931" name="Changes" comment="pushing tony branch assignment 3 parser should work after OH help">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/PLC/edu/ufl/cise/plcsp23/CompilerComponentFactory.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/PLC/edu/ufl/cise/plcsp23/CompilerComponentFactory.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/PLC/edu/ufl/cise/plcsp23/Parser.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/PLC/edu/ufl/cise/plcsp23/Parser.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/PLC/edu/ufl/cise/plcsp23/Scanner$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/PLC/edu/ufl/cise/plcsp23/Scanner$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/PLC/edu/ufl/cise/plcsp23/Scanner.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/PLC/edu/ufl/cise/plcsp23/Scanner.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/edu/ufl/cise/plcsp23/Parser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/edu/ufl/cise/plcsp23/Parser.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -66,6 +70,79 @@
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
+  <component name="RunManager" selected="JUnit.Assignment3Test_starter">
+    <configuration name="Assignment3Test_starter" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="PLC" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="edu.ufl.cise.plcsp23.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="edu.ufl.cise.plcsp23" />
+      <option name="MAIN_CLASS_NAME" value="edu.ufl.cise.plcsp23.Assignment3Test_starter" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Assignment3Test_starter.test11" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="PLC" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="edu.ufl.cise.plcsp23.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="edu.ufl.cise.plcsp23" />
+      <option name="MAIN_CLASS_NAME" value="edu.ufl.cise.plcsp23.Assignment3Test_starter" />
+      <option name="METHOD_NAME" value="test11" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Assignment3Test_starter.test13" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="PLC" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="edu.ufl.cise.plcsp23.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="edu.ufl.cise.plcsp23" />
+      <option name="MAIN_CLASS_NAME" value="edu.ufl.cise.plcsp23.Assignment3Test_starter" />
+      <option name="METHOD_NAME" value="test13" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Assignment3Test_starter.test14" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="PLC" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="edu.ufl.cise.plcsp23.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="edu.ufl.cise.plcsp23" />
+      <option name="MAIN_CLASS_NAME" value="edu.ufl.cise.plcsp23.Assignment3Test_starter" />
+      <option name="METHOD_NAME" value="test14" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="JUnit.Assignment3Test_starter" />
+        <item itemvalue="JUnit.Assignment3Test_starter.test14" />
+        <item itemvalue="JUnit.Assignment3Test_starter.test13" />
+        <item itemvalue="JUnit.Assignment3Test_starter.test11" />
+      </list>
+    </recent_temporary>
+  </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -81,7 +158,8 @@
       <workItem from="1678128351955" duration="1194000" />
       <workItem from="1678215334684" duration="24945000" />
       <workItem from="1678326731546" duration="951000" />
-      <workItem from="1678760508258" duration="8044000" />
+      <workItem from="1678760508258" duration="9279000" />
+      <workItem from="1678936074352" duration="28890000" />
     </task>
     <task id="LOCAL-00001" summary="adding tony's Scanner">
       <created>1678042343150</created>
@@ -132,7 +210,14 @@
       <option name="project" value="LOCAL" />
       <updated>1678294039753</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="pushing tony branch assignment 3 parser should work after OH help">
+      <created>1678855914365</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1678855914365</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -169,6 +254,28 @@
     <MESSAGE value="pushing tony assignment 3 unaryExprPostfix() in Parser" />
     <MESSAGE value="pushing tony assignment 3 program() in Parser but block() and paramList() dont work yet" />
     <MESSAGE value="pushing tony assignment 3 block() in Parser but decList and statementList dont work" />
-    <option name="LAST_COMMIT_MESSAGE" value="pushing tony assignment 3 block() in Parser but decList and statementList dont work" />
+    <MESSAGE value="pushing tony branch assignment 3 parser should work after OH help" />
+    <option name="LAST_COMMIT_MESSAGE" value="pushing tony branch assignment 3 parser should work after OH help" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/edu/ufl/cise/plcsp23/Parser.java</url>
+          <line>64</line>
+          <option name="timeStamp" value="25" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/edu/ufl/cise/plcsp23/Parser.java</url>
+          <line>101</line>
+          <option name="timeStamp" value="26" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/PLC$Assignment3Test_starter_test13.ic" NAME="Assignment3Test_starter.test13 Coverage Results" MODIFIED="1678987110052" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">
+      <FILTER>edu.ufl.cise.plcsp23.*</FILTER>
+    </SUITE>
   </component>
 </project>
