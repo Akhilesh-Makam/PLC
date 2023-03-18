@@ -14,13 +14,16 @@ public class CompilerComponentFactory {
 		return new Scanner(input);
 	}
 
-	public static IParser makeAssignment2Parser(String input)
-			throws LexicalException {
+	public static IParser makeAssignment2Parser(String input) {
+		//Add statement to return an instance of your scanner and parser
+		IScanner scanner = new Scanner(input);
+		return new Parser(scanner);
+	}
 
-		Scanner scanner = new Scanner(input);
-		Parser parser = new Parser(input, scanner);
-		return parser;
-		//add code to create a scanner and parser and return the parser.
+	public static IParser makeParser(String input) {
+		//Add statement to return an instance of your scanner and parser
+		IScanner scanner = new Scanner(input);
+		return new Parser(scanner);
 	}
 
 }

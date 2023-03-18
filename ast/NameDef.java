@@ -13,25 +13,41 @@ package edu.ufl.cise.plcsp23.ast;
 import edu.ufl.cise.plcsp23.IToken;
 import edu.ufl.cise.plcsp23.PLCException;
 
-public class IdentExpr extends Expr {
-		
-	public IdentExpr(IToken firstToken) {
+public class NameDef extends AST {
+	
+	final Type type;
+	final Dimension dimension;
+	final Ident ident;
+	
+	public NameDef(IToken firstToken, Type type, Dimension dimension, Ident ident) {
 		super(firstToken);
+		this.type = type;
+		this.dimension = dimension;
+		this.ident = ident;
 	}
 
 	@Override
 	public Object visit(ASTVisitor v, Object arg) throws PLCException {
-		return v.visitIdentExpr(this,arg);
+		return v.visitNameDef(this, arg);
 	}
-	
-	public String getName() {
-		return firstToken.getTokenString();
+
+	public Type getType() {
+		return type;
+	}
+
+	public Dimension getDimension() {
+		return dimension;
+	}
+
+	public Ident getIdent() {
+		return ident;
 	}
 
 	@Override
 	public String toString() {
-		return "IdentExpr [firstToken=" + firstToken + "]";
+		return "NameDef [type=" + type + ", dimension=" + dimension + ", ident=" + ident + "]";
 	}
-	
 
+	
+	
 }

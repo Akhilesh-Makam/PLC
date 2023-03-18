@@ -13,25 +13,34 @@ package edu.ufl.cise.plcsp23.ast;
 import edu.ufl.cise.plcsp23.IToken;
 import edu.ufl.cise.plcsp23.PLCException;
 
-public class IdentExpr extends Expr {
-		
-	public IdentExpr(IToken firstToken) {
+public class WhileStatement extends Statement {
+	
+	final Expr guard;
+	final Block block;
+	
+	
+
+	public WhileStatement(IToken firstToken, Expr guard, Block block) {
 		super(firstToken);
+		this.guard = guard;
+		this.block = block;
 	}
 
 	@Override
 	public Object visit(ASTVisitor v, Object arg) throws PLCException {
-		return v.visitIdentExpr(this,arg);
+		return v.visitWhileStatement(this, arg);
 	}
-	
-	public String getName() {
-		return firstToken.getTokenString();
+
+	public Expr getGuard() {
+		return guard;
+	}
+	public Block getBlock() {
+		return block;
 	}
 
 	@Override
 	public String toString() {
-		return "IdentExpr [firstToken=" + firstToken + "]";
+		return "WhileStatement [guard=" + guard + ", block=" + block + "]";
 	}
-	
 
 }

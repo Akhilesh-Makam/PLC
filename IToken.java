@@ -1,20 +1,22 @@
-package edu.ufl.cise.plcsp23;/*Copyright 2023 by Beverly A Sanders
- * 
- * This code is provided for solely for use of students in COP4020 Programming Language Concepts at the 
- * University of Florida during the spring semester 2023 as part of the course project.  
- * 
- * No other use is authorized. 
- * 
- * This code may not be posted on a public web site either during or after the course.  
+/*Copyright 2023 by Beverly A Sanders
+ *
+ * This code is provided for solely for use of students in COP4020 Programming Language Concepts at the
+ * University of Florida during the spring semester 2023 as part of the course project.
+ *
+ * No other use is authorized.
+ *
+ * This code may not be posted on a public web site either during or after the course.
  */
 
 
+package edu.ufl.cise.plcsp23;
+
 public interface IToken {
-	/** 
+	/**
 	 * Represents the location in the source code
 	 */
 	public record SourceLocation(int line, int column) {}
-	
+
 	public static enum Kind {
 		IDENT,
 		NUM_LIT,
@@ -74,30 +76,35 @@ public interface IToken {
 		DIV, // /
 		MOD, // %
 		EOF,
-		ERROR
+		ERROR,
+		RES_red,
+		RES_grn,
+		RES_blu
 	}
 
 
 	/**
 	 * Returns a SourceLocation record containing the line and column number of this token.
 	 * Both counts start numbering at 1.
-	 * 
+	 *
 	 * @return Line number and column of this token.  
 	 */
 	public SourceLocation getSourceLocation();
-	
+
 	/** Returns the kind of this Token
-	 * 
+	 *
 	 * @return kind
 	 */
 	public Kind getKind();
-	
+
 	/**
 	 * Returns a char array containing the characters of this token.
-	 * 
+	 *
 	 * @return
 	 */
 	public String getTokenString();
+
+
 
 
 }

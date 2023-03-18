@@ -13,25 +13,39 @@ package edu.ufl.cise.plcsp23.ast;
 import edu.ufl.cise.plcsp23.IToken;
 import edu.ufl.cise.plcsp23.PLCException;
 
-public class IdentExpr extends Expr {
-		
-	public IdentExpr(IToken firstToken) {
+public class UnaryExprPostfix extends Expr {
+
+	final Expr primary;
+	final PixelSelector pixel;
+	final ColorChannel color;
+
+	public UnaryExprPostfix(IToken firstToken, Expr primary, PixelSelector pixel, ColorChannel color) {
 		super(firstToken);
+		this.primary = primary;
+		this.pixel = pixel;
+		this.color = color;
 	}
 
 	@Override
 	public Object visit(ASTVisitor v, Object arg) throws PLCException {
-		return v.visitIdentExpr(this,arg);
+		return v.visitUnaryExprPostFix(this, arg);
 	}
-	
-	public String getName() {
-		return firstToken.getTokenString();
+
+	public Expr getPrimary() {
+		return primary;
+	}
+
+	public PixelSelector getPixel() {
+		return pixel;
+	}
+
+	public ColorChannel getColor() {
+		return color;
 	}
 
 	@Override
 	public String toString() {
-		return "IdentExpr [firstToken=" + firstToken + "]";
+		return "UnaryExprPostfix [primary=" + primary + ", pixel=" + pixel + ", color=" + color + "]";
 	}
-	
 
 }

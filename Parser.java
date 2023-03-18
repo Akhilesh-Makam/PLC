@@ -1,215 +1,524 @@
 package edu.ufl.cise.plcsp23;
 
+import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 
 import edu.ufl.cise.plcsp23.IToken.Kind;
-import edu.ufl.cise.plcsp23.ast.*;
 
+import edu.ufl.cise.plcsp23.ast.*;
 import edu.ufl.cise.plcsp23.ast.AST;
 import edu.ufl.cise.plcsp23.ast.BinaryExpr;
 import edu.ufl.cise.plcsp23.ast.ConditionalExpr;
+
+import javax.naming.Name;
+import javax.swing.plaf.nimbus.State;
 
 import static edu.ufl.cise.plcsp23.IToken.Kind.*;
 
 public class Parser implements IParser {
 
-    private Scanner scanner;
-    private int current;
-    private String input;
-    private Vector<IToken> tokens;
+    private IScanner scanner;
     private AST first;
 
+    //Always holds current token
+    private IToken current;
 
-    //have to make Parser class and ASTVisitor Class
-    public Parser(String input, Scanner scanner) {
+
+    //Parser constructor
+    //Takes in a scanner that will be used to create a list of tokens
+    public Parser(IScanner scanner) {
         this.scanner = scanner;
-        this.input = input;
-        current = 0;
-
     }
 
-    @Override
-    public AST parse() throws PLCException {//where the actual parsing occurs
-        IToken current = scanner.next();
-        tokens = new Vector<>();
-        tokens.add(current);
-        if (current.getKind() == Kind.EOF) {
-            throw new SyntaxException("No input");
-        }
-        while (current.getKind() != Kind.EOF) {
-            current = scanner.next();
-            tokens.add(current);
-        }
-
-        for(int i = 0; i < tokens.size();i++){
-            System.out.println(tokens.get(i).getKind());
-        }
-
-//        boolean check = legal(tokens);
-//        if (!check) { //function checks for valid concrete syntax
-//            throw new SyntaxException("Invalid sequence of tokens");
-//        }
-
-        //unable to get the AST generation working
-
-        return expr();
-    }
-
-    private boolean match(Kind...expected){
-        if (current >= tokens.size()){
-            return false;
-        }
-        for(Kind actual : expected){
-            if(check(actual)){
-                current++;
+    protected boolean isKind(Kind... kinds) {
+        for(Kind k: kinds) {
+            if(k == current.getKind()) {
                 return true;
             }
         }
         return false;
     }
 
-    private boolean check(Kind expected){
-        if (current >= tokens.size()){
-            return false;
+    void match(Kind expected) throws PLCException {
+        if (current.getKind() == expected) {
+            current = scanner.next();
         }
-        return tokens.get(current).getKind() == expected;
+        else {
+            throw new SyntaxException("Expected token kind " + expected + " different than provided kind " + current.getKind());
+        }
     }
 
-    private IToken previous(){
-        return tokens.get(current - 1);
+    void consume() throws PLCException {
+        current = scanner.next();
+    }
+    @Override
+    //where the actual parsing occurs
+    public AST parse() throws PLCException {
+
+        current = scanner.next();
+
+        if (current.getKind() == Kind.EOF) {
+            throw new SyntaxException("No input");
+        }
+
+        return program();
     }
 
-    private void expect(Kind expected) throws PLCException{
-        if(check(expected)==false){
-            throw new SyntaxException("Unexpected token");
+
+    //------------------------------------------LEFT HAND PRODUCTION METHODS-----------------------------------------------
+    private Program program() throws PLCException {
+        IToken firstToken = current;
+
+        Type type = null;
+        if(isKind(RES_image, RES_pixel, RES_int, RES_string, RES_void)) {
+            type = Type.getType(current);
+            consume();
         }
-        current++;
+        else {
+            throw new SyntaxException("Expected image, pixel, int, string, or void for Type");
+        }
+
+
+        Ident ident = null;
+        if(isKind(IDENT)) {
+            ident = new Ident(current);
+            consume();
+        }
+        else {
+            throw new SyntaxException("Expected Ident");
+        }
+
+        List<NameDef> paramList = new ArrayList<>();
+        if(isKind(LPAREN)) {
+            consume();
+            paramList = paramList();
+            match(RPAREN);
+        }
+        else {
+            throw new SyntaxException("Expected Left Parenthesis for ParamList");
+        }
+
+        Block block = null;
+        if(isKind(LCURLY)) {
+            block = block();
+        }
+        else {
+            throw new SyntaxException("Expected Left Curly for Block");
+        }
+
+        return new Program(firstToken, type, ident, paramList, block);
     }
+
+    private Block block() throws PLCException {
+        match(LCURLY);
+        IToken firstToken = current;
+
+
+        List<Declaration> decList = new ArrayList<>();
+        List<Statement> statementList = new ArrayList<>();
+
+        while(!isKind(RCURLY)) {
+            if(isKind(EOF)){
+                throw new SyntaxException("Reached end of file while parsing; missing Right Curly Bracket");
+            }
+            decList = decList();
+            statementList = statementList();
+        }
+
+        match(RCURLY);
+        return new Block(firstToken, decList, statementList);
+    }
+
+    private List<Declaration> decList() throws PLCException {
+        List<Declaration> toReturn = new ArrayList<>();
+
+        while(isKind(RES_image, RES_pixel, RES_int, RES_string, RES_void)) {
+            toReturn.add(declaration());
+            match(DOT);
+        }
+
+        return toReturn;
+    }
+
+    private List<Statement> statementList() throws PLCException {
+        List<Statement> toReturn = new ArrayList<>();
+
+        while(isKind(IDENT, RES_write, RES_while)) {
+            toReturn.add(statement());
+            match(DOT);
+        }
+
+        return toReturn;
+    }
+
+    private List<NameDef> paramList() throws PLCException {
+        List<NameDef> toReturn = new ArrayList<>();
+        if(isKind(RES_image, RES_pixel, RES_int, RES_string, RES_void)) {
+            toReturn.add(nameDef());
+            while(isKind(COMMA)){
+                consume();
+                toReturn.add(nameDef());
+            }
+        }
+        return toReturn;
+    }
+
+    private NameDef nameDef() throws PLCException {
+        IToken firstToken = current;
+
+        Type type = null;
+        if(isKind(RES_image, RES_pixel, RES_int, RES_string, RES_void)){
+            type = Type.getType(current);
+            consume();
+        }
+        else {
+            throw new SyntaxException("Expected image, pixel, int, string, or void for Type");
+        }
+
+
+        Dimension dimension = null;
+        if(isKind(LSQUARE)) {
+            dimension = dimension();
+        }
+
+        Ident ident = null;
+        if(isKind(IDENT)) {
+            ident = new Ident(current);
+            consume();
+        }
+        else {
+            throw new SyntaxException("Expected Ident");
+        }
+
+        return new NameDef(firstToken, type, dimension, ident);
+    }
+
+    private Declaration declaration() throws PLCException {
+        IToken firstToken = current;
+
+        NameDef nameDef = null;
+        if(isKind(RES_image, RES_pixel, RES_int, RES_string, RES_void)) {
+            nameDef = nameDef();
+        }
+        else {
+            throw new SyntaxException("Expected image, pixel, int, string, or void for NameDef");
+        }
+
+        Expr initializer = null;
+        if(isKind(ASSIGN)){
+            consume();
+            initializer = expr();
+        }
+
+        return new Declaration(firstToken, nameDef, initializer);
+    }
+
     private Expr expr() throws PLCException{
-        if (match(RES_if)){
+        if (isKind(RES_if)){
+            consume();
             return conditionalExpr();
         }
         return orExpr();
     }
 
     private Expr conditionalExpr() throws PLCException{
-        IToken tmp = tokens.get(current);
-        Expr condition = expr();
-        expect(QUESTION);
-        Expr then = expr();
-        expect(QUESTION);
+        IToken firstToken = current;
+        Expr conditionExpr = expr();
+        match(QUESTION);
+        Expr thenExpr = expr();
+        match(QUESTION);
         Expr elseExpr = expr();
-        return new ConditionalExpr(tmp, condition, then, elseExpr);
+        return new ConditionalExpr(firstToken, conditionExpr, thenExpr, elseExpr);
     }
 
     private Expr orExpr() throws PLCException{
-        Expr first = andExpr();
-        IToken tmp = tokens.get(current);
-        while(match(OR) || match(BITOR)){
-            Kind op = previous().getKind();
-            Expr second = andExpr();
-            first = new BinaryExpr(tmp, first, op, second);
-            tmp = tokens.get(current);
+        IToken firstToken = current;
+        Expr left = andExpr();
+        Expr right = null;
+        while (isKind(OR, BITOR)) {
+            Kind op = current.getKind();
+            consume();
+            right = andExpr();
+            left = new BinaryExpr(firstToken, left, op, right);
         }
-        return first;
+        return left;
     }
 
     private Expr andExpr() throws PLCException{
-        Expr first = comparisonExpr();
-        IToken tmp = tokens.get(current);
-        while(match(AND) || match(BITAND)){
-            Kind op = previous().getKind();
-            Expr second = comparisonExpr();
-            first = new BinaryExpr(tmp, first, op, second);
-            tmp = tokens.get(current);
+        IToken firstToken = current;
+        Expr left = comparisonExpr();
+        Expr right = null;
+        while (isKind(AND, BITAND)) {
+            Kind op = current.getKind();
+            consume();
+            right = comparisonExpr();
+            left = new BinaryExpr(firstToken, left, op, right);
         }
-        return first;
+        return left;
     }
 
     private Expr comparisonExpr() throws PLCException{
-        Expr first = powerExpr();
-        IToken tmp = tokens.get(current);
-        while(match(LT,LE,GT,GE)){
-            Kind op = previous().getKind();
-            Expr second = powerExpr();
-            first = new BinaryExpr(tmp, first, op, second);
-            tmp = tokens.get(current);
+        IToken firstToken = current;
+        Expr left = powerExpr();
+        Expr right = null;
+        while (isKind(LT, LE, GT, GE)) {
+            Kind op = current.getKind();
+            consume();
+            right = powerExpr();
+            left = new BinaryExpr(firstToken, left, op, right);
         }
-        return first;
+        return left;
     }
 
     private Expr powerExpr() throws PLCException {
-        Expr first = additiveExpr();
-        IToken tmp = tokens.get(current);
-        if (match(EXP)) {
-            Expr right = powerExpr();
-            return new BinaryExpr(tmp, first, EXP, right);
+        IToken firstToken = current;
+        Expr left = additiveExpr();
+        Expr right = null;
+        while (isKind(EXP)) {
+            Kind op = current.getKind();
+            consume();
+            right = powerExpr();
+            left = new BinaryExpr(firstToken, left, op, right);
         }
-        return first;
+        return left;
     }
 
     private Expr additiveExpr() throws PLCException {
-        Expr first = multiplicativeExpr();
-        IToken tmp = tokens.get(current);
-        while (match(PLUS, MINUS)) {
-            Kind op = previous().getKind();
-            Expr second = multiplicativeExpr();
-            first = new BinaryExpr(tmp, first, op, second);
+        IToken firstToken = current;
+        Expr left = multiplicativeExpr();
+        Expr right = null;
+        while (isKind(PLUS, MINUS)) {
+            Kind op = current.getKind();
+            consume();
+            right = multiplicativeExpr();
+            left = new BinaryExpr(firstToken, left, op, right);
         }
-        return first;
+        return left;
     }
 
     private Expr multiplicativeExpr() throws PLCException {
-        Expr first = unaryExpr();
-        IToken tmp = tokens.get(current);
-        while (match(TIMES, DIV, MOD)) {
-            Kind op = previous().getKind();
-            Expr second = unaryExpr();
-            first = new BinaryExpr(tmp, first, op, second);
+        IToken firstToken = current;
+        Expr left = unaryExpr();
+        Expr right = null;
+        while (isKind(TIMES, DIV, MOD)) {
+            Kind op = current.getKind();
+            consume();
+            right = unaryExpr();
+            left = new BinaryExpr(firstToken, left, op, right);
         }
-        return first;
+        return left;
     }
 
     private Expr unaryExpr() throws PLCException {
-        if (match(BANG, MINUS, RES_sin, RES_cos, RES_atan)) {
-            IToken tmp = tokens.get(current);
-            Kind op = previous().getKind();
+        IToken firstToken = current;
+
+        if (isKind(BANG, MINUS, RES_sin, RES_cos, RES_atan)) {
+            Kind op = current.getKind();
+            consume();
             Expr expr = unaryExpr();
-            return new UnaryExpr(tmp, op, expr);
+            return new UnaryExpr(firstToken, op, expr);
         }
-        return primaryExpr();
+
+        Expr expr = unaryExprPostfix();
+        return expr;
     }
+
+    private Expr unaryExprPostfix() throws PLCException {   //PrimaryExpr (PixelSelector | ε ) (ChannelSelector | ε )
+        IToken firstToken = current;
+
+        Expr primaryExpr = primaryExpr();
+
+        PixelSelector p = null;
+        ColorChannel c = null;
+
+        if (isKind(LSQUARE)) {
+            p = pixelSelector();
+        }
+
+
+        if (isKind(COLON)) {
+            consume();
+            c = ColorChannel.getColor(current);
+            consume();
+        }
+
+        if(p == null && c == null){
+            return primaryExpr;
+        }
+
+        return new UnaryExprPostfix(firstToken, primaryExpr, p, c);
+    }
+
     private Expr primaryExpr() throws PLCException {
-        if (match(STRING_LIT)) {
-            return new StringLitExpr(previous());
-        } else if (match(NUM_LIT)) {
-            return new NumLitExpr(previous());
-        } else if (match(IDENT)) {
-            return new IdentExpr(previous());
-        } else if (match(LPAREN)) {
+        if (isKind(STRING_LIT)) {
+            Expr stringLit = new StringLitExpr(current);
+            consume();
+            return stringLit;
+        }
+        else if (isKind(NUM_LIT)) {
+            Expr numLit = new NumLitExpr(current);
+            consume();
+            return numLit;
+        }
+        else if (isKind(IDENT)) {
+            Expr identExpr = new IdentExpr(current);
+            consume();
+            return identExpr;
+        }
+        else if (isKind(LPAREN)) {
             Expr f = expr();
-            while(current < tokens.size()){
-                if(!match(RPAREN)){
-                    f = expr();
+
+            while(!isKind(RPAREN)) {
+                if(isKind(EOF)){
+                    throw new SyntaxException("Reached end of file while parsing; missing Right Parentheses");
                 }
-                else{
-                    return f;
-                }
-            }
-            if(current >= tokens.size()){
-                throw new SyntaxException("Expected primary expression");
+                f = expr();
             }
 
+            match(RPAREN);
+            return f;
         }
-        else if(match(RES_Z)){
-            return new ZExpr(previous());
+        else if(isKind(RES_Z)){
+            Expr zExpr = new ZExpr(current);
+            consume();
+            return zExpr;
         }
-        else if(match(RES_rand)){
-            return new RandomExpr(previous());
+        else if(isKind(RES_rand)){
+            Expr randomExpr = new RandomExpr(current);
+            consume();
+            return randomExpr;
+        }
+        else if(isKind(RES_x, RES_y, RES_a, RES_r)){
+            Expr predeclaredVarExpr = new PredeclaredVarExpr(current);
+            consume();
+            return predeclaredVarExpr;
+        }
+        else if(isKind(LSQUARE)){
+            ExpandedPixelExpr expandedPixel = expandedPixelExpr();
+            return expandedPixel;
+        }
+        else if(isKind(RES_x_cart, RES_y_cart, RES_a_polar, RES_r_polar)) {
+            PixelFuncExpr pixelFunc = pixelFuncExpr();
+            return pixelFunc;
         }
         throw new SyntaxException("Token not yet implemented or DNE");
     }
-}
 
+    private PixelSelector pixelSelector() throws PLCException {
+        match(LSQUARE);
+        IToken firstToken = current;
+
+        Expr x = expr();
+        match(COMMA);
+        Expr y = expr();
+        match(RSQUARE);
+
+        return new PixelSelector(firstToken, x, y);
+    }
+
+    private ExpandedPixelExpr expandedPixelExpr() throws PLCException {
+        match(LSQUARE);
+        IToken firstToken = current;
+
+        Expr r = expr();
+        match(COMMA);
+        Expr g = expr();
+        match(COMMA);
+        Expr b = expr();
+        match(RSQUARE);
+
+        return new ExpandedPixelExpr(firstToken, r, g, b);
+    }
+
+    private PixelFuncExpr pixelFuncExpr() throws PLCException {
+        IToken firstToken = current;
+
+        Kind function = null;
+        if(isKind(RES_x_cart, RES_y_cart, RES_a_polar, RES_r_polar)){
+            function = current.getKind();
+            consume();
+        }
+        else {
+            throw new SyntaxException("Expected x_cart, y_cart, a_polar, or r_polar");
+        }
+
+
+        PixelSelector selector = null;
+        if(isKind(LSQUARE)){
+            selector = pixelSelector();
+        }
+        else {
+            throw new SyntaxException("Expected PixelSelector beginning with Left Square Bracket");
+        }
+
+        return new PixelFuncExpr(firstToken, function, selector);
+    }
+
+    private Dimension dimension() throws PLCException {
+        match(LSQUARE);
+        IToken firstToken = current;
+
+        Expr width = expr();
+        match(COMMA);
+        Expr height = expr();
+        match(RSQUARE);
+
+        return new Dimension(firstToken, width, height);
+    }
+
+    private LValue lValue() throws PLCException {
+        IToken firstToken = current;
+
+        Ident ident = null;
+        if(isKind(IDENT)){
+            ident = new Ident(current);
+            consume();
+        }
+        else{
+            throw new SyntaxException("Expected Ident for LValue");
+        }
+
+
+        PixelSelector p = null;
+        ColorChannel c = null;
+
+        if (isKind(LSQUARE)) {
+            p = pixelSelector();
+        }
+
+
+        if (isKind(COLON)) {
+            consume();
+            c = ColorChannel.getColor(current);
+            consume();
+        }
+
+        return new LValue(firstToken, ident, p, c);
+    }
+
+    private Statement statement() throws PLCException {
+        IToken firstToken = current;
+
+        if(isKind(IDENT)) {
+            LValue lValue = lValue();
+            match(ASSIGN);
+            Expr expr = expr();
+            return new AssignmentStatement(firstToken, lValue, expr);
+        }
+        else if(isKind(RES_write)){
+            consume();
+            Expr expr = expr();
+            return new WriteStatement(firstToken, expr);
+        }
+        else if(isKind(RES_while)){
+            consume();
+            Expr expr = expr();
+            Block block = block();
+            return new WhileStatement(firstToken, expr, block);
+        }
+        else {
+            throw new SyntaxException("expected IDENT(LValue), write, or while");
+        }
+    }
+}

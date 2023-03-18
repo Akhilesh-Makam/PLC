@@ -13,25 +13,45 @@ package edu.ufl.cise.plcsp23.ast;
 import edu.ufl.cise.plcsp23.IToken;
 import edu.ufl.cise.plcsp23.PLCException;
 
-public class IdentExpr extends Expr {
-		
-	public IdentExpr(IToken firstToken) {
+public class ExpandedPixelExpr extends Expr {
+	
+	final Expr redExpr;
+	final Expr grnExpr;
+	final Expr bluExpr;		
+
+	public ExpandedPixelExpr(IToken firstToken, Expr redExpr, Expr grnExpr, Expr bluExpr) {
 		super(firstToken);
+		this.redExpr = redExpr;
+		this.grnExpr = grnExpr;
+		this.bluExpr = bluExpr;
 	}
+
 
 	@Override
 	public Object visit(ASTVisitor v, Object arg) throws PLCException {
-		return v.visitIdentExpr(this,arg);
+		return v.visitExpandedPixelExpr(this, arg);
 	}
-	
-	public String getName() {
-		return firstToken.getTokenString();
+
+
+	public Expr getRedExpr() {
+		return redExpr;
 	}
+
+
+	public Expr getGrnExpr() {
+		return grnExpr;
+	}
+
+
+	public Expr getBluExpr() {
+		return bluExpr;
+	}
+
 
 	@Override
 	public String toString() {
-		return "IdentExpr [firstToken=" + firstToken + "]";
+		return "ExpandedPixelExpr [redExpr=" + redExpr + ", grnExpr=" + grnExpr + ", bluExpr=" + bluExpr + "]";
 	}
-	
 
+	
 }

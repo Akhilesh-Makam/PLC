@@ -13,25 +13,37 @@ package edu.ufl.cise.plcsp23.ast;
 import edu.ufl.cise.plcsp23.IToken;
 import edu.ufl.cise.plcsp23.PLCException;
 
-public class IdentExpr extends Expr {
-		
-	public IdentExpr(IToken firstToken) {
+public class PixelSelector extends AST {
+
+	final Expr x;
+	final Expr y;
+
+	public PixelSelector(IToken firstToken, Expr x, Expr y) {
 		super(firstToken);
+		this.x = x;
+		this.y = y;
 	}
 
 	@Override
 	public Object visit(ASTVisitor v, Object arg) throws PLCException {
-		return v.visitIdentExpr(this,arg);
+		return v.visitPixelSelector(this, arg);
 	}
-	
-	public String getName() {
-		return firstToken.getTokenString();
+
+	public Expr getX() {
+		return x;
+	}
+
+	public Expr getY() {
+		return y;
 	}
 
 	@Override
 	public String toString() {
-		return "IdentExpr [firstToken=" + firstToken + "]";
+		return "PixelSelector [x=" + x + ", y=" + y + "]";
 	}
-	
 
+
+
+
+	
 }
