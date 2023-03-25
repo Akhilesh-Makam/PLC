@@ -21,6 +21,7 @@ public interface IToken {
 		IDENT,
 		NUM_LIT,
 		STRING_LIT,
+		RES_return,
 		RES_image,
 		RES_pixel,
 		RES_int,

@@ -123,11 +123,21 @@ public class Parser implements IParser {
                 throw new SyntaxException("Reached end of file while parsing; missing Right Curly Bracket");
             }
             decList = decList();
-            statementList = statementList();
+            if(isKind(RES_return)){
+                consume();
+                statementList.add(new ReturnStatement(current, expr()));
+            }
+            else{
+                statementList = statementList();
+            }
         }
 
         match(RCURLY);
-        return new Block(firstToken, decList, statementList);
+        if (!statementList.isEmpty() && statementList.get(statementList.size() - 1) instanceof ReturnStatement) {
+            return new Block(firstToken, decList, statementList);
+        } else {
+            throw new SyntaxException("Expected Return Statement at the end of Block");
+        }
     }
 
     private List<Declaration> decList() throws PLCException {
@@ -144,8 +154,15 @@ public class Parser implements IParser {
     private List<Statement> statementList() throws PLCException {
         List<Statement> toReturn = new ArrayList<>();
 
-        while(isKind(IDENT, RES_write, RES_while)) {
-            toReturn.add(statement());
+        while(isKind(IDENT, RES_write, RES_while, RES_return)) {
+            if(isKind(RES_return)){
+                consume();
+                Expr expr = expr();
+                toReturn.add(new ReturnStatement(current, expr));
+            }
+            else{
+                toReturn.add(statement());
+            }
             match(DOT);
         }
 
