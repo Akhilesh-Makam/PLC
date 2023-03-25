@@ -123,21 +123,11 @@ public class Parser implements IParser {
                 throw new SyntaxException("Reached end of file while parsing; missing Right Curly Bracket");
             }
             decList = decList();
-            if(isKind(RES_return)){
-                consume();
-                statementList.add(new ReturnStatement(current, expr()));
-            }
-            else{
-                statementList = statementList();
-            }
+            statementList = statementList();
         }
 
         match(RCURLY);
-        if (!statementList.isEmpty() && statementList.get(statementList.size() - 1) instanceof ReturnStatement) {
-            return new Block(firstToken, decList, statementList);
-        } else {
-            throw new SyntaxException("Expected Return Statement at the end of Block");
-        }
+        return new Block(firstToken, decList, statementList);
     }
 
     private List<Declaration> decList() throws PLCException {
@@ -154,15 +144,8 @@ public class Parser implements IParser {
     private List<Statement> statementList() throws PLCException {
         List<Statement> toReturn = new ArrayList<>();
 
-        while(isKind(IDENT, RES_write, RES_while, RES_return)) {
-            if(isKind(RES_return)){
-                consume();
-                Expr expr = expr();
-                toReturn.add(new ReturnStatement(current, expr));
-            }
-            else{
-                toReturn.add(statement());
-            }
+        while(isKind(IDENT, RES_write, RES_while)) {
+            toReturn.add(statement());
             match(DOT);
         }
 
@@ -514,6 +497,7 @@ public class Parser implements IParser {
         return new LValue(firstToken, ident, p, c);
     }
 
+
     private Statement statement() throws PLCException {
         IToken firstToken = current;
 
@@ -534,8 +518,13 @@ public class Parser implements IParser {
             Block block = block();
             return new WhileStatement(firstToken, expr, block);
         }
+        else if(isKind(COLON)){
+            consume();
+            Expr expr = expr();
+            return new ReturnStatement(firstToken, expr);
+        }
         else {
-            throw new SyntaxException("expected IDENT(LValue), write, or while");
+            throw new SyntaxException("expected IDENT(LValue), write, colon, or while");
         }
     }
 }

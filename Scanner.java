@@ -81,7 +81,6 @@ public class Scanner implements IScanner {
         reservedWords.put("red", IToken.Kind.RES_red);
         reservedWords.put("grn", IToken.Kind.RES_grn);
         reservedWords.put("blu", IToken.Kind.RES_blu);
-        reservedWords.put("return", IToken.Kind.RES_return);
     }
 
     private boolean isDigit(int ch) {

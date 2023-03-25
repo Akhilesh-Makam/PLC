@@ -122,6 +122,6 @@ public class ASTVisitorX implements ASTVisitor{
 
     @Override
     public Object visitZExpr(ZExpr zExpr, Object arg) throws PLCException {
-        return null;
+        return zExpr.getValue();
     }
 }

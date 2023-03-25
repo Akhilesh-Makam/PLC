@@ -9,7 +9,7 @@ package edu.ufl.cise.plcsp23;/*Copyright 2023 by Beverly A Sanders
  */
 
 import edu.ufl.cise.plcsp23.ast.AST;
-import edu.ufl.cise.plcsp23.ast.ASTVisitor;
+import edu.ufl.cise.plcsp23.ast.ASTVisitorX;
 
 public class CompilerComponentFactory {
 	public static IScanner makeScanner(String input) {
@@ -29,10 +29,8 @@ public class CompilerComponentFactory {
 		return new Parser(scanner);
 	}
 
-	public static AST makeTypeChecker(String input) throws PLCException { //not sure how to make this
-		IScanner scanner = new Scanner(input);
-		IParser parser = new Parser(scanner);
-		AST x = parser.parse();
+	public static ASTVisitorX makeTypeChecker() { //not sure how to make this
+		ASTVisitorX x = new ASTVisitorX();
 		return x;
 	}
 }
