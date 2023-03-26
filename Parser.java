@@ -43,6 +43,7 @@ public class Parser implements IParser {
     void match(Kind expected) throws PLCException {
         if (current.getKind() == expected) {
             current = scanner.next();
+            System.out.println(current.getKind());
         }
         else {
             throw new SyntaxException("Expected token kind " + expected + " different than provided kind " + current.getKind());
@@ -51,12 +52,14 @@ public class Parser implements IParser {
 
     void consume() throws PLCException {
         current = scanner.next();
+        System.out.println(current.getKind());
     }
     @Override
     //where the actual parsing occurs
     public AST parse() throws PLCException {
 
         current = scanner.next();
+        System.out.println(current.getKind());
 
         if (current.getKind() == Kind.EOF) {
             throw new SyntaxException("No input");
@@ -141,10 +144,28 @@ public class Parser implements IParser {
         return toReturn;
     }
 
+    private ReturnStatement returnStatement() throws PLCException {
+        IToken firstToken = current;
+
+        match(COLON);
+
+        Expr expr = null;
+        if (!isKind(COLON)) {
+            expr = expr();
+        }
+
+        match(DOT);
+
+        return new ReturnStatement(firstToken, expr);
+    }
+
     private List<Statement> statementList() throws PLCException {
         List<Statement> toReturn = new ArrayList<>();
 
-        while(isKind(IDENT, RES_write, RES_while)) {
+        while(isKind(IDENT, RES_write, RES_while, COLON)) {
+            if(isKind(COLON)){
+                toReturn.add(returnStatement());
+            }
             toReturn.add(statement());
             match(DOT);
         }
