@@ -165,6 +165,7 @@ public class Parser implements IParser {
         while(isKind(IDENT, RES_write, RES_while, COLON)) {
             if(isKind(COLON)){
                 toReturn.add(returnStatement());
+                continue;
             }
             toReturn.add(statement());
             match(DOT);
