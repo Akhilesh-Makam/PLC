@@ -136,8 +136,8 @@ public class ASTVisitorX implements ASTVisitor{
     public Object visitDimension(Dimension dimension, Object arg) throws PLCException {
         Type x = (Type) dimension.getHeight().visit(this, arg);
         Type y = (Type) dimension.getWidth().visit(this,arg);
-        check(x == y, dimension, "invalid dimension input");
-        return null;
+        check(x == Type.INT && y == Type.INT, dimension, "invalid dimension input");
+        return x;
     }
 
     @Override
@@ -169,7 +169,18 @@ public class ASTVisitorX implements ASTVisitor{
 
     @Override
     public Object visitNameDef(NameDef nameDef, Object arg) throws PLCException {
-        return null;
+        if(nameDef.getDimension() != null){
+            check(nameDef.getType() == Type.IMAGE, nameDef, "NameDef has dimensions with incorrect type");
+            Type r = (Type) nameDef.getDimension().visit(this, arg);
+        }
+        check(nameDef.getType() != Type.VOID, nameDef, "NameDef cannot be void");
+        if(symbolTable.lookup(nameDef.getIdent().getName()) == null){
+            symbolTable.insert(nameDef.getIdent().getName(), nameDef);
+            return null;
+        }
+        else{
+            throw new TypeCheckException("Ident already exists");
+        }
     }
 
     @Override
