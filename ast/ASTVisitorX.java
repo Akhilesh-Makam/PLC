@@ -6,23 +6,25 @@ import edu.ufl.cise.plcsp23.PLCException;
 import edu.ufl.cise.plcsp23.TypeCheckException;
 
 import java.util.HashMap;
+import java.util.List;
 
 
 public class ASTVisitorX implements ASTVisitor{
 
     public static class SymbolTable{
-        HashMap<String, Declaration> entries = new HashMap<>();
+        HashMap<String, NameDef> entries = new HashMap<>();
 
-        public boolean insert(String name, Declaration declaration){
-            return (entries.putIfAbsent(name, declaration) == null);
+        public boolean insert(String name, NameDef nameDef){
+            return (entries.putIfAbsent(name, nameDef) == null);
         }
 
-        public Declaration lookup(String name){
+        public NameDef lookup(String name){
             return entries.get(name);
         }
     }
 
     SymbolTable symbolTable = new SymbolTable();
+    Type programType;
 
     private void check(boolean condtion, AST node, String message) throws PLCException{
         if(!condtion){
@@ -105,12 +107,24 @@ public class ASTVisitorX implements ASTVisitor{
 
     @Override
     public Object visitBlock(Block block, Object arg) throws PLCException {
+        List<Declaration> decList = block.getDecList();
+        List<Statement> stateList = block.getStatementList();
+        for(Declaration dec : decList){
+            dec.visit(this, arg);
+        }
+        for(Statement state : stateList){
+            state.visit(this, arg);
+        }
         return null;
     }
 
     @Override
     public Object visitConditionalExpr(ConditionalExpr conditionalExpr, Object arg) throws PLCException {
-        return null;
+        Type x = (Type) conditionalExpr.getGuard().visit(this, arg);
+        Type y = (Type) conditionalExpr.getTrueCase().visit(this, arg);
+        Type z = (Type) conditionalExpr.getFalseCase().visit(this, arg);
+        check((x == Type.INT) && (y == z), conditionalExpr, "incorrect Expr in conditionalExpr");
+        return y;
     }
 
     @Override
@@ -120,12 +134,20 @@ public class ASTVisitorX implements ASTVisitor{
 
     @Override
     public Object visitDimension(Dimension dimension, Object arg) throws PLCException {
+        Type x = (Type) dimension.getHeight().visit(this, arg);
+        Type y = (Type) dimension.getWidth().visit(this,arg);
+        check(x == y, dimension, "invalid dimension input");
         return null;
     }
 
     @Override
     public Object visitExpandedPixelExpr(ExpandedPixelExpr expandedPixelExpr, Object arg) throws PLCException {
-        return null;
+        Type r = (Type) expandedPixelExpr.redExpr.visit(this, arg);
+        Type b = (Type) expandedPixelExpr.bluExpr.visit(this, arg);
+        Type g = (Type) expandedPixelExpr.grnExpr.visit(this, arg);
+        check(r == b && b == g, expandedPixelExpr, "Invalid red, blue, or green for ExpandedPixelExpr");
+        expandedPixelExpr.setType(Type.PIXEL);
+        return Type.PIXEL;
     }
 
     @Override
@@ -134,7 +156,9 @@ public class ASTVisitorX implements ASTVisitor{
     }
 
     @Override
-    public Object visitIdentExpr(IdentExpr identExpr, Object arg) throws PLCException {
+    public Object visitIdentExpr(IdentExpr identExpr, Object arg) throws PLCException { //have to change later for scope, confused on return
+        check(symbolTable.lookup(identExpr.getName()) != null, identExpr, "IdentExpr not found in symbol table");
+        //identExpr.setType();
         return null;
     }
 
@@ -156,11 +180,16 @@ public class ASTVisitorX implements ASTVisitor{
 
     @Override
     public Object visitPixelFuncExpr(PixelFuncExpr pixelFuncExpr, Object arg) throws PLCException {
-        return null;
+        Type x = (Type) pixelFuncExpr.getSelector().visit(this, arg);
+        pixelFuncExpr.setType(Type.INT);
+        return Type.INT;
     }
 
     @Override
     public Object visitPixelSelector(PixelSelector pixelSelector, Object arg) throws PLCException {
+        Type x = (Type) pixelSelector.x.visit(this, arg);
+        Type y = (Type) pixelSelector.y.visit(this,arg);
+        check(x==y, pixelSelector, "invalid x and y for pixelSelector");
         return null;
     }
 
@@ -172,6 +201,7 @@ public class ASTVisitorX implements ASTVisitor{
 
     @Override
     public Object visitProgram(Program program, Object arg) throws PLCException {
+        programType = program.getType();
         return null;
     }
 
@@ -194,7 +224,25 @@ public class ASTVisitorX implements ASTVisitor{
 
     @Override
     public Object visitUnaryExpr(UnaryExpr unaryExpr, Object arg) throws PLCException {
-        return null;
+        Token.Kind op = unaryExpr.getOp();
+        Type x = (Type) unaryExpr.getE().visit(this, arg);
+        Type result = null;
+        switch(op){
+            case BANG -> {
+                check(x == Type.INT || x == Type.PIXEL, unaryExpr, "invalid type in UnaryExpr");
+                result = x;
+            }
+            case MINUS, RES_cos, RES_sin, RES_atan -> {
+                check(x == Type.INT, unaryExpr, "invalid type in UnaryExpr");
+                result = x;
+            }
+            default -> {
+                throw new TypeCheckException("Invalid UnaryExpr operator");
+            }
+        }
+        unaryExpr.setType(result);
+        return result;
+
     }
 
     @Override
@@ -209,6 +257,7 @@ public class ASTVisitorX implements ASTVisitor{
 
     @Override
     public Object visitWriteStatement(WriteStatement statementWrite, Object arg) throws PLCException {
+        Type x = (Type) statementWrite.getE().visit(this, arg);
         return null;
     }
 
