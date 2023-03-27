@@ -223,6 +223,8 @@ public class ASTVisitorX implements ASTVisitor{
 
     @Override
     public Object visitReturnStatement(ReturnStatement returnStatement, Object arg) throws PLCException {
+        Type r = (Type) returnStatement.getE().visit(this,arg);
+        check(r == programType, returnStatement, "Invalid Return Statement");
         return null;
     }
 
