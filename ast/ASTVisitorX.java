@@ -156,10 +156,9 @@ public class ASTVisitorX implements ASTVisitor{
     }
 
     @Override
-    public Object visitIdentExpr(IdentExpr identExpr, Object arg) throws PLCException { //have to change later for scope, confused on return
+    public Object visitIdentExpr(IdentExpr identExpr, Object arg) throws PLCException {
         check(symbolTable.lookup(identExpr.getName()) != null, identExpr, "IdentExpr not found in symbol table");
-        //identExpr.setType();
-        return null;
+        return symbolTable.lookup(identExpr.getName());
     }
 
     @Override
