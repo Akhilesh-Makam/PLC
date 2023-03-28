@@ -4,13 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4630c38b-fa48-42d1-a6b3-fd84fdeca931" name="Changes" comment="pushing tony branch assignment 3 parser should work after OH help">
+    <list default="true" id="4630c38b-fa48-42d1-a6b3-fd84fdeca931" name="Changes" comment="changed match() and List&lt;Token&gt; implementation. pushing tony branch fully functional assignment 3 parser">
+      <change afterPath="$PROJECT_DIR$/src/edu/ufl/cise/plcsp23/ast/ASTVisitorX.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/edu/ufl/cise/plcsp23/ast/ReturnStatement.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/PLC/edu/ufl/cise/plcsp23/CompilerComponentFactory.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/PLC/edu/ufl/cise/plcsp23/CompilerComponentFactory.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/PLC/edu/ufl/cise/plcsp23/Parser.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/PLC/edu/ufl/cise/plcsp23/Parser.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/PLC/edu/ufl/cise/plcsp23/Scanner$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/PLC/edu/ufl/cise/plcsp23/Scanner$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/PLC/edu/ufl/cise/plcsp23/Scanner.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/PLC/edu/ufl/cise/plcsp23/Scanner.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/edu/ufl/cise/plcsp23/Parser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/edu/ufl/cise/plcsp23/Parser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/edu/ufl/cise/plcsp23/ast/ASTVisitor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/edu/ufl/cise/plcsp23/ast/ASTVisitor.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -159,7 +158,10 @@
       <workItem from="1678215334684" duration="24945000" />
       <workItem from="1678326731546" duration="951000" />
       <workItem from="1678760508258" duration="9279000" />
-      <workItem from="1678936074352" duration="28890000" />
+      <workItem from="1678936074352" duration="28969000" />
+      <workItem from="1679104297883" duration="25000" />
+      <workItem from="1679760869822" duration="1849000" />
+      <workItem from="1679982083601" duration="16970000" />
     </task>
     <task id="LOCAL-00001" summary="adding tony's Scanner">
       <created>1678042343150</created>
@@ -217,7 +219,14 @@
       <option name="project" value="LOCAL" />
       <updated>1678855914365</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="changed match() and List&lt;Token&gt; implementation. pushing tony branch fully functional assignment 3 parser">
+      <created>1679104212793</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1679104212793</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -255,7 +264,8 @@
     <MESSAGE value="pushing tony assignment 3 program() in Parser but block() and paramList() dont work yet" />
     <MESSAGE value="pushing tony assignment 3 block() in Parser but decList and statementList dont work" />
     <MESSAGE value="pushing tony branch assignment 3 parser should work after OH help" />
-    <option name="LAST_COMMIT_MESSAGE" value="pushing tony branch assignment 3 parser should work after OH help" />
+    <MESSAGE value="changed match() and List&lt;Token&gt; implementation. pushing tony branch fully functional assignment 3 parser" />
+    <option name="LAST_COMMIT_MESSAGE" value="changed match() and List&lt;Token&gt; implementation. pushing tony branch fully functional assignment 3 parser" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

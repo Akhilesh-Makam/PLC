@@ -144,7 +144,7 @@ public class Parser implements IParser {
     private List<Statement> statementList() throws PLCException {
         List<Statement> toReturn = new ArrayList<>();
 
-        while(isKind(IDENT, RES_write, RES_while)) {
+        while(isKind(IDENT, RES_write, RES_while, COLON)) {
             toReturn.add(statement());
             match(DOT);
         }
@@ -517,8 +517,13 @@ public class Parser implements IParser {
             Block block = block();
             return new WhileStatement(firstToken, expr, block);
         }
+        else if(isKind(COLON)){
+            consume();
+            Expr expr = expr();
+            return new ReturnStatement(firstToken, expr);
+        }
         else {
-            throw new SyntaxException("expected IDENT(LValue), write, or while");
+            throw new SyntaxException("expected IDENT(LValue), write, while, or colon(return statement)");
         }
     }
 }
