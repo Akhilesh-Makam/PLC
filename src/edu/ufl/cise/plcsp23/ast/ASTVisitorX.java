@@ -2,23 +2,38 @@ package edu.ufl.cise.plcsp23.ast;
 
 import edu.ufl.cise.plcsp23.IToken;
 import edu.ufl.cise.plcsp23.Token;
-//import edu.ufl.cise.plcsp23.TypeCheckException;
+import edu.ufl.cise.plcsp23.TypeCheckException;
 import edu.ufl.cise.plcsp23.PLCException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Stack;
 
 public class ASTVisitorX implements ASTVisitor {
 
     public static class SymbolTable {
-        //TODO: implement scoping w/ Leblanc Cook (if that's too hard, a stack of HashMaps?)
-        HashMap<String, NameDef> entries = new HashMap<>();
+        //implemented scoping w/ a stack of HashMaps
+        Stack<HashMap<String, NameDef>> scopeStack = new Stack<>();
 
         public boolean insert(String name, NameDef nameDef){
-            return (entries.putIfAbsent(name, nameDef) == null);
+            return scopeStack.peek().putIfAbsent(name, nameDef) == null;
         }
 
         public NameDef lookup(String name){
-            return entries.get(name);
+            for (int i = scopeStack.size() - 1; i >= 0; i--) {
+                HashMap<String, NameDef> scope = scopeStack.get(i);
+                if (scope.containsKey(name)) {
+                    return scope.get(name);
+                }
+            }
+            return null;
+        }
+
+        public void enterScope() {
+            scopeStack.push(new HashMap<>());
+        }
+
+        public void leaveScope() {
+            scopeStack.pop();
         }
     }
 
@@ -157,7 +172,7 @@ public class ASTVisitorX implements ASTVisitor {
         Type expr2 = (Type) conditionalExpr.getFalseCase().visit(this, arg);
 
         check(expr0 == Type.INT, conditionalExpr, "Guard condition must be type INT");
-        check(expr1 == expr2, conditionalExpr, "true and false types must match");
+        check(expr1 == expr2, conditionalExpr, "true and false expr types must match");
 
         conditionalExpr.setType(expr1);
         return expr1;
@@ -165,19 +180,43 @@ public class ASTVisitorX implements ASTVisitor {
 
     @Override
     public Object visitDeclaration(Declaration declaration, Object arg) throws PLCException {
+        //check Expr initializer is properly typed
+        Type initializer = (Type) declaration.getInitializer().visit(this, arg);
+        //NameDef is properly typed
         Type nameDef = (Type) declaration.getNameDef().visit(this, arg);
+        //this visit ordering should check that the initializer doesn't refer to the name being defined(?)
+
+        //If NameDef has type IMAGE, then both initializerExpr, nameDef.dimension cannot be null
         if (nameDef == Type.IMAGE) {
-            Expr initializer = declaration.getInitializer();
+            Expr initializerExpr = declaration.getInitializer();
             Dimension dimension = declaration.getNameDef().getDimension();
-            check((initializer != null) || (dimension != null), declaration,
+            check((initializerExpr != null) || (dimension != null), declaration,
                     "Declaration of NameDef with type IMAGE needs initializer, NameDef.dimension, or both");
         }
 
-        //check Expr initializer is properly typed
-        Type initializer = (Type) declaration.getInitializer().visit(this, arg);
-        //TODO: not sure how to check assign compatibility between initializer and namedef (which table to use)
-        //TODO: not sure how to check that initializer doesn't refer to name being defined
 
+        //check assign compatibility between initializer and nameDef (same as AssignmentStatement LValue to Expr rules)
+        switch(nameDef) {
+            case IMAGE -> {
+                check((initializer == Type.IMAGE) || (initializer == Type.PIXEL) || (initializer == Type.STRING), declaration,
+                        "NameDef with type IMAGE needs Expr with type IMAGE, PIXEL, or STRING");
+            }
+            case PIXEL -> {
+                check((initializer == Type.PIXEL) || (initializer == Type.INT), declaration,
+                        "NameDef with type PIXEL needs Expr with type PIXEL or INT");
+            }
+            case INT -> {
+                check((initializer == Type.PIXEL) || (initializer == Type.INT), declaration,
+                        "NameDef with type INT needs Expr with type PIXEL or INT");
+            }
+            case STRING -> {
+                check((initializer == Type.STRING) || (initializer == Type.INT) || (initializer == Type.PIXEL) || (initializer == Type.IMAGE), declaration,
+                        "NameDef with type STRING needs Expr with type STRING, INT, PIXEL, or IMAGE");
+            }
+            default -> {
+                throw new TypeCheckException("NameDef must be of type IMAGE, PIXEL, INT, or STRING.");
+            }
+        }
 
         //declaration itself doesn't get assigned type here => no need to return one
         return null;
@@ -200,7 +239,7 @@ public class ASTVisitorX implements ASTVisitor {
         Type expr1 = (Type) expandedPixelExpr.getGrnExpr().visit(this, arg);
         Type expr2 = (Type) expandedPixelExpr.getBluExpr().visit(this, arg);
 
-        check((expr0 == Type.INT) && (expr1 ==  Type.INT) && (expr1 ==  Type.INT), expandedPixelExpr,
+        check((expr0 == Type.INT) && (expr1 ==  Type.INT) && (expr2 ==  Type.INT), expandedPixelExpr,
                 "Red, Green, and Blue must all be type INT");
 
         expandedPixelExpr.setType(Type.PIXEL);
@@ -209,14 +248,19 @@ public class ASTVisitorX implements ASTVisitor {
 
     @Override
     public Object visitIdent(Ident ident, Object arg) throws PLCException {
-        //TODO: figure this out. "Set depending on type assigned when declared" (connected to Declaration?)
-        return null;
+        //"Set depending on type assigned when declared"
+        String name = ident.getName();
+        NameDef nameDef = symbolTable.lookup(name);
+
+        check(nameDef != null, ident, "Ident not found in symbol table");
+
+        Type type = nameDef.getType();
+        return type;
     }
 
     @Override
     public Object visitIdentExpr(IdentExpr identExpr, Object arg) throws PLCException {
-        //Based on Lecture slide code to make sure identExpr.name has been defined
-        //TODO: make sure identExpr.name() is in scope
+        //Based on Lecture slide code to make sure identExpr.name has been defined and in scope
         String name = identExpr.getName();
         NameDef nameDef = symbolTable.lookup(name);
 
@@ -229,14 +273,64 @@ public class ASTVisitorX implements ASTVisitor {
 
     @Override
     public Object visitLValue(LValue lValue, Object arg) throws PLCException {
-        String name = lValue.getIdent().getName();
-        NameDef nameDef = symbolTable.lookup(name);
+        Type ident = (Type) lValue.getIdent().visit(this, arg);
 
-        //TODO: make sure ident is visible in this scope
-        check(nameDef != null, lValue, "Ident not found in symbol table");
+        //use table to set and return LVal type
+        PixelSelector pixelSelector = lValue.getPixelSelector();
+        ColorChannel colorChannel = lValue.getColor();
+        Type result = null;
 
-        //TODO: after figuring out how to get/set ident type (see visitIdent), use table to set and return LVal type
-        return null;
+        switch(ident) {
+            case IMAGE -> {
+                if (pixelSelector == null && colorChannel == null) {
+                    result = Type.IMAGE;
+                }
+                else if(pixelSelector != null && colorChannel == null) {
+                    result = Type.PIXEL;
+                }
+                else if(pixelSelector == null && colorChannel != null) {
+                    result = Type.IMAGE;
+                }
+                else if(pixelSelector != null && colorChannel != null) {
+                    result = Type.INT;
+                }
+                else {
+                    throw new TypeCheckException("for ident of type IMAGE, invalid pixelSelector or colorChannel");
+                }
+            }
+            case PIXEL -> {
+                if (pixelSelector == null && colorChannel == null) {
+                    result = Type.PIXEL;
+                }
+                else if(pixelSelector == null && colorChannel != null) {
+                    result = Type.INT;
+                }
+                else {
+                    throw new TypeCheckException("for ident of type PIXEL, invalid pixelSelector or colorChannel");
+                }
+            }
+            case STRING -> {
+                if (pixelSelector == null && colorChannel == null) {
+                    result = Type.STRING;
+                }
+                else {
+                    throw new TypeCheckException("for ident of type STRING, pixelSelector and colorChannel should be null");
+                }
+            }
+            case INT -> {
+                if (pixelSelector == null && colorChannel == null) {
+                    result = Type.INT;
+                }
+                else {
+                    throw new TypeCheckException("for ident of type INT, pixelSelector and colorChannel should be null");
+                }
+            }
+            default -> {
+                throw new TypeCheckException("Invalid ident type");
+            }
+        }
+
+        return result;
     }
 
     @Override
@@ -249,12 +343,14 @@ public class ASTVisitorX implements ASTVisitor {
 
         check(nameDef.getType() != Type.VOID, nameDef, "NameDef cannot be void");
 
-        if(symbolTable.lookup(nameDef.getIdent().getName()) == null){
+        HashMap<String, NameDef> currentScope = symbolTable.scopeStack.peek();
+
+        if(!currentScope.containsKey(nameDef.getIdent().getName())){
             symbolTable.insert(nameDef.getIdent().getName(), nameDef);
             return null;
         }
         else{
-            throw new TypeCheckException("Ident already exists in this scope");
+            throw new TypeCheckException("Ident already declared in this scope");
         }
     }
 
@@ -291,7 +387,7 @@ public class ASTVisitorX implements ASTVisitor {
 
     @Override
     public Object visitProgram(Program program, Object arg) throws PLCException {
-        //TODO: Enter scope
+        symbolTable.enterScope();
 
         programType = program.getType();
 
@@ -302,7 +398,7 @@ public class ASTVisitorX implements ASTVisitor {
 
         Type block = (Type) program.getBlock().visit(this, arg);
 
-        //TODO: Leave scope
+        symbolTable.leaveScope();
 
         return programType;
     }
@@ -317,7 +413,30 @@ public class ASTVisitorX implements ASTVisitor {
     public Object visitReturnStatement(ReturnStatement returnStatement, Object arg)throws PLCException {
         Type expr = (Type) returnStatement.getE().visit(this, arg);
 
-        //TODO: check expr type against program type for assignment compatibility (again not sure which table to use)
+        //check expr type against program type for assignment compatibility
+        switch(programType) {
+            case IMAGE -> {
+                check(expr == Type.IMAGE || expr == Type.PIXEL || expr == Type.STRING, returnStatement,
+                        "program of type IMAGE needs return expression of type IMAGE, PIXEL, or STRING");
+            }
+            case PIXEL -> {
+                check(expr == Type.PIXEL || expr == Type.INT, returnStatement,
+                        "program of type PIXEL needs return expression of type PIXEL or INT");
+            }
+            case INT -> {
+                check(expr == Type.PIXEL || expr == Type.INT, returnStatement,
+                        "program of type INT needs return expression of type PIXEL or INT");
+            }
+            case STRING -> {
+                check(expr == Type.STRING || expr == Type.PIXEL || expr == Type.INT || expr == Type.IMAGE, returnStatement,
+                        "program of type STRING needs return expression of type STRING, INT, PIXEL or IMAGE");
+            }
+            default -> {
+                throw new TypeCheckException("Invalid program type");
+            }
+        }
+
+
         return null;
     }
 
@@ -393,9 +512,9 @@ public class ASTVisitorX implements ASTVisitor {
         Type expr = (Type) whileStatement.getGuard().visit(this, arg);
         check(expr == Type.INT, whileStatement, "While GuardExpr must be type INT");
 
-        //TODO: enterScope()
+        symbolTable.enterScope();
         Type block = (Type) whileStatement.getBlock().visit(this, arg);
-        //TODO: leaveScope()
+        symbolTable.leaveScope();
 
         return null;
     }
