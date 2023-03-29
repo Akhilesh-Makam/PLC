@@ -196,9 +196,24 @@ public class ASTVisitorX implements ASTVisitor {
             exprCheck = false;
         }
 
+
+
         if(exprCheck){
             Type expr = (Type) declaration.getInitializer().visit(this,arg);
-            check(expr == nameDef, declaration, "nameDef and declaration do not match");
+            switch(nameDef){
+                case IMAGE -> {
+                    check(expr == Type.IMAGE || expr == Type.PIXEL | expr == Type.STRING, declaration, "nameDef and declaration do not match");
+                }
+                case INT, PIXEL ->{
+                    check(expr == Type.PIXEL | expr == Type.INT, declaration, "nameDef and declaration do not match");
+                }
+                case STRING -> {
+                    check(expr == Type.IMAGE || expr == Type.PIXEL | expr == Type.STRING || expr == Type.INT, declaration, "nameDef and declaration do not match");
+                }
+                default->{
+                    throw new TypeCheckException("Declaration cannot be void");
+                }
+            }
         }
 
         if(nameDef == Type.IMAGE){
