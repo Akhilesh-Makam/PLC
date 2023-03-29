@@ -284,7 +284,7 @@ public class Parser implements IParser {
         IToken firstToken = current;
         Expr left = powerExpr();
         Expr right = null;
-        while (isKind(LT, LE, GT, GE)) {
+        while (isKind(LT, LE, GT, GE, EQ)) {
             Kind op = current.getKind();
             consume();
             right = powerExpr();

@@ -359,6 +359,7 @@ public class ASTVisitorX implements ASTVisitor {
         HashMap<String, NameDef> currentScope = symbolTable.scopeStack.peek();
 
         if(!currentScope.containsKey(nameDef.getIdent().getName())){
+
             symbolTable.insert(nameDef.getIdent().getName(), nameDef);
             return nameDef.getType();
         }
