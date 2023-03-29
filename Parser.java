@@ -389,6 +389,7 @@ public class Parser implements IParser {
             return identExpr;
         }
         else if (isKind(LPAREN)) {
+            consume();
             Expr f = expr();
 
             while(!isKind(RPAREN)) {

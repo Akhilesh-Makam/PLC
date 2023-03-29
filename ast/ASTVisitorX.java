@@ -108,7 +108,7 @@ public class ASTVisitorX implements ASTVisitor {
             }
             case EXP->{
                 check((leftType == Type.INT && rightType == Type.INT) || (leftType == Type.PIXEL && rightType == Type.INT)
-                                || (leftType == Type.INT && rightType == Type.PIXEL), binaryExpr,
+                                , binaryExpr,
                         "incompatible types with given operator");
                 if(leftType == Type.PIXEL || rightType == Type.PIXEL){
                     resultType = Type.PIXEL;
@@ -132,9 +132,7 @@ public class ASTVisitorX implements ASTVisitor {
             case TIMES, DIV, MOD -> {
                 check((leftType == Type.INT && rightType == Type.INT) || (leftType == Type.PIXEL && rightType == Type.PIXEL)
                                 || (leftType == Type.IMAGE && rightType == Type.IMAGE) || (leftType == Type.PIXEL && rightType == Type.INT)
-                                || (leftType == Type.INT && rightType == Type.PIXEL) || (leftType == Type.IMAGE && rightType == Type.INT) ||
-                                (leftType == Type.INT && rightType == Type.IMAGE)
-                        ,
+                                || (leftType == Type.IMAGE && rightType == Type.INT),
                         binaryExpr, "incompatible types with given operator");
                 if(leftType == Type.PIXEL || rightType == Type.PIXEL){
                     resultType = Type.PIXEL;
@@ -276,6 +274,7 @@ public class ASTVisitorX implements ASTVisitor {
         NameDef nameDef = symbolTable.lookup(name);
 
         check(nameDef != null, identExpr, "IdentExpr not found in symbol table");
+
 
         Type type = nameDef.getType();
         identExpr.setType(type);
