@@ -10,6 +10,8 @@
 
 package edu.ufl.cise.plcsp23;
 
+import edu.ufl.cise.plcsp23.ast.ASTVisitorX;
+
 public class CompilerComponentFactory {
 	public static IScanner makeScanner(String input) {
 		//Add statement to return an instance of your scanner
@@ -26,5 +28,10 @@ public class CompilerComponentFactory {
 		//Add statement to return an instance of your scanner and parser
 		IScanner scanner = new Scanner(input);
 		return new Parser(scanner);
+	}
+
+	public static ASTVisitorX makeTypeChecker() {
+		ASTVisitorX x = new ASTVisitorX();
+		return x;
 	}
 }

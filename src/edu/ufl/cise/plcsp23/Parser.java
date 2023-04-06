@@ -262,7 +262,7 @@ public class Parser implements IParser {
         IToken firstToken = current;
         Expr left = powerExpr();
         Expr right = null;
-        while (isKind(LT, LE, GT, GE)) {
+        while (isKind(LT, LE, GT, GE, EQ)) {
             Kind op = current.getKind();
             consume();
             right = powerExpr();
@@ -367,6 +367,7 @@ public class Parser implements IParser {
             return identExpr;
         }
         else if (isKind(LPAREN)) {
+            consume();
             Expr f = expr();
 
             while(!isKind(RPAREN)) {

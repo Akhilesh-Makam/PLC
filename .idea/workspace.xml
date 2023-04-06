@@ -4,8 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4630c38b-fa48-42d1-a6b3-fd84fdeca931" name="Changes" comment="Assignment 4 work. Mostly completed, TODOs are marked. Main task remaining is to implement scoping">
+    <list default="true" id="4630c38b-fa48-42d1-a6b3-fd84fdeca931" name="Changes" comment="ASTVisitor implementation should be complete. ready for testing">
+      <change afterPath="$PROJECT_DIR$/src/edu/ufl/cise/plcsp23/TypeCheckException.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/edu/ufl/cise/plcsp23/CompilerComponentFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/edu/ufl/cise/plcsp23/CompilerComponentFactory.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/edu/ufl/cise/plcsp23/Parser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/edu/ufl/cise/plcsp23/Parser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/edu/ufl/cise/plcsp23/TypeCheckTest_starter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/edu/ufl/cise/plcsp23/TypeCheckTest_starter.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/edu/ufl/cise/plcsp23/ast/ASTVisitorX.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/edu/ufl/cise/plcsp23/ast/ASTVisitorX.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -66,8 +70,8 @@
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
-  <component name="RunManager" selected="JUnit.Assignment3Test_starter">
-    <configuration name="Assignment3Test_starter" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+  <component name="RunManager" selected="JUnit.Assignment4Test_generated">
+    <configuration name="Assignment4Test_generated" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="PLC" />
       <extension name="coverage">
         <pattern>
@@ -76,13 +80,13 @@
         </pattern>
       </extension>
       <option name="PACKAGE_NAME" value="edu.ufl.cise.plcsp23" />
-      <option name="MAIN_CLASS_NAME" value="edu.ufl.cise.plcsp23.Assignment3Test_starter" />
+      <option name="MAIN_CLASS_NAME" value="edu.ufl.cise.plcsp23.Assignment4Test_generated" />
       <option name="TEST_OBJECT" value="class" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="Assignment3Test_starter.test11" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="Assignment4Test_generated.test11" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="PLC" />
       <extension name="coverage">
         <pattern>
@@ -91,14 +95,14 @@
         </pattern>
       </extension>
       <option name="PACKAGE_NAME" value="edu.ufl.cise.plcsp23" />
-      <option name="MAIN_CLASS_NAME" value="edu.ufl.cise.plcsp23.Assignment3Test_starter" />
+      <option name="MAIN_CLASS_NAME" value="edu.ufl.cise.plcsp23.Assignment4Test_generated" />
       <option name="METHOD_NAME" value="test11" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="Assignment3Test_starter.test13" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="Assignment4Test_generated.test16" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="PLC" />
       <extension name="coverage">
         <pattern>
@@ -107,14 +111,14 @@
         </pattern>
       </extension>
       <option name="PACKAGE_NAME" value="edu.ufl.cise.plcsp23" />
-      <option name="MAIN_CLASS_NAME" value="edu.ufl.cise.plcsp23.Assignment3Test_starter" />
-      <option name="METHOD_NAME" value="test13" />
+      <option name="MAIN_CLASS_NAME" value="edu.ufl.cise.plcsp23.Assignment4Test_generated" />
+      <option name="METHOD_NAME" value="test16" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="Assignment3Test_starter.test14" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="TypeCheckTest_starter" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="PLC" />
       <extension name="coverage">
         <pattern>
@@ -123,8 +127,23 @@
         </pattern>
       </extension>
       <option name="PACKAGE_NAME" value="edu.ufl.cise.plcsp23" />
-      <option name="MAIN_CLASS_NAME" value="edu.ufl.cise.plcsp23.Assignment3Test_starter" />
-      <option name="METHOD_NAME" value="test14" />
+      <option name="MAIN_CLASS_NAME" value="edu.ufl.cise.plcsp23.TypeCheckTest_starter" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="TypeCheckTest_starter.identReferred" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="PLC" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="edu.ufl.cise.plcsp23.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="edu.ufl.cise.plcsp23" />
+      <option name="MAIN_CLASS_NAME" value="edu.ufl.cise.plcsp23.TypeCheckTest_starter" />
+      <option name="METHOD_NAME" value="identReferred" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -132,10 +151,11 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="JUnit.Assignment3Test_starter" />
-        <item itemvalue="JUnit.Assignment3Test_starter.test14" />
-        <item itemvalue="JUnit.Assignment3Test_starter.test13" />
-        <item itemvalue="JUnit.Assignment3Test_starter.test11" />
+        <item itemvalue="JUnit.Assignment4Test_generated" />
+        <item itemvalue="JUnit.Assignment4Test_generated.test16" />
+        <item itemvalue="JUnit.Assignment4Test_generated.test11" />
+        <item itemvalue="JUnit.TypeCheckTest_starter" />
+        <item itemvalue="JUnit.TypeCheckTest_starter.identReferred" />
       </list>
     </recent_temporary>
   </component>
@@ -159,6 +179,7 @@
       <workItem from="1679104297883" duration="25000" />
       <workItem from="1679760869822" duration="1849000" />
       <workItem from="1679982083601" duration="26863000" />
+      <workItem from="1680736020336" duration="8416000" />
     </task>
     <task id="LOCAL-00001" summary="adding tony's Scanner">
       <created>1678042343150</created>
@@ -271,22 +292,6 @@
     <MESSAGE value="changed match() and List&lt;Token&gt; implementation. pushing tony branch fully functional assignment 3 parser" />
     <MESSAGE value="Assignment 4 work. Mostly completed, TODOs are marked. Main task remaining is to implement scoping" />
     <option name="LAST_COMMIT_MESSAGE" value="Assignment 4 work. Mostly completed, TODOs are marked. Main task remaining is to implement scoping" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/edu/ufl/cise/plcsp23/Parser.java</url>
-          <line>64</line>
-          <option name="timeStamp" value="25" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/edu/ufl/cise/plcsp23/Parser.java</url>
-          <line>101</line>
-          <option name="timeStamp" value="26" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/PLC$Assignment3Test_starter_test13.ic" NAME="Assignment3Test_starter.test13 Coverage Results" MODIFIED="1678987110052" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">
