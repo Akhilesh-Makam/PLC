@@ -2,15 +2,14 @@ package edu.ufl.cise.plcsp23.ast;
 
 import edu.ufl.cise.plcsp23.IToken;
 import edu.ufl.cise.plcsp23.Token;
-import edu.ufl.cise.plcsp23.PLCException;
 import edu.ufl.cise.plcsp23.TypeCheckException;
-
+import edu.ufl.cise.plcsp23.PLCException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Stack;
 
-
 public class ASTVisitorX implements ASTVisitor {
+
     public static class SymbolTable {
         //implemented scoping w/ a stack of HashMaps
         Stack<HashMap<String, NameDef>> scopeStack = new Stack<>();
@@ -107,8 +106,7 @@ public class ASTVisitorX implements ASTVisitor {
                 resultType = Type.INT;
             }
             case EXP->{
-                check((leftType == Type.INT && rightType == Type.INT) || (leftType == Type.PIXEL && rightType == Type.INT)
-                                , binaryExpr,
+                check((leftType == Type.INT && rightType == Type.INT) || (leftType == Type.PIXEL && rightType == Type.INT), binaryExpr,
                         "incompatible types with given operator");
                 if(leftType == Type.PIXEL || rightType == Type.PIXEL){
                     resultType = Type.PIXEL;
@@ -132,8 +130,8 @@ public class ASTVisitorX implements ASTVisitor {
             case TIMES, DIV, MOD -> {
                 check((leftType == Type.INT && rightType == Type.INT) || (leftType == Type.PIXEL && rightType == Type.PIXEL)
                                 || (leftType == Type.IMAGE && rightType == Type.IMAGE) || (leftType == Type.PIXEL && rightType == Type.INT)
-                                || (leftType == Type.IMAGE && rightType == Type.INT),
-                        binaryExpr, "incompatible types with given operator");
+                                || (leftType == Type.IMAGE && rightType == Type.INT), binaryExpr,
+                        "incompatible types with given operator");
                 if(leftType == Type.PIXEL || rightType == Type.PIXEL){
                     resultType = Type.PIXEL;
                 }
@@ -184,29 +182,34 @@ public class ASTVisitorX implements ASTVisitor {
     @Override
     public Object visitDeclaration(Declaration declaration, Object arg) throws PLCException {
         System.out.println(declaration.toString());
-        Type nameDef = (Type) declaration.getNameDef().visit(this, arg);
 
-        boolean exprCheck = true;
+        boolean isExprPresent = true;
         try{
             Type expr = (Type) declaration.getInitializer().visit(this,arg);
         }
         catch(NullPointerException e){
-            exprCheck = false;
+            isExprPresent = false;
         }
 
+        Type nameDef = (Type) declaration.getNameDef().visit(this, arg);
+        check(nameDef != null, declaration, "NameDef cannot be null");
 
 
-        if(exprCheck){
+
+        if(isExprPresent){
             Type expr = (Type) declaration.getInitializer().visit(this,arg);
             switch(nameDef){
                 case IMAGE -> {
-                    check(expr == Type.IMAGE || expr == Type.PIXEL | expr == Type.STRING, declaration, "nameDef and declaration do not match");
+                    check(expr == Type.IMAGE || expr == Type.PIXEL || expr == Type.STRING, declaration,
+                            "nameDef and declaration do not match");
                 }
                 case INT, PIXEL ->{
-                    check(expr == Type.PIXEL | expr == Type.INT, declaration, "nameDef and declaration do not match");
+                    check(expr == Type.PIXEL || expr == Type.INT, declaration,
+                            "nameDef and declaration do not match");
                 }
                 case STRING -> {
-                    check(expr == Type.IMAGE || expr == Type.PIXEL | expr == Type.STRING || expr == Type.INT, declaration, "nameDef and declaration do not match");
+                    check(expr == Type.IMAGE || expr == Type.PIXEL || expr == Type.STRING || expr == Type.INT, declaration,
+                            "nameDef and declaration do not match");
                 }
                 default->{
                     throw new TypeCheckException("Declaration cannot be void");
@@ -215,14 +218,13 @@ public class ASTVisitorX implements ASTVisitor {
         }
 
         if(nameDef == Type.IMAGE){
-            if(!exprCheck){
+            if(!isExprPresent){
                 check(declaration.getNameDef().getDimension() != null, declaration, "image needs" +
                         "either expr or dimension");
             }
         }
+
         //check assign compatibility between initializer and nameDef (same as AssignmentStatement LValue to Expr rules)
-
-
         //declaration itself doesn't get assigned type here => no need to return one
         return null;
     }
@@ -274,7 +276,6 @@ public class ASTVisitorX implements ASTVisitor {
         NameDef nameDef = symbolTable.lookup(name);
 
         check(nameDef != null, identExpr, "IdentExpr not found in symbol table");
-
 
         Type type = nameDef.getType();
         identExpr.setType(type);
@@ -358,7 +359,6 @@ public class ASTVisitorX implements ASTVisitor {
         HashMap<String, NameDef> currentScope = symbolTable.scopeStack.peek();
 
         if(!currentScope.containsKey(nameDef.getIdent().getName())){
-
             symbolTable.insert(nameDef.getIdent().getName(), nameDef);
             return nameDef.getType();
         }
@@ -377,6 +377,7 @@ public class ASTVisitorX implements ASTVisitor {
     @Override
     public Object visitPixelFuncExpr(PixelFuncExpr pixelFuncExpr, Object arg) throws PLCException {
         System.out.println(pixelFuncExpr.toString());
+        //check that pixelSelector is properly typed
         Type pixelSelector = (Type) pixelFuncExpr.getSelector().visit(this, arg);
 
         pixelFuncExpr.setType(Type.INT);
@@ -516,11 +517,15 @@ public class ASTVisitorX implements ASTVisitor {
             }
         }
         else if (pixelSelector != null && colorChannel == null) {
+            //check that pixelSelector is properly typed since present
+            Type pixel = (Type) unaryExprPostfix.getPixel().visit(this, arg);
             check(primary == Type.IMAGE, unaryExprPostfix,
                     "When no colorChannel, primaryExpr must be type IMAGE");
             result = Type.PIXEL;
         }
         else {
+            //check that pixelSelector is properly typed since present
+            Type pixel = (Type) unaryExprPostfix.getPixel().visit(this, arg);
             check(primary == Type.IMAGE, unaryExprPostfix,
                     "When both pixelSelector and colorChannel given, primaryExpr must be type IMAGE");
             result = Type.INT;

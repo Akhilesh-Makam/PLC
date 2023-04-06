@@ -1,14 +1,15 @@
-package edu.ufl.cise.plcsp23;/*Copyright 2023 by Beverly A Sanders
+/*Copyright 2023 by Beverly A Sanders
  *
  * This code is provided for solely for use of students in COP4020 Programming Language Concepts at the
  * University of Florida during the spring semester 2023 as part of the course project.
  *
  * No other use is authorized.
  *
- * This code may not be posted on a public website either during or after the course.
+ * This code may not be posted on a public web site either during or after the course.
  */
 
-import edu.ufl.cise.plcsp23.ast.AST;
+package edu.ufl.cise.plcsp23;
+
 import edu.ufl.cise.plcsp23.ast.ASTVisitorX;
 
 public class CompilerComponentFactory {
@@ -29,7 +30,7 @@ public class CompilerComponentFactory {
 		return new Parser(scanner);
 	}
 
-	public static ASTVisitorX makeTypeChecker() { //not sure how to make this
+	public static ASTVisitorX makeTypeChecker() {
 		ASTVisitorX x = new ASTVisitorX();
 		return x;
 	}
