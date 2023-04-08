@@ -10,7 +10,10 @@
 
 package edu.ufl.cise.plcsp23;
 
+import edu.ufl.cise.plcsp23.ast.AST;
+import edu.ufl.cise.plcsp23.ast.ASTVisitor;
 import edu.ufl.cise.plcsp23.ast.ASTVisitorX;
+import edu.ufl.cise.plcsp23.ast.CodeGen;
 
 public class CompilerComponentFactory {
 	public static IScanner makeScanner(String input) {
@@ -32,6 +35,11 @@ public class CompilerComponentFactory {
 
 	public static ASTVisitorX makeTypeChecker() {
 		ASTVisitorX x = new ASTVisitorX();
+		return x;
+	}
+
+	public static CodeGen makeCodeGenerator(String y) throws PLCException {
+		CodeGen x = new CodeGen();
 		return x;
 	}
 }
