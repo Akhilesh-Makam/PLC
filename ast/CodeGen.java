@@ -76,7 +76,9 @@ public class CodeGen implements ASTVisitor{
 
     @Override
     public Object visitAssignmentStatement(AssignmentStatement statementAssign, Object arg) throws PLCException {
-        return null;
+        StringBuilder e = new StringBuilder();
+        e.append(statementAssign.getLv().visit(this,null)).append(" = ").append(statementAssign.getE().visit(this,null));
+        return e;
     }
 
     @Override
@@ -191,7 +193,11 @@ public class CodeGen implements ASTVisitor{
 
     @Override
     public Object visitLValue(LValue lValue, Object arg) throws PLCException {
-        return null;
+        StringBuilder s = new StringBuilder();
+        if(lValue.getPixelSelector() == null && lValue.getColor() == null){
+            s.append(lValue.getIdent().visit(this,null));
+        }
+        return s.toString();
     }
 
     @Override
@@ -250,7 +256,9 @@ public class CodeGen implements ASTVisitor{
         if(!rand){
             rand = true;
         }
-        return null;
+        StringBuilder e = new StringBuilder();
+        e.append("Math.floor(Math.random()*256)");
+        return e.toString();
     }
 
     @Override
@@ -262,7 +270,9 @@ public class CodeGen implements ASTVisitor{
 
     @Override
     public Object visitStringLitExpr(StringLitExpr stringLitExpr, Object arg) throws PLCException {
-        return null;
+        StringBuilder e = new StringBuilder();
+        e.append("\"").append(stringLitExpr.getValue()).append("\"");
+        return e;
     }
 
     @Override
