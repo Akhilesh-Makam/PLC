@@ -10,6 +10,7 @@ public class CodeGen implements ASTVisitor{
     boolean write;
     boolean rand;
     boolean power;
+    boolean returnConditional;
 
     public CodeGen(){
         indent = 0;
@@ -17,6 +18,7 @@ public class CodeGen implements ASTVisitor{
         write = false;
         rand = false;
         power = false;
+        returnConditional = false;
 
     }
 
@@ -138,11 +140,13 @@ public class CodeGen implements ASTVisitor{
         StringBuilder blockk = new StringBuilder();
 
         for(int i = 0;i < block.getDecList().size();i++){
+
             blockk.append(block.getDecList().get(i).visit(this, null)).append(";\n");
+
         }
 
         for(int i = 0;i < block.getStatementList().size();i++){
-            blockk.append(block.getStatementList().get(i).visit(this, null)).append(";\n");
+            blockk.append(block.getStatementList().get(i).visit(this, null)).append(";\n");;
         }
         return blockk.toString();
     }
@@ -150,6 +154,11 @@ public class CodeGen implements ASTVisitor{
     @Override
     public Object visitConditionalExpr(ConditionalExpr conditionalExpr, Object arg) throws PLCException {
         StringBuilder e = new StringBuilder();
+           if(returnConditional){
+               return e.append(conditionalExpr.getGuard().visit(this,arg)).
+                       append("  != 0 ? ").append(conditionalExpr.getTrueCase().visit(this,arg))
+                       .append(" : ").append(conditionalExpr.getFalseCase().visit(this,arg));
+           }
         e.append(conditionalExpr.getGuard().visit(this,arg)).
                 append(" ? ").append(conditionalExpr.getTrueCase().visit(this,arg))
                 .append(" : ").append(conditionalExpr.getFalseCase().visit(this,arg));
@@ -259,6 +268,9 @@ public class CodeGen implements ASTVisitor{
     @Override
     public Object visitReturnStatement(ReturnStatement returnStatement, Object arg) throws PLCException {
         StringBuilder e = new StringBuilder();
+        if(returnStatement.getE().toString().contains("ConditionalExpr")){
+            returnConditional = true;
+        }
         e.append("return ").append(returnStatement.getE().visit(this,arg));
         return e.toString();
     }
