@@ -2,15 +2,6 @@ package edu.ufl.cise.plcsp23.ast;
 
 import edu.ufl.cise.plcsp23.IToken;
 import edu.ufl.cise.plcsp23.PLCException;
-import edu.ufl.cise.plcsp23.runtime.ConsoleIO;
-import edu.ufl.cise.plcsp23.javaCompilerClassLoader.DynamicClassLoader;
-import edu.ufl.cise.plcsp23.javaCompilerClassLoader.DynamicCompiler;
-import edu.ufl.cise.plcsp23.javaCompilerClassLoader.InMemoryBytecodeObject;
-import edu.ufl.cise.plcsp23.javaCompilerClassLoader.InMemoryClassFileManager;
-import edu.ufl.cise.plcsp23.javaCompilerClassLoader.StringJavaFileObject;
-
-
-
 
 public class CodeGen implements ASTVisitor{
 
@@ -158,7 +149,11 @@ public class CodeGen implements ASTVisitor{
 
     @Override
     public Object visitConditionalExpr(ConditionalExpr conditionalExpr, Object arg) throws PLCException {
-        return null;
+        StringBuilder e = new StringBuilder();
+        e.append(conditionalExpr.getGuard().visit(this,arg)).
+                append(" ? ").append(conditionalExpr.getTrueCase().visit(this,arg))
+                .append(" : ").append(conditionalExpr.getFalseCase().visit(this,arg));
+        return e;
     }
 
     @Override

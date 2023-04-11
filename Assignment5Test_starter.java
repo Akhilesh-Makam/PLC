@@ -13,25 +13,25 @@ import edu.ufl.cise.plcsp23.javaCompilerClassLoader.DynamicClassLoader;
 import edu.ufl.cise.plcsp23.javaCompilerClassLoader.DynamicCompiler;
 
 class Assignment5Test_starter {
-		
+
 	Object genCodeAndRun(String input, String mypackage, Object[] params) throws Exception{
 		show("**** Input ****");
 		show(input);
 		AST ast = CompilerComponentFactory.makeParser(input).parse();
-		ast.visit(CompilerComponentFactory.makeTypeChecker(), null);		
+		ast.visit(CompilerComponentFactory.makeTypeChecker(), null);
 		String name = ((Program)ast).getIdent().getName();
 		String packageName = "";
 		String code = (String) ast.visit(CompilerComponentFactory.makeCodeGenerator(packageName),null);
 		show("**** Generated Code ****");
 		show(code);
 		show("**** Output ****");
-		byte[] byteCode = DynamicCompiler.compile(name, code);		
+		byte[] byteCode = DynamicCompiler.compile(name, code);
 		Object result = DynamicClassLoader.loadClassAndRunMethod(byteCode, name, "apply", params);
 		show("**** Returned Result ****");
 		show(result);
 		return result;
 	}
-	
+
 
 
 	// makes it easy to turn output on and off (and less typing thanSystem.out.println)
@@ -41,10 +41,10 @@ class Assignment5Test_starter {
 			System.out.println(obj);
 		}
 	}
-	
+
 
 	@Test
-	//Demonstrates dynamic compilation and execution using a small valid Java class.
+		//Demonstrates dynamic compilation and execution using a small valid Java class.
 	void testDynamicCompileAndRun() throws Exception {
 		String code = """
 				public class Class1 {
@@ -61,7 +61,7 @@ class Assignment5Test_starter {
 		System.out.println(result);
 		assertEquals(paramVal+1, ((Integer)result).intValue());
 	}
-	
+
 	@Test
 	void cg0() throws Exception {
 		String input = "void f(){}";
@@ -69,7 +69,7 @@ class Assignment5Test_starter {
 		Object result = genCodeAndRun(input, "", params );
 		assertEquals(null, result);
 	}
-	
+
 	@Test
 	void cg1() throws Exception {
 		String input = "int f(){:3.}";
@@ -77,7 +77,7 @@ class Assignment5Test_starter {
 		Object result = genCodeAndRun(input, "", params );
 		assertEquals(3,((Integer)result).intValue());
 	}
-	
+
 	@Test
 	void cg2() throws Exception {
 		String input = """
@@ -88,9 +88,9 @@ class Assignment5Test_starter {
 		int bb = 7;
 		Object[] params = {aa,bb};
 		Object result = genCodeAndRun(input, "", params);
-		assertEquals(aa+bb,((Integer)result).intValue()); 
+		assertEquals(aa+bb,((Integer)result).intValue());
 	}
-	
+
 	@Test
 	void cg3() throws Exception {
 		String input = """
@@ -101,9 +101,9 @@ class Assignment5Test_starter {
 		String bb = "bb";
 		Object[] params = {aa,bb};
 		Object result = genCodeAndRun(input, "", params);
-		assertEquals(aa+bb, result); 
-	}	
-	
+		assertEquals(aa+bb, result);
+	}
+
 	@Test
 	void cg5a() throws Exception{
 		String input= """
@@ -115,9 +115,9 @@ class Assignment5Test_starter {
 		int v = -2;
 		Object[] params = {v};
 		Object result = genCodeAndRun(input,"",params);
-		assertEquals(v>0?"greater":"not greater", result);		
+		assertEquals(v>0?"greater":"not greater", result);
 	}
-	
+
 	@Test
 	void cg5b() throws Exception{
 		String input= """
@@ -129,9 +129,9 @@ class Assignment5Test_starter {
 		int v = 2;
 		Object[] params = {v};
 		Object result = genCodeAndRun(input,"",params);
-		assertEquals(v>0?"greater":"not greater", result);		
+		assertEquals(v>0?"greater":"not greater", result);
 	}
-	
+
 	@Test
 	void cg5c() throws Exception{
 		String input= """
@@ -143,9 +143,9 @@ class Assignment5Test_starter {
 		int v = 0;
 		Object[] params = {v};
 		Object result = genCodeAndRun(input,"",params);
-		assertEquals(v>0?"greater":"not greater", result);			
+		assertEquals(v>0?"greater":"not greater", result);
 	}
-	
+
 	@Test
 	void cg6() throws Exception{
 		String input= """
@@ -158,9 +158,9 @@ class Assignment5Test_starter {
 		Object[] params = {v};
 		Object result = genCodeAndRun(input,"",params);
 		show(result);
-		assertEquals("greater", result);		
+		assertEquals("greater", result);
 	}
-	
+
 	@Test
 	void cg7() throws Exception{
 		String input = """
@@ -175,7 +175,7 @@ class Assignment5Test_starter {
 		//should write 2 to OUTPUT
 		assertEquals(null,result);
 	}
-	
+
 	@Test
 	void cg8() throws Exception{
 		String input = """
@@ -200,7 +200,7 @@ class Assignment5Test_starter {
 		// to OUTPUT
 		assertEquals(0, result);
 	}
-	
+
 	@Test
 	void cg9a() throws Exception{
 		String input = """
@@ -213,10 +213,10 @@ class Assignment5Test_starter {
 				""";
 		int v = 1;
 		Object[] params = {v};
-		int result = (Integer)genCodeAndRun(input,"",params);
+			int result = (Integer)genCodeAndRun(input,"",params);
 		assertEquals(1,result);
 	}
-	
+
 	@Test
 	void cg9b() throws Exception{
 		String input = """
