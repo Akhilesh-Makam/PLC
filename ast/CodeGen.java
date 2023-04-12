@@ -112,13 +112,13 @@ public class CodeGen implements ASTVisitor{
                 op = "|";
             }
             case OR->{
-                op = "||";
+                op = "|";
             }
             case BITAND -> {
                 op = "&";
             }
             case AND->{
-                op = "&&";
+                op = "&";
             }
             case EXP->{
                 op = "**";
