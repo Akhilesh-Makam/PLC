@@ -18,7 +18,8 @@ public class NameDef extends AST {
 	final Type type;
 	final Dimension dimension;
 	final Ident ident;
-	
+	int uniqueID;
+
 	public NameDef(IToken firstToken, Type type, Dimension dimension, Ident ident) {
 		super(firstToken);
 		this.type = type;
@@ -46,6 +47,10 @@ public class NameDef extends AST {
 	@Override
 	public String toString() {
 		return "NameDef [type=" + type + ", dimension=" + dimension + ", ident=" + ident + "]";
+	}
+
+	public void setUniqueID(int uniqueID) {
+		this.uniqueID = uniqueID;
 	}
 
 	

@@ -18,6 +18,7 @@ public class LValue extends AST {
 	final Ident ident;
 	final PixelSelector pixelSelector;
 	final ColorChannel color;
+	int uniqueID;
 
 	public LValue(IToken firstToken, Ident ident, PixelSelector pixelSelector, ColorChannel color) {
 		super(firstToken);
@@ -46,6 +47,10 @@ public class LValue extends AST {
 	@Override
 	public String toString() {
 		return "LValue [ident=" + ident + ", pixelSelector=" + pixelSelector + ", color=" + color + "]";
+	}
+
+	public void setUniqueID(int uniqueID) {
+		this.uniqueID = uniqueID;
 	}
 
 }

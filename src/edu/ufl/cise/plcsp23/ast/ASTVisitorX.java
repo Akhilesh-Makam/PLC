@@ -14,6 +14,8 @@ public class ASTVisitorX implements ASTVisitor {
         //implemented scoping w/ a stack of HashMaps
         Stack<HashMap<String, NameDef>> scopeStack = new Stack<>();
 
+        int uniqueID = 0;
+
         public boolean insert(String name, NameDef nameDef){
             return scopeStack.peek().putIfAbsent(name, nameDef) == null;
         }
@@ -30,6 +32,7 @@ public class ASTVisitorX implements ASTVisitor {
 
         public void enterScope() {
             scopeStack.push(new HashMap<>());
+            uniqueID++;
         }
 
         public void leaveScope() {
@@ -264,6 +267,7 @@ public class ASTVisitorX implements ASTVisitor {
 
         check(nameDef != null, ident, "Ident not found in symbol table");
 
+        ident.setUniqueID(nameDef.uniqueID);
         Type type = nameDef.getType();
         return type;
     }
@@ -279,6 +283,7 @@ public class ASTVisitorX implements ASTVisitor {
 
         Type type = nameDef.getType();
         identExpr.setType(type);
+        identExpr.setUniqueID(nameDef.uniqueID);
         return type;
     }
 
@@ -342,6 +347,9 @@ public class ASTVisitorX implements ASTVisitor {
             }
         }
 
+        NameDef nameDef = symbolTable.lookup(lValue.getIdent().getName());
+        lValue.setUniqueID(nameDef.uniqueID);
+
         return result;
     }
 
@@ -359,6 +367,7 @@ public class ASTVisitorX implements ASTVisitor {
         HashMap<String, NameDef> currentScope = symbolTable.scopeStack.peek();
 
         if(!currentScope.containsKey(nameDef.getIdent().getName())){
+            nameDef.setUniqueID(symbolTable.uniqueID);
             symbolTable.insert(nameDef.getIdent().getName(), nameDef);
             return nameDef.getType();
         }

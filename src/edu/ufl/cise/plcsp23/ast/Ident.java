@@ -17,6 +17,8 @@ public class Ident extends AST {
 	
 	NameDef def;
 
+	int uniqueID;
+
 	public Ident(IToken firstToken) {
 		super(firstToken);
 	}
@@ -43,4 +45,7 @@ public class Ident extends AST {
 		return "Ident [getName()=" + getName() + ", getDef()=" + getDef() + "]";
 	}
 
+	public void setUniqueID(int uniqueID) {
+		this.uniqueID = uniqueID;
+	}
 }
