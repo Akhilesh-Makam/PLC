@@ -154,12 +154,12 @@ public class CodeGen implements ASTVisitor{
     @Override
     public Object visitConditionalExpr(ConditionalExpr conditionalExpr, Object arg) throws PLCException {
         StringBuilder e = new StringBuilder();
-           if(returnConditional){
-               return e.append(conditionalExpr.getGuard().visit(this,arg)).
-                       append("  != 0 ? ").append(conditionalExpr.getTrueCase().visit(this,arg))
-                       .append(" : ").append(conditionalExpr.getFalseCase().visit(this,arg));
-           }
-        e.append(conditionalExpr.getGuard().visit(this,arg)).
+        if(returnConditional){
+            return e.append(conditionalExpr.getGuard().visit(this,arg)).
+                    append("  != 0 ? ").append(conditionalExpr.getTrueCase().visit(this,arg))
+                    .append(" : ").append(conditionalExpr.getFalseCase().visit(this,arg));
+        }
+        e.append("((").append(conditionalExpr.getGuard().visit(this,arg)).append(") != false)").
                 append(" ? ").append(conditionalExpr.getTrueCase().visit(this,arg))
                 .append(" : ").append(conditionalExpr.getFalseCase().visit(this,arg));
         return e;
