@@ -8,12 +8,16 @@ import edu.ufl.cise.plcsp23.javaCompilerClassLoader.DynamicCompiler;
 import edu.ufl.cise.plcsp23.javaCompilerClassLoader.InMemoryBytecodeObject;
 import edu.ufl.cise.plcsp23.javaCompilerClassLoader.InMemoryClassFileManager;
 import edu.ufl.cise.plcsp23.javaCompilerClassLoader.StringJavaFileObject;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Stack;
 
 
 
 
 public class CodeGen implements ASTVisitor{
 
+    HashMap<String, Type> idents;
     private int indent;
     private StringBuilder code;
     boolean write;
@@ -31,6 +35,7 @@ public class CodeGen implements ASTVisitor{
         returnConditional = false;
         inReturn = false;
         dec = false;
+        idents = new HashMap<>();
     }
 
     public String indentMaker(){
@@ -78,6 +83,9 @@ public class CodeGen implements ASTVisitor{
     @Override
     public Object visitAssignmentStatement(AssignmentStatement statementAssign, Object arg) throws PLCException {
         StringBuilder e = new StringBuilder();
+        if(idents.containsKey(statementAssign.getLv().getIdent().getName()) && idents.get(statementAssign.getLv().getIdent().getName()) == Type.STRING && statementAssign.getE().toString().contains("NumLitExpr")){
+           return e.append(statementAssign.getLv().visit(this,null)).append(" = String.valueOf(").append(statementAssign.getE().visit(this,null)).append(");\n");
+        }
         e.append(statementAssign.getLv().visit(this,null)).append(" = ").append(statementAssign.getE().visit(this,null)).append(";\n");
         return e;
     }
@@ -182,8 +190,10 @@ public class CodeGen implements ASTVisitor{
 
     @Override
     public Object visitDeclaration(Declaration declaration, Object arg) throws PLCException {
+        idents.put(declaration.getNameDef().getIdent().getName(), declaration.getNameDef().getType());
         StringBuilder dec = new StringBuilder();
         dec.append(declaration.getNameDef().visit(this,arg));
+        Type x = declaration.getNameDef().getType();
         if(declaration.getInitializer() != null){
             dec.append(" = ").append(declaration.getInitializer().visit(this,arg));
         }

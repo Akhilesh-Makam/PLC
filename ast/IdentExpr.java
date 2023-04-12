@@ -32,7 +32,7 @@ public class IdentExpr extends Expr {
 
 	@Override
 	public String toString() {
-		return "IdentExpr [firstToken=" + firstToken + "]";
+		return "IdentExpr [firstToken=" + firstToken + ", UniqueID= " + uniqueID+ "]";
 	}
 
 	public void setUniqueID(int uniqueID) {
