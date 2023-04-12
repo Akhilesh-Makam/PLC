@@ -4,76 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4630c38b-fa48-42d1-a6b3-fd84fdeca931" name="Changes" comment="Changed to official set of test cases. UnaryPostfix now visits PixelSelector. Passing 52/52.">
-      <change afterPath="$PROJECT_DIR$/src/edu/ufl/cise/plcsp23/Assignment5Test_starter.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/edu/ufl/cise/plcsp23/ast/CodeGen.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/edu/ufl/cise/plcsp23/javaCompilerClassLoader/DynamicClassLoader.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/edu/ufl/cise/plcsp23/javaCompilerClassLoader/DynamicCompiler.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/edu/ufl/cise/plcsp23/javaCompilerClassLoader/InMemoryBytecodeObject.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/edu/ufl/cise/plcsp23/javaCompilerClassLoader/InMemoryClassFileManager.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/edu/ufl/cise/plcsp23/javaCompilerClassLoader/StringJavaFileObject.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/edu/ufl/cise/plcsp23/javaCompilerClassLoader/package-info.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/edu/ufl/cise/plcsp23/runtime/ConsoleIO.java" afterDir="false" />
+    <list default="true" id="4630c38b-fa48-42d1-a6b3-fd84fdeca931" name="Changes" comment="changed some ASTNodes per Param's advice to enable uniqueIDs for Java nested redeclaration resolution.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PLC.iml" beforeDir="false" afterPath="$PROJECT_DIR$/PLC.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/PLC/edu/ufl/cise/plcsp23/Assignment2Test_starter.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/PLC/edu/ufl/cise/plcsp23/Assignment3Test_starter.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/PLC/edu/ufl/cise/plcsp23/CompilerComponentFactory.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/PLC/edu/ufl/cise/plcsp23/INumLitToken.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/PLC/edu/ufl/cise/plcsp23/IParser.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/PLC/edu/ufl/cise/plcsp23/IScanner.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/PLC/edu/ufl/cise/plcsp23/IStringLitToken.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/PLC/edu/ufl/cise/plcsp23/IToken$Kind.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/PLC/edu/ufl/cise/plcsp23/IToken$SourceLocation.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/PLC/edu/ufl/cise/plcsp23/IToken.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/PLC/edu/ufl/cise/plcsp23/LexicalException.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/PLC/edu/ufl/cise/plcsp23/NumLitToken.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/PLC/edu/ufl/cise/plcsp23/PLCException.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/PLC/edu/ufl/cise/plcsp23/Parser.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/PLC/edu/ufl/cise/plcsp23/Scanner$1.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/PLC/edu/ufl/cise/plcsp23/Scanner$State.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/PLC/edu/ufl/cise/plcsp23/Scanner.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/PLC/edu/ufl/cise/plcsp23/StringLitToken.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/PLC/edu/ufl/cise/plcsp23/SyntaxException.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/PLC/edu/ufl/cise/plcsp23/TestScanner_starter.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/PLC/edu/ufl/cise/plcsp23/Token.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/PLC/edu/ufl/cise/plcsp23/ast/AST.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/PLC/edu/ufl/cise/plcsp23/ast/ASTVisitor.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/PLC/edu/ufl/cise/plcsp23/ast/AssignmentStatement.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/PLC/edu/ufl/cise/plcsp23/ast/BinaryExpr.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/PLC/edu/ufl/cise/plcsp23/ast/Block.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/PLC/edu/ufl/cise/plcsp23/ast/ColorChannel$1.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/PLC/edu/ufl/cise/plcsp23/ast/ColorChannel.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/PLC/edu/ufl/cise/plcsp23/ast/ConditionalExpr.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/PLC/edu/ufl/cise/plcsp23/ast/Declaration.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/PLC/edu/ufl/cise/plcsp23/ast/Dimension.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/PLC/edu/ufl/cise/plcsp23/ast/ExpandedPixelExpr.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/PLC/edu/ufl/cise/plcsp23/ast/Expr.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/PLC/edu/ufl/cise/plcsp23/ast/Ident.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/PLC/edu/ufl/cise/plcsp23/ast/IdentExpr.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/PLC/edu/ufl/cise/plcsp23/ast/LValue.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/PLC/edu/ufl/cise/plcsp23/ast/NameDef.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/PLC/edu/ufl/cise/plcsp23/ast/NumLitExpr.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/PLC/edu/ufl/cise/plcsp23/ast/PixelFuncExpr.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/PLC/edu/ufl/cise/plcsp23/ast/PixelSelector.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/PLC/edu/ufl/cise/plcsp23/ast/PredeclaredVarExpr.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/PLC/edu/ufl/cise/plcsp23/ast/Program.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/PLC/edu/ufl/cise/plcsp23/ast/RandomExpr.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/PLC/edu/ufl/cise/plcsp23/ast/Statement.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/PLC/edu/ufl/cise/plcsp23/ast/StringLitExpr.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/PLC/edu/ufl/cise/plcsp23/ast/Type$1.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/PLC/edu/ufl/cise/plcsp23/ast/Type.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/PLC/edu/ufl/cise/plcsp23/ast/UnaryExpr.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/PLC/edu/ufl/cise/plcsp23/ast/UnaryExprPostfix.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/PLC/edu/ufl/cise/plcsp23/ast/WhileStatement.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/PLC/edu/ufl/cise/plcsp23/ast/WriteStatement.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/PLC/edu/ufl/cise/plcsp23/ast/ZExpr.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/edu/ufl/cise/plcsp23/CompilerComponentFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/edu/ufl/cise/plcsp23/CompilerComponentFactory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/edu/ufl/cise/plcsp23/ast/ASTVisitorX.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/edu/ufl/cise/plcsp23/ast/ASTVisitorX.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/edu/ufl/cise/plcsp23/ast/Ident.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/edu/ufl/cise/plcsp23/ast/Ident.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/edu/ufl/cise/plcsp23/ast/IdentExpr.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/edu/ufl/cise/plcsp23/ast/IdentExpr.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/edu/ufl/cise/plcsp23/ast/LValue.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/edu/ufl/cise/plcsp23/ast/LValue.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/edu/ufl/cise/plcsp23/ast/NameDef.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/edu/ufl/cise/plcsp23/ast/NameDef.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/edu/ufl/cise/plcsp23/ast/CodeGen.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/edu/ufl/cise/plcsp23/ast/CodeGen.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -250,7 +183,7 @@
       <workItem from="1679982083601" duration="26863000" />
       <workItem from="1680736020336" duration="8553000" />
       <workItem from="1681184021427" duration="6601000" />
-      <workItem from="1681276251492" duration="4582000" />
+      <workItem from="1681276251492" duration="5617000" />
     </task>
     <task id="LOCAL-00001" summary="adding tony's Scanner">
       <created>1678042343150</created>
@@ -329,7 +262,14 @@
       <option name="project" value="LOCAL" />
       <updated>1680808293527</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="changed some ASTNodes per Param's advice to enable uniqueIDs for Java nested redeclaration resolution.">
+      <created>1681285728051</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1681285728051</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -370,7 +310,8 @@
     <MESSAGE value="changed match() and List&lt;Token&gt; implementation. pushing tony branch fully functional assignment 3 parser" />
     <MESSAGE value="Assignment 4 work. Mostly completed, TODOs are marked. Main task remaining is to implement scoping" />
     <MESSAGE value="Changed to official set of test cases. UnaryPostfix now visits PixelSelector. Passing 52/52." />
-    <option name="LAST_COMMIT_MESSAGE" value="Changed to official set of test cases. UnaryPostfix now visits PixelSelector. Passing 52/52." />
+    <MESSAGE value="changed some ASTNodes per Param's advice to enable uniqueIDs for Java nested redeclaration resolution." />
+    <option name="LAST_COMMIT_MESSAGE" value="changed some ASTNodes per Param's advice to enable uniqueIDs for Java nested redeclaration resolution." />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/PLC$Assignment3Test_starter_test13.ic" NAME="Assignment3Test_starter.test13 Coverage Results" MODIFIED="1678987110052" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">

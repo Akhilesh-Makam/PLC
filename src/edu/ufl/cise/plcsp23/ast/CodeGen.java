@@ -188,13 +188,22 @@ public class CodeGen implements ASTVisitor{
 
     @Override
     public Object visitIdent(Ident ident, Object arg) throws PLCException {
-        String s = ident.getName() + ident.uniqueID;
+        String s = ident.getName();
+
+        //this is set up like this because it could not find the variables of scope level 1.
+        // might cause issues if something at level 0 gets redeclared in level 1, but not sure how that would happen
+        if (ident.uniqueID > 1) {
+            s += "_" + ident.uniqueID;
+        }
         return s;
     }
 
     @Override
     public Object visitIdentExpr(IdentExpr identExpr, Object arg) throws PLCException {
-        String s = identExpr.getName() + identExpr.uniqueID;
+        String s = identExpr.getName();
+        if (identExpr.uniqueID > 1) {
+            s += "_" + identExpr.uniqueID;
+        }
         return s;
     }
 
@@ -296,8 +305,11 @@ public class CodeGen implements ASTVisitor{
 
     @Override
     public Object visitWhileStatement(WhileStatement whileStatement, Object arg) throws PLCException {
-
-        return null;
+        StringBuilder e = new StringBuilder();
+        e.append("while (").append(whileStatement.getGuard().visit(this, arg))
+                .append(") {\n").append(whileStatement.getBlock().visit(this,arg))
+                .append("\n}\n");
+        return e;
     }
 
     @Override
