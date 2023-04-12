@@ -1,11 +1,11 @@
 /*Copyright 2023 by Beverly A Sanders
- * 
- * This code is provided for solely for use of students in COP4020 Programming Language Concepts at the 
- * University of Florida during the spring semester 2023 as part of the course project.  
- * 
- * No other use is authorized. 
- * 
- * This code may not be posted on a public web site either during or after the course.  
+ *
+ * This code is provided for solely for use of students in COP4020 Programming Language Concepts at the
+ * University of Florida during the spring semester 2023 as part of the course project.
+ *
+ * No other use is authorized.
+ *
+ * This code may not be posted on a public web site either during or after the course.
  */
 
 package edu.ufl.cise.plcsp23.ast;
@@ -18,6 +18,7 @@ public class LValue extends AST {
 	final Ident ident;
 	final PixelSelector pixelSelector;
 	final ColorChannel color;
+	int uniqueID;
 
 	public LValue(IToken firstToken, Ident ident, PixelSelector pixelSelector, ColorChannel color) {
 		super(firstToken);
@@ -46,6 +47,10 @@ public class LValue extends AST {
 	@Override
 	public String toString() {
 		return "LValue [ident=" + ident + ", pixelSelector=" + pixelSelector + ", color=" + color + "]";
+	}
+
+	public void setUniqueID(int uniqueID) {
+		this.uniqueID = uniqueID;
 	}
 
 }

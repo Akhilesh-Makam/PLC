@@ -2,6 +2,15 @@ package edu.ufl.cise.plcsp23.ast;
 
 import edu.ufl.cise.plcsp23.IToken;
 import edu.ufl.cise.plcsp23.PLCException;
+import edu.ufl.cise.plcsp23.runtime.ConsoleIO;
+import edu.ufl.cise.plcsp23.javaCompilerClassLoader.DynamicClassLoader;
+import edu.ufl.cise.plcsp23.javaCompilerClassLoader.DynamicCompiler;
+import edu.ufl.cise.plcsp23.javaCompilerClassLoader.InMemoryBytecodeObject;
+import edu.ufl.cise.plcsp23.javaCompilerClassLoader.InMemoryClassFileManager;
+import edu.ufl.cise.plcsp23.javaCompilerClassLoader.StringJavaFileObject;
+
+
+
 
 public class CodeGen implements ASTVisitor{
 
@@ -10,6 +19,8 @@ public class CodeGen implements ASTVisitor{
     boolean write;
     boolean rand;
     boolean returnConditional;
+    boolean inReturn;
+    String returnType;
 
     public CodeGen(){
         indent = 0;
@@ -17,7 +28,7 @@ public class CodeGen implements ASTVisitor{
         write = false;
         rand = false;
         returnConditional = false;
-
+        inReturn = false;
     }
 
     public String indentMaker(){
@@ -65,14 +76,15 @@ public class CodeGen implements ASTVisitor{
     @Override
     public Object visitAssignmentStatement(AssignmentStatement statementAssign, Object arg) throws PLCException {
         StringBuilder e = new StringBuilder();
-        e.append(statementAssign.getLv().visit(this,null)).append(" = ").append(statementAssign.getE().visit(this,null));
+        e.append(statementAssign.getLv().visit(this,null)).append(" = ").append(statementAssign.getE().visit(this,null)).append(";\n");
         return e;
     }
 
     @Override
     public Object visitBinaryExpr(BinaryExpr binaryExpr, Object arg) throws PLCException {
         boolean power2 = false;
-
+        boolean compeq = false;
+        boolean comp = false;
         if(binaryExpr.getOp() == IToken.Kind.EXP){
             power2 = true;
         }
@@ -95,29 +107,27 @@ public class CodeGen implements ASTVisitor{
             }
             case LT->{
                 op = "<";
+                comp = true;
             }
             case GT->{
                 op = ">";
+                comp = true;
             }
             case LE->{
                 op = "<=";
+                compeq = true;
             }
             case GE->{
                 op = ">=";
+                compeq = true;
             }
             case EQ->{
                 op = "==";
             }
-            case BITOR -> {
+            case BITOR, OR -> {
                 op = "|";
             }
-            case OR->{
-                op = "|";
-            }
-            case BITAND -> {
-                op = "&";
-            }
-            case AND->{
+            case BITAND, AND -> {
                 op = "&";
             }
             case EXP->{
@@ -130,33 +140,35 @@ public class CodeGen implements ASTVisitor{
         }
         StringBuilder s = new StringBuilder();
         if(power2){
-            return s.append("(int) Math.pow(").append(binaryExpr.getLeft().visit(this,arg)).append(", ").append(binaryExpr.getRight().visit(this,arg)).append(")");
+            return s.append("(int) Math.pow(").append(binaryExpr.getLeft().visit(this,arg)).append(", ")
+                    .append(binaryExpr.getRight().visit(this,arg)).append(")");
+        }
+        if(compeq || (comp && inReturn)){
+            return s.append(binaryExpr.getLeft().visit(this,arg)).append(" "+ op +" ").append(binaryExpr.getRight().visit(this,arg)).append(" ? 1 : 0");
         }
         return s.append(binaryExpr.getLeft().visit(this,arg)).append(" "+ op +" ").append(binaryExpr.getRight().visit(this,arg));
     }
 
     @Override
     public Object visitBlock(Block block, Object arg) throws PLCException {
-        StringBuilder blockk = new StringBuilder();
+        StringBuilder blockString = new StringBuilder();
 
         for(int i = 0;i < block.getDecList().size();i++){
-
-            blockk.append(block.getDecList().get(i).visit(this, null)).append(";\n");
-
+            blockString.append(block.getDecList().get(i).visit(this, null)).append(";\n");
         }
 
         for(int i = 0;i < block.getStatementList().size();i++){
-            blockk.append(block.getStatementList().get(i).visit(this, null)).append(";\n");;
+            blockString.append(block.getStatementList().get(i).visit(this, null));
         }
-        return blockk.toString();
+        return blockString.toString();
     }
 
     @Override
     public Object visitConditionalExpr(ConditionalExpr conditionalExpr, Object arg) throws PLCException {
         StringBuilder e = new StringBuilder();
         if(returnConditional){
-            return e.append(conditionalExpr.getGuard().visit(this,arg)).
-                    append("  != 0 ? ").append(conditionalExpr.getTrueCase().visit(this,arg))
+            return e.append(conditionalExpr.getGuard().visit(this,arg))
+                    .append("  != 0 ? ").append(conditionalExpr.getTrueCase().visit(this,arg))
                     .append(" : ").append(conditionalExpr.getFalseCase().visit(this,arg));
         }
         e.append("((").append(conditionalExpr.getGuard().visit(this,arg)).append(") != false)").
@@ -185,14 +197,26 @@ public class CodeGen implements ASTVisitor{
         return null;
     }
 
+
     @Override
     public Object visitIdent(Ident ident, Object arg) throws PLCException {
-        return ident.getName();
+        String s = ident.getName();
+
+        //this is set up like this because it could not find the variables of scope level 1.
+        // might cause issues if something at level 0 gets redeclared in level 1, but not sure how that would happen
+        if (ident.uniqueID > 1) {
+            s += "_" + ident.uniqueID;
+        }
+        return s;
     }
 
     @Override
     public Object visitIdentExpr(IdentExpr identExpr, Object arg) throws PLCException {
-        return identExpr.getName();
+        String s = identExpr.getName();
+        if (identExpr.uniqueID > 1) {
+            s += "_" + identExpr.uniqueID;
+        }
+        return s;
     }
 
     @Override
@@ -211,7 +235,6 @@ public class CodeGen implements ASTVisitor{
 
         //not implementing dimensions for assignment 5
         return name.toString();
-
     }
 
     @Override
@@ -238,6 +261,7 @@ public class CodeGen implements ASTVisitor{
     @Override
     public Object visitProgram(Program program, Object arg) throws PLCException {
         code.append("public class ").append(program.getIdent().getName()).append(" {\n");
+        returnType = type(program.getType());
         code.append(indentMaker()).append("public static ").append(type(program.getType())).append(" apply(");
         if(!program.getParamList().isEmpty()){
             code.append(program.getParamList().get(0).visit(this, null));
@@ -268,10 +292,12 @@ public class CodeGen implements ASTVisitor{
     @Override
     public Object visitReturnStatement(ReturnStatement returnStatement, Object arg) throws PLCException {
         StringBuilder e = new StringBuilder();
+        inReturn = true;
         if(returnStatement.getE().toString().contains("ConditionalExpr")){
             returnConditional = true;
         }
-        e.append("return ").append(returnStatement.getE().visit(this,arg));
+        e.append("return ").append(returnStatement.getE().visit(this,arg)).append(";\n");
+        inReturn = false;
         return e.toString();
     }
 
@@ -294,8 +320,11 @@ public class CodeGen implements ASTVisitor{
 
     @Override
     public Object visitWhileStatement(WhileStatement whileStatement, Object arg) throws PLCException {
-
-        return null;
+        StringBuilder e = new StringBuilder();
+        e.append("while (").append(whileStatement.getGuard().visit(this, arg))
+                .append(") {\n").append(whileStatement.getBlock().visit(this,arg))
+                .append("\n}\n");
+        return e;
     }
 
     @Override
@@ -304,7 +333,7 @@ public class CodeGen implements ASTVisitor{
             write = true;
         }
         StringBuilder s = new StringBuilder();
-        s.append("ConsoleIO.write(").append(statementWrite.getE().visit(this,arg)).append(")");
+        s.append("ConsoleIO.write(").append(statementWrite.getE().visit(this,arg)).append(")").append(";\n");
 
         return s;
     }
