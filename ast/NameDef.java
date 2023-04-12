@@ -46,7 +46,7 @@ public class NameDef extends AST {
 
 	@Override
 	public String toString() {
-		return "NameDef [type=" + type + ", dimension=" + dimension + ", ident=" + ident + "]";
+		return "NameDef [type=" + type + ", dimension=" + dimension + ", ident=" + ident + ", UniqueID= " + uniqueID+ "]";
 	}
 
 	public void setUniqueID(int uniqueID) {

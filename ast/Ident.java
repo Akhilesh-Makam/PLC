@@ -42,7 +42,7 @@ public class Ident extends AST {
 
 	@Override
 	public String toString() {
-		return "Ident [getName()=" + getName() + ", getDef()=" + getDef() + "]";
+		return "Ident [getName()=" + getName() + ", getDef()=" + getDef() + ", UniqueID= " + uniqueID+ "]";
 	}
 
 	public void setUniqueID(int uniqueID) {
