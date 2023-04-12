@@ -20,6 +20,7 @@ public class CodeGen implements ASTVisitor{
     boolean rand;
     boolean returnConditional;
     boolean inReturn;
+    boolean dec;
     String returnType;
 
     public CodeGen(){
@@ -29,6 +30,7 @@ public class CodeGen implements ASTVisitor{
         rand = false;
         returnConditional = false;
         inReturn = false;
+        dec = false;
     }
 
     public String indentMaker(){
@@ -143,7 +145,7 @@ public class CodeGen implements ASTVisitor{
             return s.append("(int) Math.pow(").append(binaryExpr.getLeft().visit(this,arg)).append(", ")
                     .append(binaryExpr.getRight().visit(this,arg)).append(")");
         }
-        if(compeq || (comp && inReturn)){
+        if((compeq && dec) || (comp && inReturn) || (compeq && inReturn)){
             return s.append(binaryExpr.getLeft().visit(this,arg)).append(" "+ op +" ").append(binaryExpr.getRight().visit(this,arg)).append(" ? 1 : 0");
         }
         return s.append(binaryExpr.getLeft().visit(this,arg)).append(" "+ op +" ").append(binaryExpr.getRight().visit(this,arg));
@@ -154,9 +156,10 @@ public class CodeGen implements ASTVisitor{
         StringBuilder blockString = new StringBuilder();
 
         for(int i = 0;i < block.getDecList().size();i++){
+            dec = true;
             blockString.append(block.getDecList().get(i).visit(this, null)).append(";\n");
         }
-
+        dec = false;
         for(int i = 0;i < block.getStatementList().size();i++){
             blockString.append(block.getStatementList().get(i).visit(this, null));
         }
