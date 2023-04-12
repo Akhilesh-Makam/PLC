@@ -265,4 +265,292 @@ class Assignment5Test_starter {
 
 	}
 
+	@Test
+	void andWhatIsUp() throws Exception {
+		String input = "int up(int up){ :up. }";
+		Object[] params = { 1 };
+		Object result = genCodeAndRun(input, "", params);
+		assertEquals(1, result);
+	}
+
+	@Test
+	void andReturnString() throws Exception {
+		String input = """
+				string fun() { :"Hello, World!". }
+				""";
+		Object[] params = {};
+		Object result = genCodeAndRun(input, "", params);
+		assertEquals("Hello, World!", (String) result);
+	}
+
+	@Test
+	void andAddingStrings() throws Exception {
+		String input = """
+				string fun(string start) {
+					string end = ", World!".
+					:start + end. }
+				""";
+		Object[] params = { "Hello" };
+		Object result = genCodeAndRun(input, "", params);
+		assertEquals("Hello, World!", (String) result);
+		params[0] = "Goodbye";
+		result = genCodeAndRun(input, "", params);
+		assertEquals("Goodbye, World!", (String) result);
+	}
+
+	@Test
+	void andBasicMath() throws Exception {
+		String input = """
+				int fun(int num1, int num2) {
+					int num3 = num1 + num2.
+					: num3.
+				}
+				""";
+		int num1 = 5;
+		int num2 = 2;
+		Object[] params = { num1, num2 };
+		Object result = genCodeAndRun(input, "", params);
+		assertEquals(num1 + num2, result);
+		input = """
+				int fun(int num1, int num2) {
+					int num3 = num1 - num2.
+					: num3.
+				}
+				""";
+		result = genCodeAndRun(input, "", params);
+		assertEquals(num1 - num2, result);
+		input = """
+				int fun(int num1, int num2) {
+					int num3 = num1 * num2.
+					: num3.
+				}
+				""";
+		result = genCodeAndRun(input, "", params);
+		assertEquals(num1 * num2, result);
+		input = """
+				int fun(int num1, int num2) {
+					int num3 = num1 / num2.
+					: num3.
+				}
+				""";
+		result = genCodeAndRun(input, "", params);
+		assertEquals(num1 / num2, result);
+		input = """
+				int fun(int num1, int num2) {
+					int num3 = num1 % num2.
+					: num3.
+				}
+				""";
+		result = genCodeAndRun(input, "", params);
+		assertEquals(num1 % num2, result);
+		input = """
+				int fun(int num1, int num2) {
+					int num3 = num1 ** num2.
+					: num3.
+				}
+				""";
+		result = genCodeAndRun(input, "", params);
+		assertEquals((int) Math.pow(num1, num2), result);
+	}
+
+	@Test
+	void andLogicalOps() throws Exception {
+		String input = """
+				int fun(int num1, int num2) {
+					int num3 = num1 || num2.
+					: num3.
+				}
+				""";
+		Object[] params = { 1, 0 };
+		Object result = genCodeAndRun(input, "", params);
+		assertEquals(1, result);
+		input = """
+				int fun(int num1, int num2) {
+					int num3 = num1 && num2.
+					: num3.
+				}
+				""";
+		result = genCodeAndRun(input, "", params);
+		assertEquals(0, result);
+	}
+
+	@Test
+	void andComparisonOps() throws Exception {
+		String input = """
+				int fun() {	: 1 > 0. }
+				""";
+		Object[] params = {};
+		Object result = genCodeAndRun(input, "", params);
+		assertEquals(1, result);
+		input = """
+				int fun() {	: 1 < 0. }
+				""";
+		result = genCodeAndRun(input, "", params);
+		assertEquals(0, result);
+		input = """
+				int fun() {	: 1 <= 0. }
+				""";
+		result = genCodeAndRun(input, "", params);
+		assertEquals(0, result);
+		input = """
+				int fun() {	: 1 >= 0. }
+				""";
+		result = genCodeAndRun(input, "", params);
+		assertEquals(1, result);
+		input = """
+				int fun() {	: 0 <= 0. }
+				""";
+		result = genCodeAndRun(input, "", params);
+		assertEquals(1, result);
+		input = """
+				int fun() {	: 0 >= 0. }
+				""";
+		result = genCodeAndRun(input, "", params);
+		assertEquals(1, result);
+		input = """
+				int fun() {	: 0 < 0. }
+				""";
+		result = genCodeAndRun(input, "", params);
+		assertEquals(0, result);
+		input = """
+				int fun() {	: 0 > 0. }
+				""";
+		result = genCodeAndRun(input, "", params);
+		assertEquals(0, result);
+	}
+
+	@Test
+	void andIfExpr() throws Exception {
+		String input = """
+				string fun(int num) { : if num ? "true" ? "false". }
+				""";
+		Object[] params = { 1 };
+		Object result = genCodeAndRun(input, "", params);
+		assertEquals("true", (String) result);
+		params[0] = 0;
+		result = genCodeAndRun(input, "", params);
+		assertEquals("false", (String) result);
+		params[0] = -1;
+		result = genCodeAndRun(input, "", params);
+		assertEquals("true", (String) result);
+		params[0] = 123456;
+		result = genCodeAndRun(input, "", params);
+		assertEquals("true", (String) result);
+	}
+
+	@Test
+	void andMultipleDeclarations() throws Exception {
+		String input = """
+				void fun(int fun) {
+					fun = 0.
+					while (fun) {
+						int fun = 0.
+						while (fun) {
+							int fun = 0.
+							while (fun) {
+								string fun = "".
+							}.
+						}.
+						fun = 0.
+						while (fun) {
+							string fun = "".
+						}.
+					}.
+
+				}
+				""";
+		Object[] params = { 0 };
+		genCodeAndRun(input, "", params);
+	}
+
+	@Test
+	void andSeparateVariables() throws Exception {
+		String input = """
+				int fun() {
+					int val = 5.
+					int i = 0.
+					while (i < 1) {
+						int val = 3.
+						i = i + 1.
+					}.
+					: val.
+				}
+				""";
+		Object[] params = {};
+		Object result = genCodeAndRun(input, "", params);
+		assertEquals(5, result);
+	}
+
+	@Test
+	void andAddingInALoop() throws Exception {
+		String input = """
+				int fun() {
+					int val = 0.
+					int i = 0.
+					while (i <= 6) {
+						val = val + i.
+						i = i + 1.
+					}.
+					: val.
+				}
+				""";
+		Object[] params = {};
+		Object result = genCodeAndRun(input, "", params);
+		assertEquals(21, result);
+	}
+
+	@Test
+	void andItsBinary() throws Exception {
+		String input = """
+				string fun(int num) {
+					string result = "".
+					while (num > 0) {
+						result = (if num % 2 == 0 ? "0" ? "1") + result.
+						num = num / 2.
+					}.
+					: result.
+				}
+				""";
+		int num = 3563;
+		Object[] params = { num };
+		Object result = genCodeAndRun(input, "", params);
+		assertEquals(Integer.toBinaryString(num), (String) result);
+	}
+
+	@Test
+	void andReturnIntAsString() throws Exception {
+		String input = """
+				string fun() { :1. }
+				""";
+		Object[] params = {};
+		Object result = genCodeAndRun(input, "", params);
+		assertEquals("1", (String) result);
+	}
+
+	@Test
+	void andAssignIntToString() throws Exception {
+		String input = """
+				string fun() {
+					string result.
+					result = 1.
+					: result.
+				}
+				""";
+		Object[] params = {};
+		Object result = genCodeAndRun(input, "", params);
+		assertEquals("1", (String) result);
+	}
+
+	@Test
+	void andDeclareStringWithInt() throws Exception {
+		String input = """
+				string fun() {
+					string result = 1.
+					: result.
+				}
+				""";
+		Object[] params = {};
+		Object result = genCodeAndRun(input, "", params);
+		assertEquals("1", (String) result);
+	}
 }
