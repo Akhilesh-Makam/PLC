@@ -9,7 +9,6 @@ public class CodeGen implements ASTVisitor{
     private StringBuilder code;
     boolean write;
     boolean rand;
-    boolean power;
     boolean returnConditional;
 
     public CodeGen(){
@@ -17,7 +16,6 @@ public class CodeGen implements ASTVisitor{
         code = new StringBuilder();
         write = false;
         rand = false;
-        power = false;
         returnConditional = false;
 
     }
@@ -37,9 +35,6 @@ public class CodeGen implements ASTVisitor{
         }
         if(rand){
             s += "import Java.util.Math;\n";
-        }
-        if(power){
-            s += "import java.lang.Math.pow;\n";
         }
         return s;
     }
@@ -76,8 +71,10 @@ public class CodeGen implements ASTVisitor{
 
     @Override
     public Object visitBinaryExpr(BinaryExpr binaryExpr, Object arg) throws PLCException {
+        boolean power2 = false;
+
         if(binaryExpr.getOp() == IToken.Kind.EXP){
-            power = true;
+            power2 = true;
         }
         String op = "";
         switch(binaryExpr.getOp()){
@@ -132,6 +129,9 @@ public class CodeGen implements ASTVisitor{
 
         }
         StringBuilder s = new StringBuilder();
+        if(power2){
+            return s.append("(int) Math.pow(").append(binaryExpr.getLeft().visit(this,arg)).append(", ").append(binaryExpr.getRight().visit(this,arg)).append(")");
+        }
         return s.append(binaryExpr.getLeft().visit(this,arg)).append(" "+ op +" ").append(binaryExpr.getRight().visit(this,arg));
     }
 
