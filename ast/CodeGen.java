@@ -84,7 +84,7 @@ public class CodeGen implements ASTVisitor{
     public Object visitAssignmentStatement(AssignmentStatement statementAssign, Object arg) throws PLCException {
         StringBuilder e = new StringBuilder();
         if(idents.containsKey(statementAssign.getLv().getIdent().getName()) && idents.get(statementAssign.getLv().getIdent().getName()) == Type.STRING && statementAssign.getE().toString().contains("NumLitExpr")){
-           return e.append(statementAssign.getLv().visit(this,null)).append(" = String.valueOf(").append(statementAssign.getE().visit(this,null)).append(");\n");
+            return e.append(statementAssign.getLv().visit(this,null)).append(" = String.valueOf(").append(statementAssign.getE().visit(this,null)).append(");\n");
         }
         e.append(statementAssign.getLv().visit(this,null)).append(" = ").append(statementAssign.getE().visit(this,null)).append(";\n");
         return e;
@@ -154,7 +154,7 @@ public class CodeGen implements ASTVisitor{
                     .append(binaryExpr.getRight().visit(this,arg)).append(")");
         }
         if((compeq && dec) || (comp && inReturn) || (compeq && inReturn)){
-            return s.append(binaryExpr.getLeft().visit(this,arg)).append(" "+ op +" ").append(binaryExpr.getRight().visit(this,arg)).append(" ? 1 : 0");
+            return s.append(binaryExpr.getLeft().visit(this,arg)).append(" "+ op +" ").append(binaryExpr.getRight().visit(this,arg)).append("");
         }
         return s.append(binaryExpr.getLeft().visit(this,arg)).append(" "+ op +" ").append(binaryExpr.getRight().visit(this,arg));
     }
@@ -179,7 +179,7 @@ public class CodeGen implements ASTVisitor{
         StringBuilder e = new StringBuilder();
         if(returnConditional){
             return e.append(conditionalExpr.getGuard().visit(this,arg))
-                    .append("  != 0 ? ").append(conditionalExpr.getTrueCase().visit(this,arg))
+                    .append(" ? ").append(conditionalExpr.getTrueCase().visit(this,arg))
                     .append(" : ").append(conditionalExpr.getFalseCase().visit(this,arg));
         }
         e.append("((").append(conditionalExpr.getGuard().visit(this,arg)).append(") != false)").
