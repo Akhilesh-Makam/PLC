@@ -140,14 +140,18 @@ public class CodeGen implements ASTVisitor{
             }
             case EQ->{
                 op = "==";
-                return s.append("(("+ binaryExpr.getLeft().visit(this,arg)).append(" " + op + " ").append(binaryExpr.getRight().visit(this,arg))
-                        .append(") ? 1 : 0)");
+                return s.append("(("+ binaryExpr.getLeft().visit(this,arg)).append("  " + op + " ").append(binaryExpr.getRight().visit(this,arg))
+                        .append(" ) ? 1 : 0)");
             }
             case BITOR, OR -> {
-                op = "|";
+                op = "||";
+                return s.append("(("+ binaryExpr.getLeft().visit(this,arg)).append(" != 0 " + op + " ").append(binaryExpr.getRight().visit(this,arg))
+                        .append("!= 0) ? 1 : 0)");
             }
             case BITAND, AND -> {
-                op = "&";
+                op = "&&";
+                return s.append("(("+ binaryExpr.getLeft().visit(this,arg)).append(" != 0 " + op + " ").append(binaryExpr.getRight().visit(this,arg))
+                        .append("!= 0) ? 1 : 0)");
             }
             case EXP->{
                 op = "**";
@@ -159,10 +163,6 @@ public class CodeGen implements ASTVisitor{
             }
 
         }
-        if((compeq && dec) || (comp && inReturn) || (compeq && inReturn)){
-            return s.append(binaryExpr.getLeft().visit(this,arg)).append(" "+ op +" ").append(binaryExpr.getRight().visit(this,arg)).append("");
-        }
-        return s.append(binaryExpr.getLeft().visit(this,arg)).append(" "+ op +" ").append(binaryExpr.getRight().visit(this,arg));
     }
 
     @Override
