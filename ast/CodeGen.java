@@ -213,6 +213,7 @@ public class CodeGen implements ASTVisitor{
 
     @Override
     public Object visitIdent(Ident ident, Object arg) throws PLCException {
+        System.out.println(ident.toString());
         String s = ident.getName();
 
         //this is set up like this because it could not find the variables of scope level 1.
@@ -225,6 +226,7 @@ public class CodeGen implements ASTVisitor{
 
     @Override
     public Object visitIdentExpr(IdentExpr identExpr, Object arg) throws PLCException {
+        System.out.println(identExpr.toString());
         String s = identExpr.getName();
         if (identExpr.uniqueID > 1) {
             s += "_" + identExpr.uniqueID;
@@ -245,6 +247,9 @@ public class CodeGen implements ASTVisitor{
     public Object visitNameDef(NameDef nameDef, Object arg) throws PLCException {
         StringBuilder name = new StringBuilder();
         name.append(type(nameDef.getType())).append(" ").append(nameDef.getIdent().visit(this,arg));
+        if(nameDef.uniqueID > 1){
+            name.append("_").append(nameDef.uniqueID);
+        }
 
         //not implementing dimensions for assignment 5
         return name.toString();

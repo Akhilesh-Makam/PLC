@@ -39,6 +39,7 @@ public class ASTVisitorX implements ASTVisitor {
 
         public void leaveScope() {
             scopeStack.pop();
+            uniqueID--;
         }
     }
 
