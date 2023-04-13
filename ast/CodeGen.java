@@ -195,6 +195,9 @@ public class CodeGen implements ASTVisitor{
         dec.append(declaration.getNameDef().visit(this,arg));
         Type x = declaration.getNameDef().getType();
         if(declaration.getInitializer() != null){
+            if(x == Type.STRING){
+                return dec.append(" = String.valueOf(").append(declaration.getInitializer().visit(this,arg)).append(")");
+            }
             dec.append(" = ").append(declaration.getInitializer().visit(this,arg));
         }
         return dec.toString();
