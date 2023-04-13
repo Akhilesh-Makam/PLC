@@ -51,9 +51,6 @@ public class CodeGen implements ASTVisitor{
         if(write){
             s += "import edu.ufl.cise.plcsp23.runtime.ConsoleIO;\n";
         }
-        if(rand){
-            s += "import Java.util.Math;\n";
-        }
         return s;
     }
 
@@ -312,7 +309,7 @@ public class CodeGen implements ASTVisitor{
             rand = true;
         }
         StringBuilder e = new StringBuilder();
-        e.append("Math.floor(Math.random()*256)");
+        e.append("(int) Math.floor(Math.random()*256)");
         return e.toString();
     }
 
