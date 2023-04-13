@@ -185,7 +185,7 @@ public class CodeGen implements ASTVisitor{
         StringBuilder e = new StringBuilder();
         if(returnConditional){
             return e.append(conditionalExpr.getGuard().visit(this,arg))
-                    .append("  ? ").append(conditionalExpr.getTrueCase().visit(this,arg))
+                    .append("  != 0 ? ").append(conditionalExpr.getTrueCase().visit(this,arg))
                     .append(" : ").append(conditionalExpr.getFalseCase().visit(this,arg));
         }
         e.append("((").append(conditionalExpr.getGuard().visit(this,arg)).append(") != 0)").
