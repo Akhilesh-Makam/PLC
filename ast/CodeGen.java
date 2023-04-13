@@ -92,47 +92,56 @@ public class CodeGen implements ASTVisitor{
 
     @Override
     public Object visitBinaryExpr(BinaryExpr binaryExpr, Object arg) throws PLCException {
-        boolean power2 = false;
         boolean compeq = false;
         boolean comp = false;
-        if(binaryExpr.getOp() == IToken.Kind.EXP){
-            power2 = true;
-        }
+        boolean compeq2 = false;
+        StringBuilder s = new StringBuilder();
         String op = "";
         switch(binaryExpr.getOp()){
             case PLUS -> {
                 op = "+";
+                return s.append(binaryExpr.getLeft().visit(this,arg)).append(" "+ op +" ").append(binaryExpr.getRight().visit(this,arg));
             }
             case MINUS -> {
                 op = "-";
+                return s.append(binaryExpr.getLeft().visit(this,arg)).append(" "+ op +" ").append(binaryExpr.getRight().visit(this,arg));
             }
             case TIMES->{
                 op = "*";
+                return s.append(binaryExpr.getLeft().visit(this,arg)).append(" "+ op +" ").append(binaryExpr.getRight().visit(this,arg));
             }
             case DIV->{
                 op = "/";
+                return s.append(binaryExpr.getLeft().visit(this,arg)).append(" "+ op +" ").append(binaryExpr.getRight().visit(this,arg));
             }
             case MOD->{
                 op = "%";
+                return s.append(binaryExpr.getLeft().visit(this,arg)).append(" "+ op +" ").append(binaryExpr.getRight().visit(this,arg));
             }
             case LT->{
                 op = "<";
-                comp = true;
+                return s.append("(("+ binaryExpr.getLeft().visit(this,arg)).append(" " + op + " ").append(binaryExpr.getRight().visit(this,arg))
+                        .append(") ? 1 : 0)");
             }
             case GT->{
                 op = ">";
-                comp = true;
+                return s.append("(("+ binaryExpr.getLeft().visit(this,arg)).append(" " + op + " ").append(binaryExpr.getRight().visit(this,arg))
+                        .append(") ? 1 : 0)");
             }
             case LE->{
                 op = "<=";
-                compeq = true;
+                return s.append("(("+ binaryExpr.getLeft().visit(this,arg)).append(" " + op + " ").append(binaryExpr.getRight().visit(this,arg))
+                        .append(") ? 1 : 0)");
             }
             case GE->{
                 op = ">=";
-                compeq = true;
+                return s.append("(("+ binaryExpr.getLeft().visit(this,arg)).append(" " + op + " ").append(binaryExpr.getRight().visit(this,arg))
+                        .append(") ? 1 : 0)");
             }
             case EQ->{
                 op = "==";
+                return s.append("(("+ binaryExpr.getLeft().visit(this,arg)).append(" " + op + " ").append(binaryExpr.getRight().visit(this,arg))
+                        .append(") ? 1 : 0)");
             }
             case BITOR, OR -> {
                 op = "|";
@@ -142,16 +151,13 @@ public class CodeGen implements ASTVisitor{
             }
             case EXP->{
                 op = "**";
+                return s.append("(int) Math.pow(").append(binaryExpr.getLeft().visit(this,arg)).append(", ")
+                        .append(binaryExpr.getRight().visit(this,arg)).append(")");
             }
             default ->{
                 throw new PLCException("OP not allowed");
             }
 
-        }
-        StringBuilder s = new StringBuilder();
-        if(power2){
-            return s.append("(int) Math.pow(").append(binaryExpr.getLeft().visit(this,arg)).append(", ")
-                    .append(binaryExpr.getRight().visit(this,arg)).append(")");
         }
         if((compeq && dec) || (comp && inReturn) || (compeq && inReturn)){
             return s.append(binaryExpr.getLeft().visit(this,arg)).append(" "+ op +" ").append(binaryExpr.getRight().visit(this,arg)).append("");
@@ -179,10 +185,10 @@ public class CodeGen implements ASTVisitor{
         StringBuilder e = new StringBuilder();
         if(returnConditional){
             return e.append(conditionalExpr.getGuard().visit(this,arg))
-                    .append(" ? ").append(conditionalExpr.getTrueCase().visit(this,arg))
+                    .append("  ? ").append(conditionalExpr.getTrueCase().visit(this,arg))
                     .append(" : ").append(conditionalExpr.getFalseCase().visit(this,arg));
         }
-        e.append("((").append(conditionalExpr.getGuard().visit(this,arg)).append(") != false)").
+        e.append("((").append(conditionalExpr.getGuard().visit(this,arg)).append(") != 0)").
                 append(" ? ").append(conditionalExpr.getTrueCase().visit(this,arg))
                 .append(" : ").append(conditionalExpr.getFalseCase().visit(this,arg));
         return e;
@@ -346,7 +352,7 @@ public class CodeGen implements ASTVisitor{
     public Object visitWhileStatement(WhileStatement whileStatement, Object arg) throws PLCException {
         StringBuilder e = new StringBuilder();
         e.append("while (").append(whileStatement.getGuard().visit(this, arg))
-                .append(") {\n").append(whileStatement.getBlock().visit(this,arg))
+                .append(" != 0) {\n").append(whileStatement.getBlock().visit(this,arg))
                 .append("\n}\n");
         return e;
     }
