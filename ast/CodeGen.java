@@ -320,7 +320,7 @@ public class CodeGen implements ASTVisitor{
         if(returnStatement.getE().toString().contains("ConditionalExpr")){
             returnConditional = true;
         }
-        if(returnType == "String" && returnStatement.getE().toString().contains("NumLitExpr")){
+        if(returnType == "String"){
             return e.append("return ").append("String.valueOf(").append(returnStatement.getE().visit(this,arg)).append(");");
         }
         e.append("return ").append(returnStatement.getE().visit(this,arg)).append(";\n");
