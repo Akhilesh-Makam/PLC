@@ -63,7 +63,7 @@ public class CodeGen implements ASTVisitor{
                 return "void";
             }
             case IMAGE -> {
-                return "Image";
+                return "image";
             }
             case PIXEL -> {
                 return "pixel";
@@ -268,7 +268,7 @@ public class CodeGen implements ASTVisitor{
     }
 
     @Override
-    public Object visitPixelFuncExpr(PixelFuncExpr pixelFuncExpr, Object arg) throws PLCException { //not implementing this for Assignment 5
+    public Object visitPixelFuncExpr(PixelFuncExpr pixelFuncExpr, Object arg) throws PLCException { //NOT IMPLEMENTING FOR ASSIGNMENT 6
         return null;
     }
 
