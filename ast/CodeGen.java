@@ -21,7 +21,10 @@ public class CodeGen implements ASTVisitor{
     private int indent;
     private StringBuilder code;
     boolean write;
+    boolean pixel;
+    boolean file;
     boolean rand;
+    boolean image;
     boolean returnConditional;
     boolean inReturn;
     boolean dec;
@@ -36,6 +39,9 @@ public class CodeGen implements ASTVisitor{
         inReturn = false;
         dec = false;
         idents = new HashMap<>();
+        pixel = false;
+        file = false;
+        image = false;
     }
 
     public String indentMaker(){
@@ -50,6 +56,15 @@ public class CodeGen implements ASTVisitor{
         String s = "";
         if(write){
             s += "import edu.ufl.cise.plcsp23.runtime.ConsoleIO;\n";
+        }
+        if(pixel){
+            s += "import edu.ufl.cise.plcsp23.runtime.PixelOps;\n";
+        }
+        if(file){
+            s += "import edu.ufl.cise.plcsp23.runtime.FileURLIO;\n";
+        }
+        if(image){
+            s += "import edu.ufl.cise.plcsp23.runtime.ImageOps;\n";
         }
         return s;
     }
@@ -197,6 +212,10 @@ public class CodeGen implements ASTVisitor{
         StringBuilder dec = new StringBuilder();
         dec.append(declaration.getNameDef().visit(this,arg));
         Type x = declaration.getNameDef().getType();
+        if(x == Type.PIXEL){
+            pixel = true;
+            return dec.append(" = ").append(declaration.getInitializer().visit(this,arg));
+        }
         if(declaration.getInitializer() != null){
             if(x == Type.STRING){
                 return dec.append(" = String.valueOf(").append(declaration.getInitializer().visit(this,arg)).append(")");
@@ -213,7 +232,9 @@ public class CodeGen implements ASTVisitor{
 
     @Override
     public Object visitExpandedPixelExpr(ExpandedPixelExpr expandedPixelExpr, Object arg) throws PLCException { //not implementing this for Assignment 5
-        return null;
+        StringBuilder e = new StringBuilder();
+        return e.append("PixelOps.pack(").append(expandedPixelExpr.getRedExpr().visit(this,arg)+ ", " +
+               expandedPixelExpr.getGrnExpr().visit(this,arg)+", "+expandedPixelExpr.bluExpr.visit(this,arg)+")");
     }
 
 
@@ -252,7 +273,11 @@ public class CodeGen implements ASTVisitor{
     @Override
     public Object visitNameDef(NameDef nameDef, Object arg) throws PLCException {
         StringBuilder name = new StringBuilder();
-        name.append(type(nameDef.getType())).append(" ").append(nameDef.getIdent().visit(this,arg));
+        String x = type(nameDef.getType());
+        if(x == "pixel") {
+            x = "int";
+        }
+        name.append(x).append(" ").append(nameDef.getIdent().visit(this,arg));
         if(nameDef.uniqueID > 1){
             name.append("_").append(nameDef.uniqueID);
         }
@@ -286,7 +311,11 @@ public class CodeGen implements ASTVisitor{
     public Object visitProgram(Program program, Object arg) throws PLCException {
         code.append("public class ").append(program.getIdent().getName()).append(" {\n");
         returnType = type(program.getType());
-        code.append(indentMaker()).append("public static ").append(type(program.getType())).append(" apply(");
+        String x = type(program.getType());
+        if(x == "pixel") {
+            x = "int";
+        }
+        code.append(indentMaker()).append("public static ").append(x).append(" apply(");
         if(!program.getParamList().isEmpty()){
             code.append(program.getParamList().get(0).visit(this, null));
             for(int i = 1; i <program.getParamList().size();i++){
@@ -336,12 +365,35 @@ public class CodeGen implements ASTVisitor{
     }
 
     @Override
-    public Object visitUnaryExpr(UnaryExpr unaryExpr, Object arg) throws PLCException { //not implementing this for Assignment 5
-        return null;
+    public Object visitUnaryExpr(UnaryExpr unaryExpr, Object arg) throws PLCException { //implemented
+        StringBuilder e = new StringBuilder();
+        if(unaryExpr.getOp() == IToken.Kind.BANG && unaryExpr.getE().getType() == Type.INT){
+            return e.append("(").append(unaryExpr.getE().visit(this,arg)).append(" == 0 ? 1 : 0)");
+        }
+        String s;
+        if(unaryExpr.getOp() == IToken.Kind.BANG){
+            s = "!";
+        }
+        else{
+            s = "-";
+        }
+        return e.append(s + unaryExpr.getE().visit(this,arg));
     }
 
     @Override
     public Object visitUnaryExprPostFix(UnaryExprPostfix unaryExprPostfix, Object arg) throws PLCException { //not implementing this for Assignment 5
+        StringBuilder e = new StringBuilder();
+        if(unaryExprPostfix.getPrimary().getType() == Type.PIXEL){
+            if(unaryExprPostfix.getColor() == ColorChannel.red){
+                return e.append("PixelOps.red(").append(unaryExprPostfix.getPrimary().visit(this,arg)).append(")");
+            }
+            if(unaryExprPostfix.getColor() == ColorChannel.grn){
+                return e.append("PixelOps.grn(").append(unaryExprPostfix.getPrimary().visit(this,arg)).append(")");
+            }
+            if(unaryExprPostfix.getColor() == ColorChannel.blu){
+                return e.append("PixelOps.blu(").append(unaryExprPostfix.getPrimary().visit(this,arg)).append(")");
+            }
+        }
         return null;
     }
 
