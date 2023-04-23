@@ -235,6 +235,9 @@ public class CodeGen implements ASTVisitor{
                     return dec.append(" = ImageOps.cloneImage(").append(declaration.getInitializer().visit(this,arg) + ")");
                 }
             }
+            if(declaration.getInitializer().getType() == Type.STRING){
+                return dec.append("= FileURLIO.readImage(").append(declaration.getInitializer().visit(this,arg) + ", " + declaration.getNameDef().getDimension().visit(this,arg) + ")");
+            }
         }
         if(declaration.getInitializer() != null){
             if(x == Type.STRING){
