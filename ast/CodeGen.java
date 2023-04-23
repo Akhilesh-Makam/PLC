@@ -65,6 +65,8 @@ public class CodeGen implements ASTVisitor{
         }
         if(image){
             s += "import edu.ufl.cise.plcsp23.runtime.ImageOps;\n";
+            s += "import java.awt.image.BufferedImage;\n";
+            s += "import edu.ufl.cise.plcsp23.runtime.FileURLIO;\n";
         }
         return s;
     }
@@ -216,6 +218,13 @@ public class CodeGen implements ASTVisitor{
             pixel = true;
             return dec.append(" = ").append(declaration.getInitializer().visit(this,arg));
         }
+        if(x == Type.IMAGE){
+            if(declaration.getNameDef().getDimension() == null){
+                if(declaration.getInitializer().getType() == Type.STRING){
+                    return dec.append(" = FileURLIO.readImage(").append(declaration.getInitializer().visit(this,arg) + ")");
+                }
+            }
+        }
         if(declaration.getInitializer() != null){
             if(x == Type.STRING){
                 return dec.append(" = String.valueOf(").append(declaration.getInitializer().visit(this,arg)).append(")");
@@ -277,6 +286,10 @@ public class CodeGen implements ASTVisitor{
         if(x == "pixel") {
             x = "int";
         }
+        if(x == "image"){
+            x = "BufferedImage";
+            image = true;
+        }
         name.append(x).append(" ").append(nameDef.getIdent().visit(this,arg));
         if(nameDef.uniqueID > 1){
             name.append("_").append(nameDef.uniqueID);
@@ -314,6 +327,9 @@ public class CodeGen implements ASTVisitor{
         String x = type(program.getType());
         if(x == "pixel") {
             x = "int";
+        }
+        if(x == "image"){
+            x = "BufferedImage";//test
         }
         code.append(indentMaker()).append("public static ").append(x).append(" apply(");
         if(!program.getParamList().isEmpty()){
@@ -394,6 +410,23 @@ public class CodeGen implements ASTVisitor{
                 return e.append("PixelOps.blu(").append(unaryExprPostfix.getPrimary().visit(this,arg)).append(")");
             }
         }
+
+        if(unaryExprPostfix.getPrimary().getType() == Type.IMAGE){
+            if(unaryExprPostfix.getPixel() == null){
+                ColorChannel x = unaryExprPostfix.getColor();
+                switch(x){
+                    case red -> {
+                        return e.append("ImageOps.extractRed(").append(unaryExprPostfix.getPrimary().visit(this,arg)).append(")");
+                    }
+                    case grn -> {
+                        return e.append("ImageOps.extractGrn(").append(unaryExprPostfix.getPrimary().visit(this,arg)).append(")");
+                    }
+                    case blu -> {
+                        return e.append("ImageOps.extractBlu(").append(unaryExprPostfix.getPrimary().visit(this,arg)).append(")");
+                    }
+                }
+            }
+        }
         return null;
     }
 
@@ -412,6 +445,10 @@ public class CodeGen implements ASTVisitor{
             write = true;
         }
         StringBuilder s = new StringBuilder();
+        if(statementWrite.getE().toString().contains("pixel")){
+            s.append("ConsoleIO.writePixel(").append(statementWrite.getE().visit(this,arg)).append(")").append(";\n");
+
+        }
         s.append("ConsoleIO.write(").append(statementWrite.getE().visit(this,arg)).append(")").append(";\n");
 
         return s;

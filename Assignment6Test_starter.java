@@ -39,7 +39,7 @@ class Assignment6Test_starter {
 	}
 
 	static final boolean VERBOSE = true;
-	static final boolean WAIT_FOR_INPUT = true;
+	static final boolean WAIT_FOR_INPUT = false;
 
 	/**
 	 * This waits for input to prevent Junit and your IDE from closing the window
