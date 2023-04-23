@@ -67,6 +67,7 @@ public class CodeGen implements ASTVisitor{
             s += "import edu.ufl.cise.plcsp23.runtime.ImageOps;\n";
             s += "import java.awt.image.BufferedImage;\n";
             s += "import edu.ufl.cise.plcsp23.runtime.FileURLIO;\n";
+            s += "import edu.ufl.cise.plcsp23.runtime.PixelOps;\n";
         }
         return s;
     }
@@ -111,6 +112,10 @@ public class CodeGen implements ASTVisitor{
         boolean compeq2 = false;
         StringBuilder s = new StringBuilder();
         String op = "";
+        if(binaryExpr.getLeft().getType() == Type.IMAGE && binaryExpr.getRight().getType() == Type.IMAGE){
+            return s.append("ImageOps.binaryImageImageOp("+binaryExpr.getOp()+","+binaryExpr.getLeft().visit(this,arg)+","+
+                    binaryExpr.getRight().visit(this,arg)+")");
+        }
         switch(binaryExpr.getOp()){
             case PLUS -> {
                 op = "+";
@@ -312,7 +317,8 @@ public class CodeGen implements ASTVisitor{
 
     @Override
     public Object visitPixelSelector(PixelSelector pixelSelector, Object arg) throws PLCException { //not implementing this for Assignment 5
-        return null;
+        StringBuilder e = new StringBuilder();
+        return e.append(pixelSelector.getX().visit(this,arg)+","+ pixelSelector.getY().visit(this,arg));
     }
 
     @Override
@@ -399,17 +405,18 @@ public class CodeGen implements ASTVisitor{
     @Override
     public Object visitUnaryExprPostFix(UnaryExprPostfix unaryExprPostfix, Object arg) throws PLCException { //not implementing this for Assignment 5
         StringBuilder e = new StringBuilder();
-        if(unaryExprPostfix.getPrimary().getType() == Type.PIXEL){
-            if(unaryExprPostfix.getColor() == ColorChannel.red){
-                return e.append("PixelOps.red(").append(unaryExprPostfix.getPrimary().visit(this,arg)).append(")");
+        if(unaryExprPostfix.getPrimary().getType() == Type.PIXEL) {
+            if (unaryExprPostfix.getColor() == ColorChannel.red) {
+                return e.append("PixelOps.red(").append(unaryExprPostfix.getPrimary().visit(this, arg)).append(")");
             }
-            if(unaryExprPostfix.getColor() == ColorChannel.grn){
-                return e.append("PixelOps.grn(").append(unaryExprPostfix.getPrimary().visit(this,arg)).append(")");
+            if (unaryExprPostfix.getColor() == ColorChannel.grn) {
+                return e.append("PixelOps.grn(").append(unaryExprPostfix.getPrimary().visit(this, arg)).append(")");
             }
-            if(unaryExprPostfix.getColor() == ColorChannel.blu){
-                return e.append("PixelOps.blu(").append(unaryExprPostfix.getPrimary().visit(this,arg)).append(")");
+            if (unaryExprPostfix.getColor() == ColorChannel.blu) {
+                return e.append("PixelOps.blu(").append(unaryExprPostfix.getPrimary().visit(this, arg)).append(")");
             }
         }
+
 
         if(unaryExprPostfix.getPrimary().getType() == Type.IMAGE){
             if(unaryExprPostfix.getPixel() == null){
@@ -425,6 +432,19 @@ public class CodeGen implements ASTVisitor{
                         return e.append("ImageOps.extractBlu(").append(unaryExprPostfix.getPrimary().visit(this,arg)).append(")");
                     }
                 }
+            }
+            if(unaryExprPostfix.getColor() == null){
+                return e.append("ImageOps.getRGB("+unaryExprPostfix.getPrimary().visit(this,arg)+","+ unaryExprPostfix.getPixel().visit(this,arg)+")");
+            }
+
+            if (unaryExprPostfix.getColor() == ColorChannel.red) {
+                return e.append("PixelOps.red(").append("ImageOps.getRGB("+unaryExprPostfix.getPrimary().visit(this,arg)+","+ unaryExprPostfix.getPixel().visit(this,arg)+")").append(")");
+            }
+            if (unaryExprPostfix.getColor() == ColorChannel.grn) {
+                return e.append("PixelOps.grn(").append("ImageOps.getRGB("+unaryExprPostfix.getPrimary().visit(this,arg)+","+ unaryExprPostfix.getPixel().visit(this,arg)+")").append(")");
+            }
+            if (unaryExprPostfix.getColor() == ColorChannel.blu) {
+                return e.append("PixelOps.blu(").append("ImageOps.getRGB("+unaryExprPostfix.getPrimary().visit(this,arg)+","+ unaryExprPostfix.getPixel().visit(this,arg)+")").append(")");
             }
         }
         return null;
