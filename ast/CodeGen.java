@@ -224,9 +224,15 @@ public class CodeGen implements ASTVisitor{
             return dec.append(" = ").append(declaration.getInitializer().visit(this,arg));
         }
         if(x == Type.IMAGE){
+            if(declaration.getInitializer() == null){
+                return dec.append(" = ImageOps.makeImage(").append(declaration.getNameDef().getDimension().visit(this,arg) + ")");
+            }
             if(declaration.getNameDef().getDimension() == null){
                 if(declaration.getInitializer().getType() == Type.STRING){
                     return dec.append(" = FileURLIO.readImage(").append(declaration.getInitializer().visit(this,arg) + ")");
+                }
+                if(declaration.getInitializer().getType() == Type.IMAGE){
+                    return dec.append(" = ImageOps.cloneImage(").append(declaration.getInitializer().visit(this,arg) + ")");
                 }
             }
         }
@@ -241,7 +247,8 @@ public class CodeGen implements ASTVisitor{
 
     @Override
     public Object visitDimension(Dimension dimension, Object arg) throws PLCException { //not implementing this for Assignment 5
-        return null;
+        StringBuilder e = new StringBuilder();
+        return e.append(dimension.getWidth().visit(this,arg)+ ", " + dimension.getHeight().visit(this,arg));
     }
 
     @Override
