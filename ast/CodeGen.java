@@ -59,6 +59,7 @@ public class CodeGen implements ASTVisitor{
         }
         if(pixel){
             s += "import edu.ufl.cise.plcsp23.runtime.PixelOps;\n";
+            s += "import edu.ufl.cise.plcsp23.runtime.ImageOps;\n";
         }
         if(file){
             s += "import edu.ufl.cise.plcsp23.runtime.FileURLIO;\n";
@@ -125,15 +126,15 @@ public class CodeGen implements ASTVisitor{
             case PLUS -> {
                 op = "+";
                 if(binaryExpr.getLeft().getType() == Type.IMAGE && binaryExpr.getRight().getType() == Type.IMAGE){
-                    return s.append("ImageOps.binaryImageImageOp("+op+","+binaryExpr.getLeft().visit(this,arg)+","+
+                    return s.append("ImageOps.binaryImageImageOp(ImageOps.OP.PLUS"  + ","+binaryExpr.getLeft().visit(this,arg)+","+
                             binaryExpr.getRight().visit(this,arg)+")");
                 }
                 if(binaryExpr.getLeft().getType() == Type.IMAGE && binaryExpr.getRight().getType() == Type.INT){
-                    return s.append("ImageOps.binaryImageScalarOp("+op+","+binaryExpr.getLeft().visit(this,arg)+","+
+                    return s.append("ImageOps.binaryImageScalarOp(ImageOps.OP.PLUS"+","+binaryExpr.getLeft().visit(this,arg)+","+
                             binaryExpr.getRight().visit(this,arg)+")");
                 }
                 if(binaryExpr.getLeft().getType() == Type.PIXEL && binaryExpr.getRight().getType() == Type.PIXEL){
-                    return s.append("ImageOps.binaryImagePixelOp("+op+","+binaryExpr.getLeft().visit(this,arg)+","+
+                    return s.append("ImageOps.binaryImagePixelOp(ImageOps.OP.PLUS"+","+binaryExpr.getLeft().visit(this,arg)+","+
                             binaryExpr.getRight().visit(this,arg)+")");
                 }
                 return s.append(binaryExpr.getLeft().visit(this,arg)).append(" "+ op +" ").append(binaryExpr.getRight().visit(this,arg));
@@ -141,15 +142,15 @@ public class CodeGen implements ASTVisitor{
             case MINUS -> {
                 op = "-";
                 if(binaryExpr.getLeft().getType() == Type.IMAGE && binaryExpr.getRight().getType() == Type.IMAGE){
-                    return s.append("ImageOps.binaryImageImageOp("+op+","+binaryExpr.getLeft().visit(this,arg)+","+
+                    return s.append("ImageOps.binaryImageImageOp(ImageOps.OP.MINUS"+","+binaryExpr.getLeft().visit(this,arg)+","+
                             binaryExpr.getRight().visit(this,arg)+")");
                 }
                 if(binaryExpr.getLeft().getType() == Type.IMAGE && binaryExpr.getRight().getType() == Type.INT){
-                    return s.append("ImageOps.binaryImageScalarOp("+op+","+binaryExpr.getLeft().visit(this,arg)+","+
+                    return s.append("ImageOps.binaryImageScalarOp(ImageOps.OP.MINUS"+","+binaryExpr.getLeft().visit(this,arg)+","+
                             binaryExpr.getRight().visit(this,arg)+")");
                 }
                 if(binaryExpr.getLeft().getType() == Type.PIXEL && binaryExpr.getRight().getType() == Type.PIXEL){
-                    return s.append("ImageOps.binaryImagePixelOp("+op+","+binaryExpr.getLeft().visit(this,arg)+","+
+                    return s.append("ImageOps.binaryImagePixelOp(ImageOps.OP.MINUS"+","+binaryExpr.getLeft().visit(this,arg)+","+
                             binaryExpr.getRight().visit(this,arg)+")");
                 }
                 return s.append(binaryExpr.getLeft().visit(this,arg)).append(" "+ op +" ").append(binaryExpr.getRight().visit(this,arg));
@@ -157,15 +158,15 @@ public class CodeGen implements ASTVisitor{
             case TIMES->{
                 op = "*";
                 if(binaryExpr.getLeft().getType() == Type.IMAGE && binaryExpr.getRight().getType() == Type.IMAGE){
-                    return s.append("ImageOps.binaryImageImageOp("+op+","+binaryExpr.getLeft().visit(this,arg)+","+
+                    return s.append("ImageOps.binaryImageImageOp(ImageOps.OP.TIMES"+","+binaryExpr.getLeft().visit(this,arg)+","+
                             binaryExpr.getRight().visit(this,arg)+")");
                 }
                 if(binaryExpr.getLeft().getType() == Type.IMAGE && binaryExpr.getRight().getType() == Type.INT){
-                    return s.append("ImageOps.binaryImageScalarOp("+op+","+binaryExpr.getLeft().visit(this,arg)+","+
+                    return s.append("ImageOps.binaryImageScalarOp(ImageOps.OP.TIMES"+","+binaryExpr.getLeft().visit(this,arg)+","+
                             binaryExpr.getRight().visit(this,arg)+")");
                 }
                 if(binaryExpr.getLeft().getType() == Type.PIXEL && binaryExpr.getRight().getType() == Type.PIXEL){
-                    return s.append("ImageOps.binaryImagePixelOp("+op+","+binaryExpr.getLeft().visit(this,arg)+","+
+                    return s.append("ImageOps.binaryImagePixelOp(ImageOps.OP.TIMES"+","+binaryExpr.getLeft().visit(this,arg)+","+
                             binaryExpr.getRight().visit(this,arg)+")");
                 }
                 return s.append(binaryExpr.getLeft().visit(this,arg)).append(" "+ op +" ").append(binaryExpr.getRight().visit(this,arg));
@@ -173,15 +174,15 @@ public class CodeGen implements ASTVisitor{
             case DIV->{
                 op = "/";
                 if(binaryExpr.getLeft().getType() == Type.IMAGE && binaryExpr.getRight().getType() == Type.IMAGE){
-                    return s.append("ImageOps.binaryImageImageOp("+op+","+binaryExpr.getLeft().visit(this,arg)+","+
+                    return s.append("ImageOps.binaryImageImageOp(ImageOps.OP.DIV"+","+binaryExpr.getLeft().visit(this,arg)+","+
                             binaryExpr.getRight().visit(this,arg)+")");
                 }
                 if(binaryExpr.getLeft().getType() == Type.IMAGE && binaryExpr.getRight().getType() == Type.INT){
-                    return s.append("ImageOps.binaryImageScalarOp("+op+","+binaryExpr.getLeft().visit(this,arg)+","+
+                    return s.append("ImageOps.binaryImageScalarOp(ImageOps.OP.DIV"+","+binaryExpr.getLeft().visit(this,arg)+","+
                             binaryExpr.getRight().visit(this,arg)+")");
                 }
                 if(binaryExpr.getLeft().getType() == Type.PIXEL && binaryExpr.getRight().getType() == Type.PIXEL){
-                    return s.append("ImageOps.binaryImagePixelOp("+op+","+binaryExpr.getLeft().visit(this,arg)+","+
+                    return s.append("ImageOps.binaryImagePixelOp(ImageOps.OP.DIV"+","+binaryExpr.getLeft().visit(this,arg)+","+
                             binaryExpr.getRight().visit(this,arg)+")");
                 }
                 return s.append(binaryExpr.getLeft().visit(this,arg)).append(" "+ op +" ").append(binaryExpr.getRight().visit(this,arg));
@@ -189,15 +190,15 @@ public class CodeGen implements ASTVisitor{
             case MOD->{
                 op = "%";
                 if(binaryExpr.getLeft().getType() == Type.IMAGE && binaryExpr.getRight().getType() == Type.IMAGE){
-                    return s.append("ImageOps.binaryImageImageOp("+op+","+binaryExpr.getLeft().visit(this,arg)+","+
+                    return s.append("ImageOps.binaryImageImageOp(ImageOps.OP.MOD"+","+binaryExpr.getLeft().visit(this,arg)+","+
                             binaryExpr.getRight().visit(this,arg)+")");
                 }
                 if(binaryExpr.getLeft().getType() == Type.IMAGE && binaryExpr.getRight().getType() == Type.INT){
-                    return s.append("ImageOps.binaryImageScalarOp("+op+","+binaryExpr.getLeft().visit(this,arg)+","+
+                    return s.append("ImageOps.binaryImageScalarOp(ImageOps.OP.MOD"+","+binaryExpr.getLeft().visit(this,arg)+","+
                             binaryExpr.getRight().visit(this,arg)+")");
                 }
                 if(binaryExpr.getLeft().getType() == Type.PIXEL && binaryExpr.getRight().getType() == Type.PIXEL){
-                    return s.append("ImageOps.binaryImagePixelOp("+op+","+binaryExpr.getLeft().visit(this,arg)+","+
+                    return s.append("ImageOps.binaryImagePixelOp(ImageOps.OP.MOD"+","+binaryExpr.getLeft().visit(this,arg)+","+
                             binaryExpr.getRight().visit(this,arg)+")");
                 }
                 return s.append(binaryExpr.getLeft().visit(this,arg)).append(" "+ op +" ").append(binaryExpr.getRight().visit(this,arg));
