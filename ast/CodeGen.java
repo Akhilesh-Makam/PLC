@@ -101,6 +101,14 @@ public class CodeGen implements ASTVisitor{
         if(idents.containsKey(statementAssign.getLv().getIdent().getName()) && idents.get(statementAssign.getLv().getIdent().getName()) == Type.STRING && statementAssign.getE().toString().contains("NumLitExpr")){
             return e.append(statementAssign.getLv().visit(this,null)).append(" = String.valueOf(").append(statementAssign.getE().visit(this,null)).append(");\n");
         }
+        if(statementAssign.getLv().getPixelSelector() != null){
+            return e.append("for(int " + statementAssign.getLv().getPixelSelector().getX().visit(this,arg) + "= 0; " + statementAssign.getLv().getPixelSelector().getX().visit(this,arg) +
+                    " != " + statementAssign.getLv().getIdent().visit(this,arg)+".getWidth(); " + statementAssign.getLv().getPixelSelector().getX().visit(this,arg) + "++) {\n\t")
+                    .append("for(int " + statementAssign.getLv().getPixelSelector().getY().visit(this,arg) + "= 0; " + statementAssign.getLv().getPixelSelector().getY().visit(this,arg) +
+                            " != " + statementAssign.getLv().getIdent().visit(this,arg)+".getHeight(); " + statementAssign.getLv().getPixelSelector().getY().visit(this,arg) + "++) {\n\t")
+                    .append("ImageOps.setRGB(" + statementAssign.getLv().getIdent().visit(this,arg)+", " + statementAssign.getLv().getPixelSelector().getX().visit(this,arg)+ ", " +
+                            statementAssign.getLv().getPixelSelector().getY().visit(this,arg)+", " + statementAssign.getE().visit(this,arg)+");\n}\n}\n");
+        }
         e.append(statementAssign.getLv().visit(this,null)).append(" = ").append(statementAssign.getE().visit(this,null)).append(";\n");
         return e;
     }
@@ -221,6 +229,9 @@ public class CodeGen implements ASTVisitor{
         Type x = declaration.getNameDef().getType();
         if(x == Type.PIXEL){
             pixel = true;
+            if(declaration.getInitializer() == null){
+                return dec;
+            }
             return dec.append(" = ").append(declaration.getInitializer().visit(this,arg));
         }
         if(x == Type.IMAGE){
@@ -336,6 +347,22 @@ public class CodeGen implements ASTVisitor{
 
     @Override
     public Object visitPredeclaredVarExpr(PredeclaredVarExpr predeclaredVarExpr, Object arg) throws PLCException { //not implementing this for Assignment 5
+        StringBuilder e = new StringBuilder();
+        IToken.Kind x = predeclaredVarExpr.getKind();
+        switch(x){
+            case RES_r -> {
+                return e.append("r");
+            }
+            case RES_x -> {
+                return e.append("x");
+            }
+            case RES_y -> {
+                return e.append("y");
+            }
+            case RES_a -> {
+                return e.append("a");
+            }
+        }
         return null;
     }
 
