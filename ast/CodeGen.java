@@ -120,29 +120,70 @@ public class CodeGen implements ASTVisitor{
         boolean compeq2 = false;
         StringBuilder s = new StringBuilder();
         String op = "";
-        if(binaryExpr.getLeft().getType() == Type.IMAGE && binaryExpr.getRight().getType() == Type.IMAGE){
-            return s.append("ImageOps.binaryImageImageOp("+binaryExpr.getOp()+","+binaryExpr.getLeft().visit(this,arg)+","+
-                    binaryExpr.getRight().visit(this,arg)+")");
-        }
+
         switch(binaryExpr.getOp()){
             case PLUS -> {
                 op = "+";
+                if(binaryExpr.getLeft().getType() == Type.IMAGE && binaryExpr.getRight().getType() == Type.IMAGE){
+                    return s.append("ImageOps.binaryImageImageOp("+op+","+binaryExpr.getLeft().visit(this,arg)+","+
+                            binaryExpr.getRight().visit(this,arg)+")");
+                }
+                if(binaryExpr.getLeft().getType() == Type.IMAGE && binaryExpr.getRight().getType() == Type.INT){
+                    return s.append("ImageOps.binaryImageScalarOp("+op+","+binaryExpr.getLeft().visit(this,arg)+","+
+                            binaryExpr.getRight().visit(this,arg)+")");
+                }
+                if(binaryExpr.getLeft().getType() == Type.PIXEL && binaryExpr.getRight().getType() == Type.PIXEL){
+                    return s.append("ImageOps.binaryImagePixelOp("+op+","+binaryExpr.getLeft().visit(this,arg)+","+
+                            binaryExpr.getRight().visit(this,arg)+")");
+                }
                 return s.append(binaryExpr.getLeft().visit(this,arg)).append(" "+ op +" ").append(binaryExpr.getRight().visit(this,arg));
             }
             case MINUS -> {
                 op = "-";
+                if(binaryExpr.getLeft().getType() == Type.IMAGE && binaryExpr.getRight().getType() == Type.IMAGE){
+                    return s.append("ImageOps.binaryImageImageOp("+op+","+binaryExpr.getLeft().visit(this,arg)+","+
+                            binaryExpr.getRight().visit(this,arg)+")");
+                }
+                if(binaryExpr.getLeft().getType() == Type.IMAGE && binaryExpr.getRight().getType() == Type.INT){
+                    return s.append("ImageOps.binaryImageScalarOp("+op+","+binaryExpr.getLeft().visit(this,arg)+","+
+                            binaryExpr.getRight().visit(this,arg)+")");
+                }
                 return s.append(binaryExpr.getLeft().visit(this,arg)).append(" "+ op +" ").append(binaryExpr.getRight().visit(this,arg));
             }
             case TIMES->{
                 op = "*";
+                if(binaryExpr.getLeft().getType() == Type.IMAGE && binaryExpr.getRight().getType() == Type.IMAGE){
+                    return s.append("ImageOps.binaryImageImageOp("+op+","+binaryExpr.getLeft().visit(this,arg)+","+
+                            binaryExpr.getRight().visit(this,arg)+")");
+                }
+                if(binaryExpr.getLeft().getType() == Type.IMAGE && binaryExpr.getRight().getType() == Type.INT){
+                    return s.append("ImageOps.binaryImageScalarOp("+op+","+binaryExpr.getLeft().visit(this,arg)+","+
+                            binaryExpr.getRight().visit(this,arg)+")");
+                }
                 return s.append(binaryExpr.getLeft().visit(this,arg)).append(" "+ op +" ").append(binaryExpr.getRight().visit(this,arg));
             }
             case DIV->{
                 op = "/";
+                if(binaryExpr.getLeft().getType() == Type.IMAGE && binaryExpr.getRight().getType() == Type.IMAGE){
+                    return s.append("ImageOps.binaryImageImageOp("+op+","+binaryExpr.getLeft().visit(this,arg)+","+
+                            binaryExpr.getRight().visit(this,arg)+")");
+                }
+                if(binaryExpr.getLeft().getType() == Type.IMAGE && binaryExpr.getRight().getType() == Type.INT){
+                    return s.append("ImageOps.binaryImageScalarOp("+op+","+binaryExpr.getLeft().visit(this,arg)+","+
+                            binaryExpr.getRight().visit(this,arg)+")");
+                }
                 return s.append(binaryExpr.getLeft().visit(this,arg)).append(" "+ op +" ").append(binaryExpr.getRight().visit(this,arg));
             }
             case MOD->{
                 op = "%";
+                if(binaryExpr.getLeft().getType() == Type.IMAGE && binaryExpr.getRight().getType() == Type.IMAGE){
+                    return s.append("ImageOps.binaryImageImageOp("+op+","+binaryExpr.getLeft().visit(this,arg)+","+
+                            binaryExpr.getRight().visit(this,arg)+")");
+                }
+                if(binaryExpr.getLeft().getType() == Type.IMAGE && binaryExpr.getRight().getType() == Type.INT){
+                    return s.append("ImageOps.binaryImageScalarOp("+op+","+binaryExpr.getLeft().visit(this,arg)+","+
+                            binaryExpr.getRight().visit(this,arg)+")");
+                }
                 return s.append(binaryExpr.getLeft().visit(this,arg)).append(" "+ op +" ").append(binaryExpr.getRight().visit(this,arg));
             }
             case LT->{
