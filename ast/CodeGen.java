@@ -348,7 +348,7 @@ public class CodeGen implements ASTVisitor{
             x = "int";
         }
         if(x == "image"){
-            x = "BufferedImage";//test
+            x = "BufferedImage";
         }
         code.append(indentMaker()).append("public static ").append(x).append(" apply(");
         if(!program.getParamList().isEmpty()){
