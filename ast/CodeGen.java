@@ -23,6 +23,7 @@ public class CodeGen implements ASTVisitor{
     boolean write;
     boolean pixel;
     boolean file;
+    boolean param;
     boolean rand;
     boolean image;
     boolean returnConditional;
@@ -42,6 +43,7 @@ public class CodeGen implements ASTVisitor{
         pixel = false;
         file = false;
         image = false;
+        param = false;
     }
 
     public String indentMaker(){
@@ -102,9 +104,31 @@ public class CodeGen implements ASTVisitor{
         if(idents.containsKey(statementAssign.getLv().getIdent().getName()) && idents.get(statementAssign.getLv().getIdent().getName()) == Type.STRING && statementAssign.getE().toString().contains("NumLitExpr")){
             return e.append(statementAssign.getLv().visit(this,null)).append(" = String.valueOf(").append(statementAssign.getE().visit(this,null)).append(");\n");
         }
+
+        if(idents.containsKey(statementAssign.getLv().getIdent().getName()) && idents.get(statementAssign.getLv().getIdent().getName()) == Type.IMAGE){
+            if(idents.containsKey(statementAssign.getE().visit(this,arg)) && idents.get(statementAssign.getE().visit(this,arg)) == Type.IMAGE && statementAssign.getLv().getPixelSelector() == null && statementAssign.getLv().getColor() == null){
+                return e.append("ImageOps.copyInto(").append(statementAssign.getLv().visit(this,arg)).append(", " + statementAssign.getE().visit(this,arg)).append(");\n");
+            }
+            if(idents.containsKey(statementAssign.getE().visit(this,arg)) && idents.get(statementAssign.getE().visit(this,arg)) == Type.STRING && statementAssign.getLv().getPixelSelector() == null && statementAssign.getLv().getColor() == null){
+                return e.append("ImageOps.copyInto(FileURLIO.readImage(").append(statementAssign.getE().visit(this,arg)).append("), " + statementAssign.getLv().visit(this,arg)).append(");\n");
+            }
+            if(statementAssign.getLv().getPixelSelector() == null && statementAssign.getLv().getColor() == null && statementAssign.getE().getType() == Type.PIXEL){
+                return e.append("ImageOps.setAllPixels( ").append(statementAssign.getLv().visit(this,arg) + ", ").append(statementAssign.getE().visit(this,arg)).append(");\n");
+            }
+        }
+
+        if(statementAssign.getLv().getPixelSelector() != null && statementAssign.getLv().getColor() != null){
+            return e.append("for(int " + statementAssign.getLv().getPixelSelector().getY().visit(this,arg) + "= 0; " + statementAssign.getLv().getPixelSelector().getY().visit(this,arg) +
+                            " != " + statementAssign.getLv().getIdent().visit(this,arg)+".getHeight(); " + statementAssign.getLv().getPixelSelector().getY().visit(this,arg) + "++) {\n\t")
+                    .append("for(int " + statementAssign.getLv().getPixelSelector().getX().visit(this,arg) + "= 0; " + statementAssign.getLv().getPixelSelector().getX().visit(this,arg) +
+                            " != " + statementAssign.getLv().getIdent().visit(this,arg)+".getWidth(); " + statementAssign.getLv().getPixelSelector().getX().visit(this,arg) + "++) {\n\t")
+                    .append("ImageOps.setRGB(" + statementAssign.getLv().getIdent().visit(this,arg)+", " + statementAssign.getLv().getPixelSelector().getX().visit(this,arg)+ ", " +
+                            statementAssign.getLv().getPixelSelector().getY().visit(this,arg)+", " + statementAssign.getE().visit(this,arg)+");\n}\n}\n");
+        }
+
         if(statementAssign.getLv().getPixelSelector() != null){
             return e.append("for(int " + statementAssign.getLv().getPixelSelector().getX().visit(this,arg) + "= 0; " + statementAssign.getLv().getPixelSelector().getX().visit(this,arg) +
-                    " != " + statementAssign.getLv().getIdent().visit(this,arg)+".getWidth(); " + statementAssign.getLv().getPixelSelector().getX().visit(this,arg) + "++) {\n\t")
+                            " != " + statementAssign.getLv().getIdent().visit(this,arg)+".getWidth(); " + statementAssign.getLv().getPixelSelector().getX().visit(this,arg) + "++) {\n\t")
                     .append("for(int " + statementAssign.getLv().getPixelSelector().getY().visit(this,arg) + "= 0; " + statementAssign.getLv().getPixelSelector().getY().visit(this,arg) +
                             " != " + statementAssign.getLv().getIdent().visit(this,arg)+".getHeight(); " + statementAssign.getLv().getPixelSelector().getY().visit(this,arg) + "++) {\n\t")
                     .append("ImageOps.setRGB(" + statementAssign.getLv().getIdent().visit(this,arg)+", " + statementAssign.getLv().getPixelSelector().getX().visit(this,arg)+ ", " +
@@ -245,6 +269,10 @@ public class CodeGen implements ASTVisitor{
             }
             case EQ->{
                 op = "==";
+                if(binaryExpr.getLeft().getType() == Type.IMAGE && binaryExpr.getRight().getType() == Type.IMAGE){
+                    return s.append("ImageOps.equalsForCodeGen("+binaryExpr.getLeft().visit(this,arg)+","+
+                            binaryExpr.getRight().visit(this,arg)+")");
+                }
                 return s.append("(("+ binaryExpr.getLeft().visit(this,arg)).append("  " + op + " ").append(binaryExpr.getRight().visit(this,arg))
                         .append(" ) ? 1 : 0)");
             }
@@ -333,7 +361,7 @@ public class CodeGen implements ASTVisitor{
             if(declaration.getInitializer() != null){
                 return dec.append(" = ImageOps.makeImage(").append(declaration.getNameDef().getDimension().visit(this,arg) + ");\n").
                         append(declaration.getNameDef().getIdent().visit(this,arg) + "= ImageOps.setAllPixels(" + declaration.getNameDef().getIdent().visit(this,arg) + ","
-                        + declaration.getInitializer().visit(this,arg) + ")");
+                                + declaration.getInitializer().visit(this,arg) + ")");
 
             }
         }
@@ -356,7 +384,7 @@ public class CodeGen implements ASTVisitor{
     public Object visitExpandedPixelExpr(ExpandedPixelExpr expandedPixelExpr, Object arg) throws PLCException { //not implementing this for Assignment 5
         StringBuilder e = new StringBuilder();
         return e.append("PixelOps.pack(").append(expandedPixelExpr.getRedExpr().visit(this,arg)+ ", " +
-               expandedPixelExpr.getGrnExpr().visit(this,arg)+", "+expandedPixelExpr.bluExpr.visit(this,arg)+")");
+                expandedPixelExpr.getGrnExpr().visit(this,arg)+", "+expandedPixelExpr.bluExpr.visit(this,arg)+")");
     }
 
 
@@ -403,6 +431,10 @@ public class CodeGen implements ASTVisitor{
             x = "BufferedImage";
             image = true;
         }
+        if(param){
+            idents.put(nameDef.getIdent().getName(), nameDef.getType());
+        }
+
         name.append(x).append(" ").append(nameDef.getIdent().visit(this,arg));
         if(nameDef.uniqueID > 1){
             name.append("_").append(nameDef.uniqueID);
@@ -463,11 +495,13 @@ public class CodeGen implements ASTVisitor{
         }
         code.append(indentMaker()).append("public static ").append(x).append(" apply(");
         if(!program.getParamList().isEmpty()){
+            param = true;
             code.append(program.getParamList().get(0).visit(this, null));
             for(int i = 1; i <program.getParamList().size();i++){
                 code.append(", ").append(program.getParamList().get(i).visit(this, null));
             }
         }
+        param = false;
         code.append(") {\n");
         indent++;
         code.append(indentMaker()).append(program.getBlock().visit(this, null));
