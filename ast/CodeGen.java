@@ -310,6 +310,12 @@ public class CodeGen implements ASTVisitor{
             if(declaration.getInitializer().getType() == Type.IMAGE){
                 return dec.append("= ImageOps.copyAndResize(").append(declaration.getInitializer().visit(this,arg) + ", " + declaration.getNameDef().getDimension().visit(this,arg) + ")");
             }
+            if(declaration.getInitializer() != null){
+                return dec.append(" = ImageOps.makeImage(").append(declaration.getNameDef().getDimension().visit(this,arg) + ");\n").
+                        append(declaration.getNameDef().getIdent().visit(this,arg) + "= ImageOps.setAllPixels(" + declaration.getNameDef().getIdent().visit(this,arg) + ","
+                        + declaration.getInitializer().visit(this,arg) + ")");
+
+            }
         }
         if(declaration.getInitializer() != null){
             if(x == Type.STRING){
