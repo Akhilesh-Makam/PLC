@@ -101,11 +101,11 @@ public class CodeGen implements ASTVisitor{
     @Override
     public Object visitAssignmentStatement(AssignmentStatement statementAssign, Object arg) throws PLCException {
         StringBuilder e = new StringBuilder();
-        if(idents.containsKey(statementAssign.getLv().getIdent().getName()) && idents.get(statementAssign.getLv().getIdent().getName()) == Type.STRING && statementAssign.getE().toString().contains("NumLitExpr")){
+        if(idents.containsKey(statementAssign.getLv().getIdent().visit(this,arg)) && idents.get(statementAssign.getLv().getIdent().visit(this,arg)) == Type.STRING && statementAssign.getE().toString().contains("NumLitExpr")){
             return e.append(statementAssign.getLv().visit(this,null)).append(" = String.valueOf(").append(statementAssign.getE().visit(this,null)).append(");\n");
         }
 
-        if(idents.containsKey(statementAssign.getLv().getIdent().getName()) && idents.get(statementAssign.getLv().getIdent().getName()) == Type.IMAGE){
+        if(idents.containsKey(statementAssign.getLv().getIdent().getName()) && idents.get(statementAssign.getLv().getIdent().visit(this,arg)) == Type.IMAGE){
             if(idents.containsKey(statementAssign.getE().visit(this,arg)) && idents.get(statementAssign.getE().visit(this,arg)) == Type.IMAGE && statementAssign.getLv().getPixelSelector() == null && statementAssign.getLv().getColor() == null){
                 return e.append("ImageOps.copyInto(").append(statementAssign.getLv().visit(this,arg)).append(", " + statementAssign.getE().visit(this,arg)).append(");\n");
             }
@@ -327,7 +327,7 @@ public class CodeGen implements ASTVisitor{
 
     @Override
     public Object visitDeclaration(Declaration declaration, Object arg) throws PLCException {
-        idents.put(declaration.getNameDef().getIdent().getName(), declaration.getNameDef().getType());
+        idents.put((String) declaration.getNameDef().getIdent().visit(this,arg), declaration.getNameDef().getType());
         StringBuilder dec = new StringBuilder();
         dec.append(declaration.getNameDef().visit(this,arg));
         Type x = declaration.getNameDef().getType();
@@ -430,7 +430,7 @@ public class CodeGen implements ASTVisitor{
             image = true;
         }
         if(param){
-            idents.put(nameDef.getIdent().getName(), nameDef.getType());
+            idents.put((String) nameDef.getIdent().visit(this,arg), nameDef.getType());
         }
 
         name.append(x).append(" ").append(nameDef.getIdent().visit(this,arg));
