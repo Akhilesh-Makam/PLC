@@ -564,7 +564,8 @@ public class CodeGen implements ASTVisitor{
     @Override
     public Object visitUnaryExprPostFix(UnaryExprPostfix unaryExprPostfix, Object arg) throws PLCException { //not implementing this for Assignment 5
         StringBuilder e = new StringBuilder();
-        if(unaryExprPostfix.getPrimary().getType() == Type.PIXEL) {
+        Type check = idents.get(unaryExprPostfix.getPrimary().visit(this,arg));
+        if(unaryExprPostfix.getPrimary().getType() == Type.PIXEL || check == Type.PIXEL) {
             if (unaryExprPostfix.getColor() == ColorChannel.red) {
                 return e.append("PixelOps.red(").append(unaryExprPostfix.getPrimary().visit(this, arg)).append(")");
             }
@@ -577,7 +578,7 @@ public class CodeGen implements ASTVisitor{
         }
 
 
-        if(unaryExprPostfix.getPrimary().getType() == Type.IMAGE){
+        if(unaryExprPostfix.getPrimary().getType() == Type.IMAGE || check == Type.IMAGE){
             if(unaryExprPostfix.getPixel() == null){
                 ColorChannel x = unaryExprPostfix.getColor();
                 switch(x){
