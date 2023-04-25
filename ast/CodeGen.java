@@ -127,10 +127,8 @@ public class CodeGen implements ASTVisitor{
         }
 
         if(statementAssign.getLv().getPixelSelector() != null){
-            return e.append("for(int " + statementAssign.getLv().getPixelSelector().getX().visit(this,arg) + "= 0; " + statementAssign.getLv().getPixelSelector().getX().visit(this,arg) +
-                            " != " + statementAssign.getLv().getIdent().visit(this,arg)+".getWidth(); " + statementAssign.getLv().getPixelSelector().getX().visit(this,arg) + "++) {\n\t")
-                    .append("for(int " + statementAssign.getLv().getPixelSelector().getY().visit(this,arg) + "= 0; " + statementAssign.getLv().getPixelSelector().getY().visit(this,arg) +
-                            " != " + statementAssign.getLv().getIdent().visit(this,arg)+".getHeight(); " + statementAssign.getLv().getPixelSelector().getY().visit(this,arg) + "++) {\n\t")
+            return e.append("for(int y = 0; y"  + " != " + statementAssign.getLv().getIdent().visit(this,arg)+".getHeight(); " + "y++) {\n\t")
+                    .append("for(int x" + "= 0; x"  + " != " + statementAssign.getLv().getIdent().visit(this,arg)+".getWidth(); " + "x++) {\n\t")
                     .append("ImageOps.setRGB(" + statementAssign.getLv().getIdent().visit(this,arg)+", " + statementAssign.getLv().getPixelSelector().getX().visit(this,arg)+ ", " +
                             statementAssign.getLv().getPixelSelector().getY().visit(this,arg)+", " + statementAssign.getE().visit(this,arg)+");\n}\n}\n");
         }
@@ -530,6 +528,9 @@ public class CodeGen implements ASTVisitor{
             returnConditional = true;
         }
         if(returnType == "String"){
+            if(idents.containsKey(returnStatement.getE().visit(this,arg)) && idents.get(returnStatement.getE().visit(this,arg)) == Type.PIXEL){
+                return e.append(" return PixelOps.packedToString(").append(returnStatement.getE().visit(this,arg)).append(");\n");
+            }
             return e.append("return ").append("String.valueOf(").append(returnStatement.getE().visit(this,arg)).append(");");
         }
         e.append("return ").append(returnStatement.getE().visit(this,arg)).append(";\n");
