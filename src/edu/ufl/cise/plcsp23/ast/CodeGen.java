@@ -101,11 +101,11 @@ public class CodeGen implements ASTVisitor{
     @Override
     public Object visitAssignmentStatement(AssignmentStatement statementAssign, Object arg) throws PLCException {
         StringBuilder e = new StringBuilder();
-        if(idents.containsKey(statementAssign.getLv().getIdent().getName()) && idents.get(statementAssign.getLv().getIdent().getName()) == Type.STRING && statementAssign.getE().toString().contains("NumLitExpr")){
+        if(idents.containsKey(statementAssign.getLv().getIdent().visit(this,arg)) && idents.get(statementAssign.getLv().getIdent().visit(this,arg)) == Type.STRING && statementAssign.getE().toString().contains("NumLitExpr")){
             return e.append(statementAssign.getLv().visit(this,null)).append(" = String.valueOf(").append(statementAssign.getE().visit(this,null)).append(");\n");
         }
 
-        if(idents.containsKey(statementAssign.getLv().getIdent().getName()) && idents.get(statementAssign.getLv().getIdent().getName()) == Type.IMAGE){
+        if(idents.containsKey(statementAssign.getLv().getIdent().getName()) && idents.get(statementAssign.getLv().getIdent().visit(this,arg)) == Type.IMAGE){
             if(idents.containsKey(statementAssign.getE().visit(this,arg)) && idents.get(statementAssign.getE().visit(this,arg)) == Type.IMAGE && statementAssign.getLv().getPixelSelector() == null && statementAssign.getLv().getColor() == null){
                 return e.append("ImageOps.copyInto(").append(statementAssign.getLv().visit(this,arg)).append(", " + statementAssign.getE().visit(this,arg)).append(");\n");
             }
@@ -148,30 +148,36 @@ public class CodeGen implements ASTVisitor{
             case PLUS -> {
                 op = "+";
                 if(binaryExpr.getLeft().getType() == Type.IMAGE && binaryExpr.getRight().getType() == Type.IMAGE){
+                    image = true;
                     return s.append("ImageOps.binaryImageImageOp(ImageOps.OP.PLUS"  + ","+binaryExpr.getLeft().visit(this,arg)+","+
                             binaryExpr.getRight().visit(this,arg)+")");
                 }
                 if(binaryExpr.getLeft().getType() == Type.IMAGE && binaryExpr.getRight().getType() == Type.INT){
+                    image = true;
                     return s.append("ImageOps.binaryImageScalarOp(ImageOps.OP.PLUS"+","+binaryExpr.getLeft().visit(this,arg)+","+
                             binaryExpr.getRight().visit(this,arg)+")");
                 }
                 if(binaryExpr.getLeft().getType() == Type.PIXEL && binaryExpr.getRight().getType() == Type.PIXEL){
+                    image = true;
                     return s.append("ImageOps.binaryPackedPixelPixelOp(ImageOps.OP.PLUS"+","+binaryExpr.getLeft().visit(this,arg)+","+
                             binaryExpr.getRight().visit(this,arg)+")");
                 }
                 if(binaryExpr.getLeft().getType() == Type.PIXEL && binaryExpr.getRight().getType() == Type.INT){
+                    image = true;
                     return s.append("ImageOps.binaryPackedPixelIntOp(ImageOps.OP.PLUS"+","+binaryExpr.getLeft().visit(this,arg)+","+
                             binaryExpr.getRight().visit(this,arg)+")");
                 }
-                return s.append(binaryExpr.getLeft().visit(this,arg)).append(" "+ op +" ").append(binaryExpr.getRight().visit(this,arg));
+                return s.append("(("+binaryExpr.getLeft().visit(this,arg)).append(") "+ op +" (").append(binaryExpr.getRight().visit(this,arg)+"))");
             }
             case MINUS -> {
                 op = "-";
                 if(binaryExpr.getLeft().getType() == Type.IMAGE && binaryExpr.getRight().getType() == Type.IMAGE){
+                    image = true;
                     return s.append("ImageOps.binaryImageImageOp(ImageOps.OP.MINUS"+","+binaryExpr.getLeft().visit(this,arg)+","+
                             binaryExpr.getRight().visit(this,arg)+")");
                 }
                 if(binaryExpr.getLeft().getType() == Type.IMAGE && binaryExpr.getRight().getType() == Type.INT){
+                    image = true;
                     return s.append("ImageOps.binaryImageScalarOp(ImageOps.OP.MINUS"+","+binaryExpr.getLeft().visit(this,arg)+","+
                             binaryExpr.getRight().visit(this,arg)+")");
                 }
@@ -180,18 +186,21 @@ public class CodeGen implements ASTVisitor{
                             binaryExpr.getRight().visit(this,arg)+")");
                 }
                 if(binaryExpr.getLeft().getType() == Type.PIXEL && binaryExpr.getRight().getType() == Type.INT){
+                    image = true;
                     return s.append("ImageOps.binaryPackedPixelIntOp(ImageOps.OP.MINUS"+","+binaryExpr.getLeft().visit(this,arg)+","+
                             binaryExpr.getRight().visit(this,arg)+")");
                 }
-                return s.append(binaryExpr.getLeft().visit(this,arg)).append(" "+ op +" ").append(binaryExpr.getRight().visit(this,arg));
+                return s.append("("+binaryExpr.getLeft().visit(this,arg)).append(" "+ op +" ").append(binaryExpr.getRight().visit(this,arg)+")");
             }
             case TIMES->{
                 op = "*";
                 if(binaryExpr.getLeft().getType() == Type.IMAGE && binaryExpr.getRight().getType() == Type.IMAGE){
+                    image = true;
                     return s.append("ImageOps.binaryImageImageOp(ImageOps.OP.TIMES"+","+binaryExpr.getLeft().visit(this,arg)+","+
                             binaryExpr.getRight().visit(this,arg)+")");
                 }
                 if(binaryExpr.getLeft().getType() == Type.IMAGE && binaryExpr.getRight().getType() == Type.INT){
+                    image = true;
                     return s.append("ImageOps.binaryImageScalarOp(ImageOps.OP.TIMES"+","+binaryExpr.getLeft().visit(this,arg)+","+
                             binaryExpr.getRight().visit(this,arg)+")");
                 }
@@ -200,18 +209,21 @@ public class CodeGen implements ASTVisitor{
                             binaryExpr.getRight().visit(this,arg)+")");
                 }
                 if(binaryExpr.getLeft().getType() == Type.PIXEL && binaryExpr.getRight().getType() == Type.INT){
+                    image = true;
                     return s.append("ImageOps.binaryPackedPixelIntOp(ImageOps.OP.TIMES"+","+binaryExpr.getLeft().visit(this,arg)+","+
                             binaryExpr.getRight().visit(this,arg)+")");
                 }
-                return s.append(binaryExpr.getLeft().visit(this,arg)).append(" "+ op +" ").append(binaryExpr.getRight().visit(this,arg));
+                return s.append("("+binaryExpr.getLeft().visit(this,arg)).append(" "+ op +" ").append(binaryExpr.getRight().visit(this,arg)+")");
             }
             case DIV->{
                 op = "/";
                 if(binaryExpr.getLeft().getType() == Type.IMAGE && binaryExpr.getRight().getType() == Type.IMAGE){
+                    image = true;
                     return s.append("ImageOps.binaryImageImageOp(ImageOps.OP.DIV"+","+binaryExpr.getLeft().visit(this,arg)+","+
                             binaryExpr.getRight().visit(this,arg)+")");
                 }
                 if(binaryExpr.getLeft().getType() == Type.IMAGE && binaryExpr.getRight().getType() == Type.INT){
+                    image = true;
                     return s.append("ImageOps.binaryImageScalarOp(ImageOps.OP.DIV"+","+binaryExpr.getLeft().visit(this,arg)+","+
                             binaryExpr.getRight().visit(this,arg)+")");
                 }
@@ -220,18 +232,21 @@ public class CodeGen implements ASTVisitor{
                             binaryExpr.getRight().visit(this,arg)+")");
                 }
                 if(binaryExpr.getLeft().getType() == Type.PIXEL && binaryExpr.getRight().getType() == Type.INT){
+                    image = true;
                     return s.append("ImageOps.binaryPackedPixelIntOp(ImageOps.OP.DIV"+","+binaryExpr.getLeft().visit(this,arg)+","+
                             binaryExpr.getRight().visit(this,arg)+")");
                 }
-                return s.append(binaryExpr.getLeft().visit(this,arg)).append(" "+ op +" ").append(binaryExpr.getRight().visit(this,arg));
+                return s.append("("+binaryExpr.getLeft().visit(this,arg)).append(" "+ op +" ").append(binaryExpr.getRight().visit(this,arg)+")");
             }
             case MOD->{
                 op = "%";
                 if(binaryExpr.getLeft().getType() == Type.IMAGE && binaryExpr.getRight().getType() == Type.IMAGE){
+                    image = true;
                     return s.append("ImageOps.binaryImageImageOp(ImageOps.OP.MOD"+","+binaryExpr.getLeft().visit(this,arg)+","+
                             binaryExpr.getRight().visit(this,arg)+")");
                 }
                 if(binaryExpr.getLeft().getType() == Type.IMAGE && binaryExpr.getRight().getType() == Type.INT){
+                    image = true;
                     return s.append("ImageOps.binaryImageScalarOp(ImageOps.OP.MOD"+","+binaryExpr.getLeft().visit(this,arg)+","+
                             binaryExpr.getRight().visit(this,arg)+")");
                 }
@@ -240,10 +255,11 @@ public class CodeGen implements ASTVisitor{
                             binaryExpr.getRight().visit(this,arg)+")");
                 }
                 if(binaryExpr.getLeft().getType() == Type.PIXEL && binaryExpr.getRight().getType() == Type.INT){
+                    image = true;
                     return s.append("ImageOps.binaryPackedPixelIntOp(ImageOps.OP.MOD"+","+binaryExpr.getLeft().visit(this,arg)+","+
                             binaryExpr.getRight().visit(this,arg)+")");
                 }
-                return s.append(binaryExpr.getLeft().visit(this,arg)).append(" "+ op +" ").append(binaryExpr.getRight().visit(this,arg));
+                return s.append("("+binaryExpr.getLeft().visit(this,arg)).append(" "+ op +" ").append(binaryExpr.getRight().visit(this,arg)+")");
             }
             case LT->{
                 op = "<";
@@ -327,7 +343,7 @@ public class CodeGen implements ASTVisitor{
 
     @Override
     public Object visitDeclaration(Declaration declaration, Object arg) throws PLCException {
-        idents.put((String) declaration.getNameDef().visit(this, arg), declaration.getNameDef().getType());
+        idents.put((String) declaration.getNameDef().getIdent().visit(this,arg), declaration.getNameDef().getType());
         StringBuilder dec = new StringBuilder();
         dec.append(declaration.getNameDef().visit(this,arg));
         Type x = declaration.getNameDef().getType();
@@ -381,6 +397,7 @@ public class CodeGen implements ASTVisitor{
     @Override
     public Object visitExpandedPixelExpr(ExpandedPixelExpr expandedPixelExpr, Object arg) throws PLCException { //not implementing this for Assignment 5
         StringBuilder e = new StringBuilder();
+        pixel = true;
         return e.append("PixelOps.pack(").append(expandedPixelExpr.getRedExpr().visit(this,arg)+ ", " +
                 expandedPixelExpr.getGrnExpr().visit(this,arg)+", "+expandedPixelExpr.bluExpr.visit(this,arg)+")");
     }
@@ -430,7 +447,7 @@ public class CodeGen implements ASTVisitor{
             image = true;
         }
         if(param){
-            idents.put(nameDef.getIdent().getName(), nameDef.getType());
+            idents.put((String) nameDef.getIdent().visit(this,arg), nameDef.getType());
         }
 
         name.append(x).append(" ").append(nameDef.getIdent().visit(this,arg));
@@ -529,6 +546,7 @@ public class CodeGen implements ASTVisitor{
         }
         if(returnType == "String"){
             if(idents.containsKey(returnStatement.getE().visit(this,arg)) && idents.get(returnStatement.getE().visit(this,arg)) == Type.PIXEL){
+                pixel = true;
                 return e.append(" return PixelOps.packedToString(").append(returnStatement.getE().visit(this,arg)).append(");\n");
             }
             return e.append("return ").append("String.valueOf(").append(returnStatement.getE().visit(this,arg)).append(");");

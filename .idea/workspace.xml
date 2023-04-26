@@ -4,17 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4630c38b-fa48-42d1-a6b3-fd84fdeca931" name="Changes" comment="changed some ASTNodes per Param's advice to enable uniqueIDs for Java nested redeclaration resolution.">
-      <change afterPath="$PROJECT_DIR$/src/edu/ufl/cise/plcsp23/Assignment6Test_starter.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/edu/ufl/cise/plcsp23/PLCRuntimeException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/edu/ufl/cise/plcsp23/runtime/FileURLIO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/edu/ufl/cise/plcsp23/runtime/ImageOps.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/edu/ufl/cise/plcsp23/runtime/PixelOps.java" afterDir="false" />
+    <list default="true" id="4630c38b-fa48-42d1-a6b3-fd84fdeca931" name="Changes" comment="Fixed idents.put() for andMultipleDeclarations but now back to 67/74">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/edu/ufl/cise/plcsp23/Assignment5Test_starter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/edu/ufl/cise/plcsp23/Assignment5Test_starter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/edu/ufl/cise/plcsp23/IParser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/edu/ufl/cise/plcsp23/IParser.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/edu/ufl/cise/plcsp23/ast/CodeGen.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/edu/ufl/cise/plcsp23/ast/CodeGen.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/edu/ufl/cise/plcsp23/runtime/ConsoleIO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/edu/ufl/cise/plcsp23/runtime/ConsoleIO.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -95,22 +87,6 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="Assignment5Test_starter.cg7" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="PLC" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="edu.ufl.cise.plcsp23.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="edu.ufl.cise.plcsp23" />
-      <option name="MAIN_CLASS_NAME" value="edu.ufl.cise.plcsp23.Assignment5Test_starter" />
-      <option name="METHOD_NAME" value="cg7" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="Assignment6Test_starter" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="PLC" />
       <extension name="coverage">
@@ -122,6 +98,22 @@
       <option name="PACKAGE_NAME" value="edu.ufl.cise.plcsp23" />
       <option name="MAIN_CLASS_NAME" value="edu.ufl.cise.plcsp23.Assignment6Test_starter" />
       <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Assignment6Test_starter.andItsBinary" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="PLC" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="edu.ufl.cise.plcsp23.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="edu.ufl.cise.plcsp23" />
+      <option name="MAIN_CLASS_NAME" value="edu.ufl.cise.plcsp23.Assignment6Test_starter" />
+      <option name="METHOD_NAME" value="andItsBinary" />
+      <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -161,10 +153,10 @@
     <recent_temporary>
       <list>
         <item itemvalue="JUnit.Assignment6Test_starter" />
+        <item itemvalue="JUnit.Assignment6Test_starter.andItsBinary" />
         <item itemvalue="JUnit.Assignment6Test_starter.andMultipleDeclarations" />
         <item itemvalue="JUnit.Assignment6Test_starter.cg28" />
         <item itemvalue="JUnit.Assignment5Test_starter" />
-        <item itemvalue="JUnit.Assignment5Test_starter.cg7" />
       </list>
     </recent_temporary>
   </component>
@@ -191,7 +183,7 @@
       <workItem from="1680736020336" duration="8553000" />
       <workItem from="1681184021427" duration="6601000" />
       <workItem from="1681276251492" duration="5617000" />
-      <workItem from="1682399252150" duration="10319000" />
+      <workItem from="1682399252150" duration="16796000" />
     </task>
     <task id="LOCAL-00001" summary="adding tony's Scanner">
       <created>1678042343150</created>
@@ -277,7 +269,14 @@
       <option name="project" value="LOCAL" />
       <updated>1681285728051</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="Fixed idents.put() for andMultipleDeclarations but now back to 67/74">
+      <created>1682471318885</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1682471318885</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -319,7 +318,8 @@
     <MESSAGE value="Assignment 4 work. Mostly completed, TODOs are marked. Main task remaining is to implement scoping" />
     <MESSAGE value="Changed to official set of test cases. UnaryPostfix now visits PixelSelector. Passing 52/52." />
     <MESSAGE value="changed some ASTNodes per Param's advice to enable uniqueIDs for Java nested redeclaration resolution." />
-    <option name="LAST_COMMIT_MESSAGE" value="changed some ASTNodes per Param's advice to enable uniqueIDs for Java nested redeclaration resolution." />
+    <MESSAGE value="Fixed idents.put() for andMultipleDeclarations but now back to 67/74" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fixed idents.put() for andMultipleDeclarations but now back to 67/74" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -330,24 +330,14 @@
           <option name="timeStamp" value="2" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/edu/ufl/cise/plcsp23/ast/CodeGen.java</url>
-          <line>128</line>
-          <option name="timeStamp" value="5" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/edu/ufl/cise/plcsp23/Assignment6Test_starter.java</url>
           <line>1233</line>
           <option name="timeStamp" value="6" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/edu/ufl/cise/plcsp23/ast/CodeGen.java</url>
-          <line>365</line>
-          <option name="timeStamp" value="8" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/edu/ufl/cise/plcsp23/ast/CodeGen.java</url>
-          <line>533</line>
-          <option name="timeStamp" value="10" />
+          <url>file://$PROJECT_DIR$/src/edu/ufl/cise/plcsp23/Assignment6Test_starter.java</url>
+          <line>1286</line>
+          <option name="timeStamp" value="12" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-method">
           <url>file://$PROJECT_DIR$/src/edu/ufl/cise/plcsp23/ast/CodeGen.java</url>
@@ -356,7 +346,7 @@
             <option name="EMULATED" value="true" />
             <option name="WATCH_EXIT" value="false" />
           </properties>
-          <option name="timeStamp" value="7" />
+          <option name="timeStamp" value="13" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
