@@ -31,8 +31,13 @@ class Assignment6Test_starter {
     Object genCodeAndRun(String input, String mypackage, Object[] params) throws Exception {
         show(input);
         show("****");
+        show("****");
+        show("****");
         AST ast = CompilerComponentFactory.makeParser(input).parse();
         ast.visit(CompilerComponentFactory.makeTypeChecker(), null);
+        show("****");
+        show("****");
+        show("****");
         show(ast); // display decorated AST
         String name = ((Program) ast).getIdent().getName();
         String code = (String) ast.visit(CompilerComponentFactory.makeCodeGenerator(""), null);

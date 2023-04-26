@@ -4,9 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4630c38b-fa48-42d1-a6b3-fd84fdeca931" name="Changes" comment="Fixed idents.put() for andMultipleDeclarations but now back to 67/74">
+    <list default="true" id="4630c38b-fa48-42d1-a6b3-fd84fdeca931" name="Changes" comment="fixed andItsBinary(), 73/74">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/edu/ufl/cise/plcsp23/Assignment6Test_starter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/edu/ufl/cise/plcsp23/Assignment6Test_starter.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/edu/ufl/cise/plcsp23/ast/CodeGen.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/edu/ufl/cise/plcsp23/ast/CodeGen.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/edu/ufl/cise/plcsp23/runtime/ImageOps.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/edu/ufl/cise/plcsp23/runtime/ImageOps.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -72,21 +74,6 @@
     </key>
   </component>
   <component name="RunManager" selected="JUnit.Assignment6Test_starter">
-    <configuration name="Assignment5Test_starter" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="PLC" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="edu.ufl.cise.plcsp23.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="edu.ufl.cise.plcsp23" />
-      <option name="MAIN_CLASS_NAME" value="edu.ufl.cise.plcsp23.Assignment5Test_starter" />
-      <option name="TEST_OBJECT" value="class" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="Assignment6Test_starter" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="PLC" />
       <extension name="coverage">
@@ -134,6 +121,22 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="Assignment6Test_starter.andPixelsToStrings" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="PLC" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="edu.ufl.cise.plcsp23.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="edu.ufl.cise.plcsp23" />
+      <option name="MAIN_CLASS_NAME" value="edu.ufl.cise.plcsp23.Assignment6Test_starter" />
+      <option name="METHOD_NAME" value="andPixelsToStrings" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="Assignment6Test_starter.cg28" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="PLC" />
       <extension name="coverage">
@@ -153,10 +156,10 @@
     <recent_temporary>
       <list>
         <item itemvalue="JUnit.Assignment6Test_starter" />
+        <item itemvalue="JUnit.Assignment6Test_starter.andPixelsToStrings" />
         <item itemvalue="JUnit.Assignment6Test_starter.andItsBinary" />
         <item itemvalue="JUnit.Assignment6Test_starter.andMultipleDeclarations" />
         <item itemvalue="JUnit.Assignment6Test_starter.cg28" />
-        <item itemvalue="JUnit.Assignment5Test_starter" />
       </list>
     </recent_temporary>
   </component>
@@ -183,7 +186,7 @@
       <workItem from="1680736020336" duration="8553000" />
       <workItem from="1681184021427" duration="6601000" />
       <workItem from="1681276251492" duration="5617000" />
-      <workItem from="1682399252150" duration="16796000" />
+      <workItem from="1682399252150" duration="22354000" />
     </task>
     <task id="LOCAL-00001" summary="adding tony's Scanner">
       <created>1678042343150</created>
@@ -276,7 +279,14 @@
       <option name="project" value="LOCAL" />
       <updated>1682471318885</updated>
     </task>
-    <option name="localTasksCounter" value="14" />
+    <task id="LOCAL-00014" summary="fixed andItsBinary(), 73/74">
+      <created>1682479770276</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1682479770276</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -319,34 +329,40 @@
     <MESSAGE value="Changed to official set of test cases. UnaryPostfix now visits PixelSelector. Passing 52/52." />
     <MESSAGE value="changed some ASTNodes per Param's advice to enable uniqueIDs for Java nested redeclaration resolution." />
     <MESSAGE value="Fixed idents.put() for andMultipleDeclarations but now back to 67/74" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fixed idents.put() for andMultipleDeclarations but now back to 67/74" />
+    <MESSAGE value="fixed andItsBinary(), 73/74" />
+    <option name="LAST_COMMIT_MESSAGE" value="fixed andItsBinary(), 73/74" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/edu/ufl/cise/plcsp23/Assignment6Test_starter.java</url>
-          <line>37</line>
-          <option name="timeStamp" value="2" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/edu/ufl/cise/plcsp23/Assignment6Test_starter.java</url>
-          <line>1233</line>
+          <line>1238</line>
           <option name="timeStamp" value="6" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/edu/ufl/cise/plcsp23/Assignment6Test_starter.java</url>
-          <line>1286</line>
+          <line>1291</line>
           <option name="timeStamp" value="12" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/edu/ufl/cise/plcsp23/Assignment6Test_starter.java</url>
+          <line>1372</line>
+          <option name="timeStamp" value="16" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/edu/ufl/cise/plcsp23/Assignment6Test_starter.java</url>
+          <line>1371</line>
+          <option name="timeStamp" value="17" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-method">
           <url>file://$PROJECT_DIR$/src/edu/ufl/cise/plcsp23/ast/CodeGen.java</url>
-          <line>101</line>
-          <properties class="edu.ufl.cise.plcsp23.ast.CodeGen" method="visitAssignmentStatement">
+          <line>640</line>
+          <properties class="edu.ufl.cise.plcsp23.ast.CodeGen" method="visitWriteStatement">
             <option name="EMULATED" value="true" />
             <option name="WATCH_EXIT" value="false" />
           </properties>
-          <option name="timeStamp" value="13" />
+          <option name="timeStamp" value="19" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
@@ -355,6 +371,11 @@
         <PinnedItemInfo parentTag="edu.ufl.cise.plcsp23.ast.Block" memberName="firstToken" />
       </pinned-members>
     </pin-to-top-manager>
+    <watches-manager>
+      <configuration name="JUnit">
+        <watch expression="result" />
+      </configuration>
+    </watches-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/PLC$Assignment3Test_starter_test13.ic" NAME="Assignment3Test_starter.test13 Coverage Results" MODIFIED="1678987110052" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">
