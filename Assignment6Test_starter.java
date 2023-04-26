@@ -21,7 +21,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
-class Assignment6Test_starter {
+class Assignment6Test_collab {
 	String beach = "https://images.freeimages.com/images/large-previews/5a5/the-path-to-the-sunrise-1629704.jpg";
 	String owl = "https://pocket-syndicated-images.s3.amazonaws.com/622ad94833741.png";
 	String dino = "https://cdn.theatlantic.com/thumbor/-WDVFQL2O-tLHvsDK1DzflsSWAo=/1500x1000/media/img/photo/2023/03/photos-week-5/a01_1249659784/original.jpg";

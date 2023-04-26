@@ -105,6 +105,10 @@ public class CodeGen implements ASTVisitor{
             return e.append(statementAssign.getLv().visit(this,null)).append(" = String.valueOf(").append(statementAssign.getE().visit(this,null)).append(");\n");
         }
 
+        if(idents.containsKey(statementAssign.getLv().getIdent().visit(this,arg)) && idents.get(statementAssign.getLv().getIdent().visit(this,arg)) == Type.STRING && statementAssign.getE().toString().contains("pixel")){
+            return e.append(statementAssign.getLv().visit(this,null)).append(" = PixelOps.packedToString(").append(statementAssign.getE().visit(this,null)).append(");\n");
+        }
+
         if(idents.containsKey(statementAssign.getLv().getIdent().getName()) && idents.get(statementAssign.getLv().getIdent().visit(this,arg)) == Type.IMAGE){
             if(idents.containsKey(statementAssign.getE().visit(this,arg)) && idents.get(statementAssign.getE().visit(this,arg)) == Type.IMAGE && statementAssign.getLv().getPixelSelector() == null && statementAssign.getLv().getColor() == null){
                 return e.append("ImageOps.copyInto(").append(statementAssign.getLv().visit(this,arg)).append(", " + statementAssign.getE().visit(this,arg)).append(");\n");
