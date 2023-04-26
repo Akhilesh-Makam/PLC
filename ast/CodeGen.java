@@ -658,9 +658,9 @@ public class CodeGen implements ASTVisitor{
             write = true;
         }
         StringBuilder s = new StringBuilder();
-        if(statementWrite.getE().toString().contains("pixel")){
+        if(statementWrite.getE().getType() == Type.PIXEL){
             s.append("ConsoleIO.writePixel(").append(statementWrite.getE().visit(this,arg)).append(")").append(";\n");
-
+            return s;
         }
         s.append("ConsoleIO.write(").append(statementWrite.getE().visit(this,arg)).append(")").append(";\n");
 
