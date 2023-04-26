@@ -290,12 +290,18 @@ public class CodeGen implements ASTVisitor{
                 return s.append("(("+ binaryExpr.getLeft().visit(this,arg)).append("  " + op + " ").append(binaryExpr.getRight().visit(this,arg))
                         .append(" ) ? 1 : 0)");
             }
-            case BITOR, OR -> {
+            case BITOR->{
+                return s.append(binaryExpr.getLeft().visit(this,arg)).append(" | ").append(binaryExpr.getRight().visit(this,arg));
+            }
+            case OR -> {
                 op = "||";
                 return s.append("(("+ binaryExpr.getLeft().visit(this,arg)).append(" != 0 " + op + " ").append(binaryExpr.getRight().visit(this,arg))
                         .append("!= 0) ? 1 : 0)");
             }
-            case BITAND, AND -> {
+            case BITAND ->{
+                return s.append(binaryExpr.getLeft().visit(this,arg)).append(" & ").append(binaryExpr.getRight().visit(this,arg));
+            }
+            case AND -> {
                 op = "&&";
                 return s.append("(("+ binaryExpr.getLeft().visit(this,arg)).append(" != 0 " + op + " ").append(binaryExpr.getRight().visit(this,arg))
                         .append("!= 0) ? 1 : 0)");

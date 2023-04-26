@@ -1524,26 +1524,26 @@ class Assignment6Test_starter {
 		assertThrows(TypeCheckException.class, () -> genCodeAndRun(input2, "", params));
 	}
 
-//	@Test     INVALID
-//	void andPixelBitOps() throws Exception {
-//		String input;
-//		Object[] params = { 0xff0000ff, 0xffffff00 };
-//
-//		input = """
-//				int p(pixel p1, pixel p2) {
-//					int i = p1 & p2.
-//					:i.
-//				}
-//				""";
-//		assertEquals(((Integer) params[0]) & ((Integer) params[1]), (Integer) genCodeAndRun(input, "", params));
-//		input = """
-//				int p(pixel p1, pixel p2) {
-//					int i = p1 | p2.
-//					:i.
-//				}
-//				""";
-//		assertEquals(((Integer) params[0]) | ((Integer) params[1]), (Integer) genCodeAndRun(input, "", params));
-//	}
+	@Test
+	void andPixelBitOps() throws Exception {
+		String input;
+		Object[] params = { 0xff0000ff, 0xffffff00 };
+
+		input = """
+				int p(pixel p1, pixel p2) {
+					int i = p1 & p2.
+					:i.
+				}
+				""";
+		assertEquals(((Integer) params[0]) & ((Integer) params[1]), (Integer) genCodeAndRun(input, "", params));
+		input = """
+				int p(pixel p1, pixel p2) {
+					int i = p1 | p2.
+					:i.
+				}
+				""";
+		assertEquals(((Integer) params[0]) | ((Integer) params[1]), (Integer) genCodeAndRun(input, "", params));
+	}
 
 	@Test
 	void andPixelAndInt() throws Exception {
