@@ -558,7 +558,7 @@ public class CodeGen implements ASTVisitor{
         if(returnType == "String"){
             if(idents.containsKey(returnStatement.getE().visit(this,arg)) && idents.get(returnStatement.getE().visit(this,arg)) == Type.PIXEL){
                 pixel = true;
-                return e.append(" return PixelOps.packedToString(").append(returnStatement.getE().visit(this,arg)).append(", 16).intValue());\n");
+                return e.append(" return PixelOps.packedToString(").append(returnStatement.getE().visit(this,arg)).append(");\n");
             }
             return e.append("return ").append("String.valueOf(").append(returnStatement.getE().visit(this,arg)).append(");");
         }
