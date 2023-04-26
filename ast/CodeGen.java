@@ -187,6 +187,7 @@ public class CodeGen implements ASTVisitor{
                             binaryExpr.getRight().visit(this,arg)+")");
                 }
                 if(binaryExpr.getLeft().getType() == Type.PIXEL && binaryExpr.getRight().getType() == Type.PIXEL){
+                    image = true;
                     return s.append("ImageOps.binaryPackedPixelPixelOp(ImageOps.OP.MINUS"+","+binaryExpr.getLeft().visit(this,arg)+","+
                             binaryExpr.getRight().visit(this,arg)+")");
                 }
@@ -210,6 +211,7 @@ public class CodeGen implements ASTVisitor{
                             binaryExpr.getRight().visit(this,arg)+")");
                 }
                 if(binaryExpr.getLeft().getType() == Type.PIXEL && binaryExpr.getRight().getType() == Type.PIXEL){
+                    image = true;
                     return s.append("ImageOps.binaryPackedPixelPixelOp(ImageOps.OP.TIMES"+","+binaryExpr.getLeft().visit(this,arg)+","+
                             binaryExpr.getRight().visit(this,arg)+")");
                 }
@@ -233,6 +235,7 @@ public class CodeGen implements ASTVisitor{
                             binaryExpr.getRight().visit(this,arg)+")");
                 }
                 if(binaryExpr.getLeft().getType() == Type.PIXEL && binaryExpr.getRight().getType() == Type.PIXEL){
+                    image = true;
                     return s.append("ImageOps.binaryPackedPixelPixelOp(ImageOps.OP.DIV"+","+binaryExpr.getLeft().visit(this,arg)+","+
                             binaryExpr.getRight().visit(this,arg)+")");
                 }
@@ -256,6 +259,7 @@ public class CodeGen implements ASTVisitor{
                             binaryExpr.getRight().visit(this,arg)+")");
                 }
                 if(binaryExpr.getLeft().getType() == Type.PIXEL && binaryExpr.getRight().getType() == Type.PIXEL){
+                    image = true;
                     return s.append("ImageOps.binaryPackedPixelPixelOp(ImageOps.OP.MOD"+","+binaryExpr.getLeft().visit(this,arg)+","+
                             binaryExpr.getRight().visit(this,arg)+")");
                 }
