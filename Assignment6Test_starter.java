@@ -49,7 +49,7 @@ class Assignment6Test_starter {
 	 * This waits for input to prevent Junit and your IDE from closing the window
 	 * displaying your image before you have a chance to see it. If you do not need
 	 * or want this, set WAIT_FOR_INPUT to false to disable
-	 * 
+	 *
 	 * @throws IOException
 	 */
 
@@ -62,7 +62,7 @@ class Assignment6Test_starter {
 
 	/**
 	 * Displays an image on the screen.
-	 * 
+	 *
 	 * @param obj
 	 * @throws IOException
 	 */
@@ -75,7 +75,7 @@ class Assignment6Test_starter {
 
 	/**
 	 * Normal show that uses obj.toString to display.
-	 * 
+	 *
 	 * @param obj
 	 */
 	void show(Object obj) {
@@ -156,7 +156,7 @@ class Assignment6Test_starter {
 		BufferedImage expected = ImageOps.extractRed(sourceImage);
 		imageEquals(expected, result);
 	}
-	
+
 	@Test
 	void cg6_2a() throws Exception {
 		String input = """
@@ -530,7 +530,7 @@ class Assignment6Test_starter {
 	/*
 	 * This test doesn't check assertions--look at the output It should display a
 	 * black image and a white image that is half the size.
-	 * 
+	 *
 	 * It should also print ff000000 ffffffff
 	 */
 	@Test
@@ -983,7 +983,7 @@ class Assignment6Test_starter {
 				ImageOps.setRGB(expected, x, y, (((((x % strip) < (strip / 2)) ? 1 : 0) != 0)
 						? (ImageOps.binaryPackedPixelScalarOp(ImageOps.OP.TIMES, ImageOps.getRGB(sourceImage, x, y), 2))
 						: (ImageOps.binaryPackedPixelScalarOp(ImageOps.OP.DIV, ImageOps.getRGB(sourceImage, x, y),
-								2))));
+						2))));
 			}
 		}
 		imageEquals(result, expected);
@@ -1019,13 +1019,13 @@ class Assignment6Test_starter {
 				ImageOps.setRGB(expected, x, y,
 						(((((((((((x % stripH) < (stripH / 2)) ? 1 : 0)) == 0 ? false : true)
 								&& (((((y % stripV) < (stripV / 2)) ? 1 : 0)) == 0 ? false : true) ? 1 : 0)) == 0
-										? false
-										: true)
+								? false
+								: true)
 								|| ((((((((x % stripH) >= (stripH / 2)) ? 1 : 0)) == 0 ? false : true)
-										&& (((((y % stripV) >= (stripV / 2)) ? 1 : 0)) == 0 ? false : true) ? 1
-												: 0)) == 0 ? false : true) ? 1 : 0) != 0)
-														? ImageOps.getRGB(sourceImage0, x, y)
-														: ImageOps.getRGB(sourceImage1, x, y)));
+								&& (((((y % stripV) >= (stripV / 2)) ? 1 : 0)) == 0 ? false : true) ? 1
+								: 0)) == 0 ? false : true) ? 1 : 0) != 0)
+								? ImageOps.getRGB(sourceImage0, x, y)
+								: ImageOps.getRGB(sourceImage1, x, y)));
 			}
 
 		}
@@ -1524,26 +1524,26 @@ class Assignment6Test_starter {
 		assertThrows(TypeCheckException.class, () -> genCodeAndRun(input2, "", params));
 	}
 
-	@Test
-	void andPixelBitOps() throws Exception {
-		String input;
-		Object[] params = { 0xff0000ff, 0xffffff00 };
-
-		input = """
-				int p(pixel p1, pixel p2) {
-					int i = p1 & p2.
-					:i.
-				}
-				""";
-		assertEquals(((Integer) params[0]) & ((Integer) params[1]), (Integer) genCodeAndRun(input, "", params));
-		input = """
-				int p(pixel p1, pixel p2) {
-					int i = p1 | p2.
-					:i.
-				}
-				""";
-		assertEquals(((Integer) params[0]) | ((Integer) params[1]), (Integer) genCodeAndRun(input, "", params));
-	}
+//	@Test     INVALID
+//	void andPixelBitOps() throws Exception {
+//		String input;
+//		Object[] params = { 0xff0000ff, 0xffffff00 };
+//
+//		input = """
+//				int p(pixel p1, pixel p2) {
+//					int i = p1 & p2.
+//					:i.
+//				}
+//				""";
+//		assertEquals(((Integer) params[0]) & ((Integer) params[1]), (Integer) genCodeAndRun(input, "", params));
+//		input = """
+//				int p(pixel p1, pixel p2) {
+//					int i = p1 | p2.
+//					:i.
+//				}
+//				""";
+//		assertEquals(((Integer) params[0]) | ((Integer) params[1]), (Integer) genCodeAndRun(input, "", params));
+//	}
 
 	@Test
 	void andPixelAndInt() throws Exception {
