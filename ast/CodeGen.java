@@ -122,12 +122,21 @@ public class CodeGen implements ASTVisitor{
         }
 
         if((statementAssign.getLv().getPixelSelector() != null && statementAssign.getLv().getColor() != null)){
-            return e.append("for(int " + statementAssign.getLv().getPixelSelector().getY().visit(this,arg) + "= 0; " + statementAssign.getLv().getPixelSelector().getY().visit(this,arg) +
-                            " != " + statementAssign.getLv().getIdent().visit(this,arg)+".getHeight(); " + statementAssign.getLv().getPixelSelector().getY().visit(this,arg) + "++) {\n\t")
-                    .append("for(int " + statementAssign.getLv().getPixelSelector().getX().visit(this,arg) + "= 0; " + statementAssign.getLv().getPixelSelector().getX().visit(this,arg) +
-                            " != " + statementAssign.getLv().getIdent().visit(this,arg)+".getWidth(); " + statementAssign.getLv().getPixelSelector().getX().visit(this,arg) + "++) {\n\t")
-                    .append("ImageOps.setRGB(" + statementAssign.getLv().getIdent().visit(this,arg)+", " + statementAssign.getLv().getPixelSelector().getX().visit(this,arg)+ ", " +
-                            statementAssign.getLv().getPixelSelector().getY().visit(this,arg)+", " + statementAssign.getE().visit(this,arg)+");\n}\n}\n");
+            String x = "";
+            switch(statementAssign.getLv().getColor()){
+                case blu -> {
+                    x = "PixelOps.setBlu(ImageOps.getRGB(";
+                }
+                case grn -> {
+                    x = "PixelOps.setGrn(ImageOps.getRGB(";
+                }
+                case red -> {
+                    x = "PixelOps.setRed(ImageOps.getRGB(";
+                }
+            }
+            return e.append("for(int y= 0; y  != " + statementAssign.getLv().getIdent().visit(this,arg)+".getHeight(); y++) {\n\t")
+                    .append("for(int x= 0; x != " + statementAssign.getLv().getIdent().visit(this,arg)+".getWidth(); x++) {\n\t")
+                    .append("ImageOps.setRGB(" + statementAssign.getLv().getIdent().visit(this,arg)+", x, y, " + x +statementAssign.getLv().getIdent().visit(this,arg)+", x, y)," + statementAssign.getE().visit(this,arg)+"));\n}\n}\n");
         }
 
         if(statementAssign.getLv().getPixelSelector() != null){
@@ -564,7 +573,7 @@ public class CodeGen implements ASTVisitor{
             returnConditional = true;
         }
         if(returnType == "String"){
-            if(idents.containsKey(returnStatement.getE().visit(this,arg)) && idents.get(returnStatement.getE().visit(this,arg)) == Type.PIXEL){
+            if((idents.containsKey(returnStatement.getE().visit(this,arg)) && idents.get(returnStatement.getE().visit(this,arg)) == Type.PIXEL) || returnStatement.getE().toString().contains("pixel") || returnStatement.getE().toString().contains("Pixel")){
                 pixel = true;
                 return e.append(" return PixelOps.packedToString(").append(returnStatement.getE().visit(this,arg)).append(");\n");
             }
