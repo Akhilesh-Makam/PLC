@@ -110,14 +110,14 @@ public class CodeGen implements ASTVisitor{
         }
 
         if(idents.containsKey(statementAssign.getLv().getIdent().getName()) && idents.get(statementAssign.getLv().getIdent().visit(this,arg)) == Type.IMAGE){
-            if(idents.containsKey(statementAssign.getE().visit(this,arg)) && idents.get(statementAssign.getE().visit(this,arg)) == Type.IMAGE && statementAssign.getLv().getPixelSelector() == null && statementAssign.getLv().getColor() == null){
-                return e.append("ImageOps.copyInto(").append(statementAssign.getLv().visit(this,arg)).append(", " + statementAssign.getE().visit(this,arg)).append(");\n");
-            }
             if(idents.containsKey(statementAssign.getE().visit(this,arg)) && idents.get(statementAssign.getE().visit(this,arg)) == Type.STRING && statementAssign.getLv().getPixelSelector() == null && statementAssign.getLv().getColor() == null){
                 return e.append("ImageOps.copyInto(FileURLIO.readImage(").append(statementAssign.getE().visit(this,arg)).append("), " + statementAssign.getLv().visit(this,arg)).append(");\n");
             }
             if(statementAssign.getLv().getPixelSelector() == null && statementAssign.getLv().getColor() == null && statementAssign.getE().getType() == Type.PIXEL){
                 return e.append("ImageOps.setAllPixels( ").append(statementAssign.getLv().visit(this,arg) + ", ").append(statementAssign.getE().visit(this,arg)).append(");\n");
+            }
+            if(statementAssign.getLv().getPixelSelector() == null && statementAssign.getLv().getColor() == null){
+                return e.append("ImageOps.copyInto(").append(statementAssign.getE().visit(this,arg)).append(", " + statementAssign.getLv().visit(this,arg)).append(");\n");
             }
         }
 
